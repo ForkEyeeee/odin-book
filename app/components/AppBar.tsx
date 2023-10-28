@@ -29,7 +29,6 @@ function AppBar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const session = useSession();
   const pathSegment = usePathname();
-  console.log(`${pathSegment}/api/auth/signout`);
   return (
     <>
       <Box bg={useColorModeValue("gray.900", "gray.900")} px={4}>
