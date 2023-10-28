@@ -1,5 +1,14 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
+## Dependencies
+
+- [Next.js](https://nextjs.org/)
+- [Prisma](https://www.prisma.io/)
+- [ChakraUI](https://chakra-ui.com/)
+- [Jest](https://jestjs.io/)
+- [@testing-library/react](https://testing-library.com/docs/react-testing-library/intro/)
+- [node-mocks-http](https://github.com/howardabrams/node-mocks-http)
+
 ## Getting Started
 
 First, run the development server:
