@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             Int       @id @default(autoincrement())
+  name           String
+  email          String    @unique
+  hashedPassword String
+  profilePicture String?
+  posts          Post[]
+  friendsAsUser1 Friend[]  @relation("UserToFriend1")
+  friendsAsUser2 Friend[]  @relation("UserToFriend2")
+  comments       Comment[]
+  likes          Like[]
+}
+
+model Friend {
+  id      Int             @id @default(autoincrement())
+  user1   User            @relation("UserToFriend1", fields: [user1Id], references: [id])
+  user1Id Int
+  user2   User            @relation("UserToFriend2", fields: [user2Id], references: [id])
+  user2Id Int
+  status  FriendshipStatus
+}
+
+model Post {
+  id        Int       @id @default(autoincrement())
+  content   String
+  imageUrl  String?
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  Int
+  comments  Comment[]
+  likes     Like[]
+  createdAt DateTime  @default(now())
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  createdAt DateTime @default(now())
+}
+
+model Like {
+  id        Int      @id @default(autoincrement())
+  author    User     @relation(fields: [authorId], references: [id])
+  authorId  Int
+  post      Post     @relation(fields: [postId], references: [id])
+  postId    Int
+  createdAt DateTime @default(now())
+}
+
+enum FriendshipStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  BLOCKED
+}
