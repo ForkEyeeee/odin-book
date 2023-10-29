@@ -1,8 +1,23 @@
 import { PrismaClient } from "@prisma/client";
 import GoogleProvider from "next-auth/providers/google";
 import type { AuthOptions } from "next-auth";
+import { User } from "@/app/lib/definitions";
+import type { Session } from "next-auth";
 
 const prisma = new PrismaClient();
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      name?: string | null;
+      email?: string | null;
+      image?: string | null;
+      id: number;
+      hashedPassword?: string;
+      profilePicture?: string;
+    };
+  }
+}
 
 export const authOptions: AuthOptions = {
   providers: [
@@ -38,7 +53,15 @@ export const authOptions: AuthOptions = {
         return false;
       }
     },
-    async session({ session, token, user }) {
+    async session({
+      session,
+      token,
+      user,
+    }: {
+      session: Session;
+      token: any;
+      user: any;
+    }) {
       const dbUser = await prisma.user.findUnique({
         where: { googleId: token.sub },
       });

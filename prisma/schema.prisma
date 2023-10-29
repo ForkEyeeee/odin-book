@@ -2,23 +2,29 @@ generator client {
   provider = "prisma-client-js"
 }
 
+generator custom_generator {
+    provider = "prisma-generator-fake-data"
+    output   = "../types/fake-data.ts"
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  googleId       String    @unique
+  id             Int           @id @default(autoincrement())
+  googleId       String        @unique
   name           String
-  email          String    @unique
+  email          String        @unique
   hashedPassword String
   profilePicture String?
   posts          Post[]
-  friendsAsUser1 Friend[]  @relation("UserToFriend1")
-  friendsAsUser2 Friend[]  @relation("UserToFriend2")
+  friendsAsUser1 Friend[]      @relation("UserToFriend1")
+  friendsAsUser2 Friend[]      @relation("UserToFriend2")
   comments       Comment[]
-  likes          Like[]
+  postLikes      PostLike[]   
+  commentLikes   CommentLike[]
 }
 
 model Friend {
@@ -37,13 +43,23 @@ model Post {
   author    User      @relation(fields: [authorId], references: [id])
   authorId  Int
   comments  Comment[]
-  likes     Like[]
+  likes     PostLike[] 
   createdAt DateTime  @default(now())
 }
 
 model Comment {
+  id           Int          @id @default(autoincrement())
+  content      String
+  author       User         @relation(fields: [authorId], references: [id])
+  authorId     Int
+  post         Post         @relation(fields: [postId], references: [id])
+  postId       Int
+  createdAt    DateTime     @default(now())
+  commentLikes CommentLike[]
+}
+
+model PostLike {
   id        Int      @id @default(autoincrement())
-  content   String
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
   post      Post     @relation(fields: [postId], references: [id])
@@ -51,12 +67,12 @@ model Comment {
   createdAt DateTime @default(now())
 }
 
-model Like {
+model CommentLike {
   id        Int      @id @default(autoincrement())
   author    User     @relation(fields: [authorId], references: [id])
   authorId  Int
-  post      Post     @relation(fields: [postId], references: [id])
-  postId    Int
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId Int
   createdAt DateTime @default(now())
 }
 
