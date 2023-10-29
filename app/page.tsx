@@ -1,17 +1,27 @@
-import { getServerSession } from "next-auth/next";
-import { authOptions } from "./api/auth/[...nextauth]/authOptions";
-import prisma from "@/prisma/prisma";
-import { User } from "./lib/definitions";
-import { Session } from "next-auth";
+//root page.tsx
+"use client";
+import { useEffect, useState } from "react";
+import { getTimeline } from "./lib/actions";
+import { Post } from "./lib/definitions";
+import { Text } from "@chakra-ui/react";
 
-export default async function Page() {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user.id;
-
-  const userPosts = await prisma.post.findMany({
-    where: {
-      id: userId,
-    },
-  });
-  console.log(userPosts);
+export default function Page() {
+  const [timeLinePosts, settimeLinePosts] = useState<Post[]>([]);
+  useEffect(() => {
+    async function getData() {
+      const posts = await getTimeline();
+      if (posts) {
+        settimeLinePosts(posts);
+      }
+    }
+    getData();
+  }, []);
+  console.log(timeLinePosts);
+  return (
+    <>
+      {timeLinePosts.map((post) => (
+        <Text key={post.id}>{post.content}</Text>
+      ))}
+    </>
+  );
 }

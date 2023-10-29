@@ -9,3 +9,11 @@ export interface User {
   hashedPassword: string;
   profilePicture: string;
 }
+
+export interface Post {
+  id: number;
+  content: string;
+  imageUrl: string | null;
+  authorId: number;
+  createdAt: Date;
+}
