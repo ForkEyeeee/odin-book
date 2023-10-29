@@ -1,20 +1,8 @@
-import { Prisma, PrismaClient } from "@prisma/client";
-import { getServerSession } from "next-auth";
-import { getSession } from "next-auth/react";
-const prisma = new PrismaClient();
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "./api/auth/[...nextauth]/authOptions";
 
 export default async function Page() {
-  const session = await getServerSession();
-  // const userId = session?.user?.id;
+  const session = await getServerSession(authOptions);
   console.log(session);
-  // if (userId) {
-  //   const users = await prisma.post.find({
-  //     where: {
-  //       Id: userId, //
-  //     },
-  //   });
-  //   // console.log(users);
-  // }
-
-  return <div></div>;
+  // return <pre></pre>;
 }
