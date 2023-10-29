@@ -14,7 +14,6 @@ const handler = NextAuth({
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
-        console.log("About to sign in:", user);
         const existingUser = await prisma.user.findUnique({
           where: {
             googleId: user.id,
@@ -32,13 +31,28 @@ const handler = NextAuth({
               googleId: user.id,
             },
           });
-          console.log("New User:", newUser);
           return true; // sign-in was successful
         }
       } catch (error) {
         console.error("An error occurred during sign-in:", error);
         return false; // sign-in failed
       }
+    },
+    async session({ session, token, user }) {
+      const dbUser = await prisma.user.findUnique({
+        where: { googleId: token.sub },
+      });
+
+      if (dbUser) {
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            id: dbUser.id,
+          },
+        };
+      }
+      return session;
     },
   },
 });

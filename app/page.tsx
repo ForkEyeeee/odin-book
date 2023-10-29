@@ -1,39 +1,20 @@
-async function getData() {
-  const res = await fetch("http://localhost:3000/api");
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
-  if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
-    throw new Error("Failed to fetch data");
-  }
-  return res.json();
-}
+import { Prisma, PrismaClient } from "@prisma/client";
+import { getServerSession } from "next-auth";
+import { getSession } from "next-auth/react";
+const prisma = new PrismaClient();
 
 export default async function Page() {
-  const data = await getData();
-  // console.log(data);
-  // {data &&
-  //   data.map((users: User) => (
-  //     <Message
-  //       justifyContent={
-  //         message.sender !== parseJwt(token).user._id
-  //           ? "flex-start"
-  //           : "flex-end"
-  //       }
-  //       backGround={
-  //         message.sender !== parseJwt(token).user._id
-  //           ? "white"
-  //           : "blue.400"
-  //       }
-  //       color={
-  //         message.sender !== parseJwt(token).user._id
-  //           ? "black"
-  //           : "white"
-  //       }
-  //       popOverPlacement={
-  //         message.sender !== parseJwt(token).user._id
-  //           ? "right"
-  //           : "left"
-  //       }
-  return <main></main>;
+  const session = await getServerSession();
+  // const userId = session?.user?.id;
+  console.log(session);
+  // if (userId) {
+  //   const users = await prisma.post.find({
+  //     where: {
+  //       Id: userId, //
+  //     },
+  //   });
+  //   // console.log(users);
+  // }
+
+  return <div></div>;
 }
