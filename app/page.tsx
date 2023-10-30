@@ -1,27 +1,38 @@
-//root page.tsx
-"use client";
-import { useEffect, useState } from "react";
-import { getTimeline } from "./lib/actions";
-import { Post } from "./lib/definitions";
-import { Text } from "@chakra-ui/react";
+import { getServerSession } from 'next-auth';
+import { authOptions } from './api/auth/[...nextauth]/authOptions';
+import HomePage from './components/HomePage';
+import prisma from './lib/prisma';
+import { NextResponse } from 'next/server';
+import { Post } from './lib/definitions';
 
-export default function Page() {
-  const [timeLinePosts, settimeLinePosts] = useState<Post[]>([]);
-  useEffect(() => {
-    async function getData() {
-      const posts = await getTimeline();
-      if (posts) {
-        settimeLinePosts(posts);
-      }
-    }
-    getData();
-  }, []);
-  console.log(timeLinePosts);
-  return (
-    <>
-      {timeLinePosts.map((post) => (
-        <Text key={post.id}>{post.content}</Text>
-      ))}
-    </>
-  );
+export default async function Page() {
+  try {
+    const session = await getServerSession(authOptions);
+
+    const userId = session?.user.id;
+    if (userId === undefined) return NextResponse.json({ error: 'Unable to find user' });
+
+    const userFriends = await prisma.friend.findMany({
+      where: {
+        user1Id: userId,
+      },
+    });
+    const userfriendIds = userFriends.map(friend => friend.user2Id);
+
+    const timelinePosts: Post[] = await prisma.post.findMany({
+      where: {
+        authorId: {
+          in: [userId, ...userfriendIds],
+        },
+      },
+    });
+
+    return (
+      <main>
+        <HomePage data={timelinePosts} />;
+      </main>
+    );
+  } catch (error) {
+    return NextResponse.error();
+  }
 }

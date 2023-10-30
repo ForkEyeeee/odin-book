@@ -1,6 +1,17 @@
-// pages/index.js
+import { Post } from '../lib/definitions';
 
-export default function HomePage() {
-  // You can incorporate this part with your existing Home component logic
-  return <div></div>;
+interface HomePageProps {
+  data: Post[];
 }
+
+function HomePage({ data }: HomePageProps) {
+  return (
+    <div>
+      {data.map(post => (
+        <p key={post.id}>{post.content}</p>
+      ))}
+    </div>
+  );
+}
+
+export default HomePage;

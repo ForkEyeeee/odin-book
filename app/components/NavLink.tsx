@@ -1,6 +1,6 @@
-import { Box } from "@chakra-ui/react";
-import { useColorModeValue } from "@chakra-ui/react";
-import { Props } from "../lib/definitions";
+import { Box } from '@chakra-ui/react';
+import { useColorModeValue } from '@chakra-ui/react';
+import { Props } from '../lib/definitions';
 
 const NavLink = (props: Props) => {
   const { children } = props;
@@ -10,12 +10,12 @@ const NavLink = (props: Props) => {
       as="a"
       px={2}
       py={1}
-      rounded={"md"}
+      rounded={'md'}
       _hover={{
-        textDecoration: "none",
-        bg: useColorModeValue("gray.200", "gray.700"),
+        textDecoration: 'none',
+        bg: useColorModeValue('gray.200', 'gray.700'),
       }}
-      href={"#"}
+      href={'#'}
     >
       {children}
     </Box>
