@@ -27,9 +27,19 @@ export default async function Page() {
       },
     });
 
+    const otherTimeLinePosts: Post[] = await prisma.post.findMany({
+      where: {
+        authorId: {
+          not: {
+            in: [userId, ...userfriendIds],
+          },
+        },
+      },
+    });
+
     return (
       <main>
-        <HomePage data={timelinePosts} />;
+        <HomePage data={timelinePosts} otherData={otherTimeLinePosts} />;
       </main>
     );
   } catch (error) {
