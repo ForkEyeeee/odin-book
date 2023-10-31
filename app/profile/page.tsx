@@ -8,7 +8,7 @@ const initialState = {
 };
 
 export default function Page() {
-  const [state, formAction] = useFormState(updateProfile, initialState); //state is what it returns
+  const [state, formAction] = useFormState(updateProfile, initialState); //state is what it returns from return in the serve raction
 
   return (
     <form action={formAction}>

@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import TimeLineTabs from '@/app/components/TimeLineTabs';
 
 describe('Home', () => {
-  it('renders a heading', () => {
+  it('renders a heading', async () => {
     const timelinePosts = [
       {
         id: 219,
@@ -24,6 +24,7 @@ describe('Home', () => {
       },
     ];
     render(<HomePage data={timelinePosts} otherData={otherTimeLinePosts} />);
+    screen.debug();
     expect(screen.getByText('Main Content Here')).toBeVisible();
   });
 });

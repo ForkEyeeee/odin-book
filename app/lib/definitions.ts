@@ -23,4 +23,21 @@ export interface Post {
 export interface HomePageProps {
   data: Post[];
   otherData: Post[];
+  name: string;
+  email: string;
+  profilePicture: string;
+}
+
+export interface UserPostProps {
+  post: Post;
+  name: string;
+  email: string;
+  profilePicture: string;
+}
+
+export interface UserSession {
+  name: string;
+  email: string;
+  image: string;
+  id: number;
 }

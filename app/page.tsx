@@ -1,3 +1,4 @@
+'use server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/authOptions';
 import HomePage from './components/HomePage';
@@ -8,8 +9,8 @@ import { Post } from './lib/definitions';
 export default async function Page() {
   try {
     const session = await getServerSession(authOptions);
-
     const userId = session?.user.id;
+
     if (userId === undefined) return NextResponse.json({ error: 'Unable to find user' });
 
     const userFriends = await prisma.friend.findMany({
