@@ -4,6 +4,7 @@ import TimeLineTabs from './TimeLineTabs';
 
 interface HomePageProps {
   data: Post[];
+  otherData: Post[];
 }
 
 function HomePage({ data, otherData }: HomePageProps) {

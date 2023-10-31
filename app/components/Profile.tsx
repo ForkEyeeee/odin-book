@@ -19,12 +19,12 @@ export default function Profile() {
       <FormControl id="bio">
         <FormLabel htmlFor="bio">Bio</FormLabel>
         <Textarea id="bio" name="bio" />
-        <FormHelperText>We'll never share your bio with anyone.</FormHelperText>
-      </FormControl>{' '}
+        <FormHelperText>Tell us about yourself</FormHelperText>
+      </FormControl>
       <FormControl id="dateOfBirth">
         <FormLabel htmlFor="dateOfBirth">Date of Birth</FormLabel>
         <Input id="dateOfBirth" name="dateOfBirth" type="date" required={false} />
-        <FormHelperText>We'll never share your date of birth.</FormHelperText>
+        <FormHelperText>When were you born?</FormHelperText>
       </FormControl>{' '}
       <FormControl id="gender">
         <FormLabel htmlFor="gender">Gender</FormLabel>
@@ -35,7 +35,6 @@ export default function Profile() {
             <Radio value="other">Other</Radio>
           </Stack>
         </RadioGroup>
-        <FormHelperText>We'll never share your gender.</FormHelperText>
       </FormControl>
     </>
   );

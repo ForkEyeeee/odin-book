@@ -23,8 +23,7 @@ describe('Home', () => {
         createdAt: new Date(),
       },
     ];
-    render(<HomePage data={data} otherData={otherData} />);
-    render(<TimeLineTabs />);
+    render(<HomePage data={data} otherData={otherData}></HomePage>);
     expect(screen.getByText('This is a detailed post by User 1, post number 1.')).toBeVisible();
     expect(screen.getByText('This is a detailed post by User 2, post number 1.')).toBeVisible();
   });

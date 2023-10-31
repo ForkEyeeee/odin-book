@@ -1,7 +1,8 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { UserPost } from './UserPost';
+import { HomePageProps } from '../lib/definitions';
 
-const TimeLineTabs = ({ data, otherData }) => {
+const TimeLineTabs = ({ data, otherData }: HomePageProps) => {
   return (
     <Tabs isFitted variant="enclosed">
       <TabList mb="1em">

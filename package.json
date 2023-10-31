@@ -22,7 +22,8 @@
     "next-auth": "^4.24.4",
     "node-mocks-http": "^1.13.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^6.1.4",

@@ -4,13 +4,15 @@ import prisma from '../lib/prisma';
 import { ChatIcon } from '@chakra-ui/icons';
 import { User } from '../lib/definitions';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { Post } from '../lib/definitions';
 
-export async function UserPost({ post }) {
-  const { name, email, profilePicture }: User = await prisma.user.findUnique({
+export async function UserPost({ post }: { post: Post }) {
+  const { name, email, profilePicture } = (await prisma.user.findUnique({
     where: {
       id: post.authorId,
     },
-  });
+  }))!;
+
   return (
     <Box borderWidth="1px" borderRadius="md" padding="20px" width="500px" boxShadow="md">
       <Flex>

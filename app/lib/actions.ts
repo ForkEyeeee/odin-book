@@ -1,42 +1,48 @@
 'use server';
+import { z } from 'zod';
 import { getServerSession } from 'next-auth';
 import prisma from './prisma';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
-import { getServerActionSession } from './getServerActionSession';
+import { NextResponse } from 'next/server';
+import { User } from './definitions';
+
+const ProfileSchema = z.object({
+  bio: z.string().optional(),
+  gender: z.string().optional(),
+  dateOfBirth: z.string().optional(),
+});
 
 export async function updateProfile(prevState: any, formData: FormData) {
-  // const schema = z.object({
-  //   todo: z.string().min(1),
-  // });
-  // const data = schema.parse({
-  //   todo: formData.get('todo'),
-  // });
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
 
-    const profileData = {
+    const form = {
       bio: formData.get('bio'),
       gender: formData.get('gender'),
       dateOfBirth: formData.get('dateOfBirth'),
     };
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId,
-      },
-    });
-    const formDate: string | number | Date = formData.get('dateOfBirth');
-    const dateObj = new Date(formDate);
+    const parsedData = ProfileSchema.parse(form);
+
+    const dateObj = new Date(parsedData.dateOfBirth ?? '');
     const isoString = dateObj.toISOString();
+
     const userProfile = {
-      bio: formData.get('bio'),
-      gender: formData.get('gender'),
+      bio: parsedData.bio,
+      gender: parsedData.gender,
       dateOfBirth: isoString,
       userId: userId,
     };
-    if (user.profileId === null) {
-      console.log('here');
 
+    const user = (await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    })) as User | null;
+
+    if (user === null) return NextResponse.json({ message: 'Unable to find user' });
+
+    if (user.profileId === null) {
       let createUser = await prisma.profile.create({ data: userProfile });
       const updateUser = await prisma.user.update({
         where: {
@@ -52,17 +58,12 @@ export async function updateProfile(prevState: any, formData: FormData) {
         where: {
           userId: userId,
         },
-        data: {
-          bio: formData.get('bio'),
-          gender: formData.get('gender'),
-          dateOfBirth: isoString,
-          userId: userId,
-        },
+        data: userProfile,
       });
     }
 
     // revalidatePath('/');
-    return { message: `Added todo` };
+    return { message: `Profile updated`, profile: updateProfile };
   } catch (e) {
     return console.error(e);
   }

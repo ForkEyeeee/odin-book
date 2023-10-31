@@ -7,7 +7,9 @@ export interface User {
   name: string;
   email: string;
   hashedPassword: string;
-  profilePicture: string;
+  googleId: string;
+  profileId: number | null;
+  profilePicture: string | null;
 }
 
 export interface Post {
@@ -16,4 +18,9 @@ export interface Post {
   imageUrl: string | null;
   authorId: number;
   createdAt: Date;
+}
+
+export interface HomePageProps {
+  data: Post[];
+  otherData: Post[];
 }
