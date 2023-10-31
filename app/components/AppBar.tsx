@@ -64,7 +64,7 @@ function AppBar() {
                 </MenuButton>
                 <MenuList>
                   <MenuItem color={'black'}>
-                    <Link href={'/'}>Profile</Link>
+                    <Link href={'/profile'}>Profile</Link>
 
                     {/* <Button onClick={() => signOut()}>Logout</Button> */}
                   </MenuItem>

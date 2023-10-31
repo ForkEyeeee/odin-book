@@ -13,6 +13,8 @@ model User {
   name           String
   email          String        @unique
   hashedPassword String
+  profileId      Int?          @unique
+  profile        Profile?      @relation(fields: [profileId], references: [id]) 
   profilePicture String?
   posts          Post[]
   friendsAsUser1 Friend[]      @relation("UserToFriend1")
@@ -21,6 +23,16 @@ model User {
   postLikes      PostLike[]   
   commentLikes   CommentLike[]
 }
+
+model Profile {
+  id             Int     @id @default(autoincrement())
+  bio            String? 
+  dateOfBirth    DateTime?
+  gender         String?
+  userId         Int?          @unique
+  user           User?  
+}
+
 
 model Friend {
   id      Int             @id @default(autoincrement())

@@ -6,16 +6,15 @@ import { User } from '../lib/definitions';
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 
 export async function UserPost({ post }) {
-  const { name, email }: User = await prisma.user.findUnique({
+  const { name, email, profilePicture }: User = await prisma.user.findUnique({
     where: {
       id: post.authorId,
     },
   });
-  console.log(name);
   return (
     <Box borderWidth="1px" borderRadius="md" padding="20px" width="500px" boxShadow="md">
       <Flex>
-        <Avatar size="md" name="John Doe" src="https://bit.ly/broken-link" />
+        <Avatar size="md" name="John Doe" src={`${profilePicture}`} />
         <Box ml="4">
           <Text fontWeight="bold">{name}</Text>
           <Text color="gray.500"> {email}</Text>

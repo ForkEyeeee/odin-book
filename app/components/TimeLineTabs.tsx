@@ -10,16 +10,14 @@ const TimeLineTabs = ({ data, otherData }) => {
       </TabList>
       <TabPanels>
         <TabPanel>
-          {' '}
           {data.map(post => (
             <UserPost key={post.id} post={post}></UserPost>
-          ))}{' '}
+          ))}
         </TabPanel>
         <TabPanel>
-          {' '}
           {otherData.map(post => (
             <UserPost key={post.id} post={post}></UserPost>
-          ))}{' '}
+          ))}
         </TabPanel>
       </TabPanels>
     </Tabs>
