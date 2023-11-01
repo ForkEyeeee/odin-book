@@ -8,6 +8,7 @@ export async function TimeLineTabs({
   name,
   email,
   profilePicture,
+  userId,
 }: HomePageProps) {
   return (
     <Tabs isFitted variant="enclosed">
@@ -24,6 +25,7 @@ export async function TimeLineTabs({
               name={name}
               email={email}
               profilePicture={profilePicture}
+              userId={userId}
             ></UserPost>
           ))}
         </TabPanel>
@@ -35,6 +37,7 @@ export async function TimeLineTabs({
               name={name}
               email={email}
               profilePicture={profilePicture}
+              userId={userId}
             ></UserPost>
           ))}
         </TabPanel>

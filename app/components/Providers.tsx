@@ -1,3 +1,4 @@
+'use client';
 import React, { ReactNode } from 'react';
 import { SessionProvider } from 'next-auth/react';
 import { CacheProvider } from '@chakra-ui/next-js';
@@ -20,10 +21,6 @@ const breakPoints = {
 export const theme = extendTheme({ breakPoints });
 
 const Providers = (props: Props) => {
-  console.log('SessionProvider:', SessionProvider);
-  console.log('CacheProvider:', CacheProvider);
-  console.log('ChakraProvider:', ChakraProvider);
-  console.log('extendTheme:', extendTheme);
   return (
     <SessionProvider>
       <CacheProvider>

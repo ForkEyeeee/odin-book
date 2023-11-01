@@ -1,4 +1,3 @@
-'use client';
 import { Post } from '../lib/definitions';
 import TimeLineTabs from './TimeLineTabs';
 import { getServerSession } from 'next-auth';
@@ -12,9 +11,15 @@ interface HomePageProps {
 export async function HomePage({ data, otherData }: HomePageProps) {
   const session = await getServerSession(authOptions);
 
+  if (session === undefined) {
+    throw new Error('session is undefined');
+  }
+
+  const userId = session?.user.id!;
+
   const { name, email, profilePicture } = (await prisma.user.findUnique({
     where: {
-      id: session?.user.id,
+      id: userId,
     },
   }))!;
 
@@ -27,6 +32,7 @@ export async function HomePage({ data, otherData }: HomePageProps) {
         name={name}
         email={email}
         profilePicture={profilePicture}
+        userId={userId}
       />
     </div>
   );

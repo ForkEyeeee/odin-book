@@ -26,6 +26,7 @@ export interface HomePageProps {
   name: string;
   email: string;
   profilePicture: string;
+  userId: number;
 }
 
 export interface UserPostProps {
@@ -33,6 +34,7 @@ export interface UserPostProps {
   name: string;
   email: string;
   profilePicture: string;
+  userId: number;
 }
 
 export interface UserSession {
