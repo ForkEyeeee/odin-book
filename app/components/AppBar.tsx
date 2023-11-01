@@ -25,7 +25,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 const Links = ['Friends', 'Messages', 'Post'];
 
-function AppBar() {
+export default function AppBar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const session = useSession();
   const pathSegment = usePathname();
@@ -106,5 +106,3 @@ function AppBar() {
 //     </header>
 //   );
 // };
-
-export default AppBar;

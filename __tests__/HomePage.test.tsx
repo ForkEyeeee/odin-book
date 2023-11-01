@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
 import HomePage from '@/app/components/HomePage';
-import '@testing-library/jest-dom';
 import TimeLineTabs from '@/app/components/TimeLineTabs';
 
 describe('Home', () => {
