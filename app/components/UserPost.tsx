@@ -1,9 +1,4 @@
-import React from 'react';
 import { Box, Text, Flex, Avatar, Spacer, IconButton, HStack } from '@chakra-ui/react';
-import prisma from '../lib/prisma';
-import { ChatIcon } from '@chakra-ui/icons';
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import { Post, User } from '../lib/definitions';
 import { UserPostProps } from '../lib/definitions';
 
 export async function UserPost({ post, name, email, profilePicture }: UserPostProps) {

@@ -1,17 +1,14 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
 import { UserPost } from './UserPost';
 import { HomePageProps } from '../lib/definitions';
-import prisma from '../lib/prisma';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/authOptions';
-import { UserSession } from '../lib/definitions';
-import { User } from '../lib/definitions';
 
-export async function TimeLineTabs(
-  { data, otherData, name, email, profilePicture }: HomePageProps,
-  user: User
-) {
-  console.log(name);
+export async function TimeLineTabs({
+  data,
+  otherData,
+  name,
+  email,
+  profilePicture,
+}: HomePageProps) {
   return (
     <Tabs isFitted variant="enclosed">
       <TabList mb="1em">

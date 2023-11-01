@@ -4,7 +4,7 @@ import { authOptions } from './api/auth/[...nextauth]/authOptions';
 import HomePage from './components/HomePage';
 import prisma from './lib/prisma';
 import { NextResponse } from 'next/server';
-import { Post } from './lib/definitions';
+import { Post, Friend } from './lib/definitions';
 
 export default async function Page() {
   try {
@@ -18,7 +18,7 @@ export default async function Page() {
         user1Id: userId,
       },
     });
-    const userfriendIds = userFriends.map(friend => friend.user2Id);
+    const userfriendIds = userFriends.map((friend: Friend) => friend.user2Id);
 
     const timelinePosts: Post[] = await prisma.post.findMany({
       where: {
