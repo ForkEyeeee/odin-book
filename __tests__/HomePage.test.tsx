@@ -1,8 +1,9 @@
 import { render, screen } from '@testing-library/react';
 import HomePage from '@/app/components/HomePage';
+import TimeLineTabs from '@/app/components/TimeLineTabs';
 
 describe('Home', () => {
-  it('should have Docs text', () => {
+  it('renders a heading', async () => {
     const timelinePosts = [
       {
         id: 219,
@@ -21,10 +22,8 @@ describe('Home', () => {
         createdAt: new Date(),
       },
     ];
-    render(<HomePage data={timelinePosts} otherData={otherTimeLinePosts} />); // ARRANGE
-
-    const myElem = screen.getByText('Home'); // ACT
-
-    expect(myElem).toBeInTheDocument(); // ASSERT
+    render(<HomePage data={timelinePosts} otherData={otherTimeLinePosts} />);
+    screen.debug();
+    expect(screen.getByText('Main Content Here')).toBeVisible();
   });
 });

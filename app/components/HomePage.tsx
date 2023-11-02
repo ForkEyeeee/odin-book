@@ -1,8 +1,10 @@
 import { Post } from '../lib/definitions';
+import { UserPost } from './UserPost';
 import TimeLineTabs from './TimeLineTabs';
+import { Text } from '@chakra-ui/react';
+import { User } from '../lib/definitions';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
-import { Text } from '@chakra-ui/react';
 
 interface HomePageProps {
   data: Post[];
@@ -10,22 +12,16 @@ interface HomePageProps {
 }
 export async function HomePage({ data, otherData }: HomePageProps) {
   const session = await getServerSession(authOptions);
-
-  if (session === undefined) {
-    throw new Error('session is undefined');
-  }
-
   const userId = session?.user.id!;
 
   const { name, email, profilePicture } = (await prisma.user.findUnique({
     where: {
-      id: userId,
+      id: session?.user.id,
     },
   }))!;
 
   return (
     <div>
-      <Text>Home</Text>
       <TimeLineTabs
         data={data}
         otherData={otherData}

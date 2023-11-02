@@ -5,7 +5,7 @@ import prisma from './prisma';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
 import { User } from './definitions';
-
+import { revalidatePath } from 'next/cache';
 const ProfileSchema = z.object({
   bio: z.string().optional(),
   gender: z.string().optional(),
@@ -52,7 +52,6 @@ export async function updateProfile(prevState: any, formData: FormData) {
           profileId: createUser.id,
         },
       });
-      console.log(updateUser);
     } else {
       const updateProfile = await prisma.profile.update({
         where: {
@@ -62,9 +61,18 @@ export async function updateProfile(prevState: any, formData: FormData) {
       });
     }
 
-    // revalidatePath('/');
+    revalidatePath('/profile');
     return { message: `Profile updated`, profile: updateProfile };
   } catch (e) {
     return console.error(e);
   }
+}
+
+export async function getProfile(userId: number) {
+  const userProfile = prisma.profile.findUnique({
+    where: {
+      userId: userId,
+    },
+  });
+  return userProfile;
 }

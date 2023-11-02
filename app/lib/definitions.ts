@@ -50,3 +50,11 @@ export interface Friend {
   user2Id: number;
   status: string;
 }
+
+export interface ProfileProps {
+  id: number;
+  bio: string;
+  dateOfBirth: string;
+  gender: string;
+  userId: number;
+}

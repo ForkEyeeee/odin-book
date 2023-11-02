@@ -1,4 +1,3 @@
-'use server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/authOptions';
 import HomePage from './components/HomePage';
