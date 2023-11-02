@@ -76,3 +76,29 @@ export async function getProfile(userId: number) {
   });
   return userProfile;
 }
+
+export async function getFriends() {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
+
+  const userFriends = await prisma.friend.findMany({
+    where: {
+      user1Id: userId,
+    },
+  });
+
+  const friendIds = userFriends.map(friend => {
+    return friend.user2Id;
+  });
+  console.log(friendIds);
+
+  const friends = await prisma.user.findMany({
+    where: {
+      id: {
+        in: friendIds,
+      },
+    },
+  });
+  console.log(friends);
+  return friends;
+}

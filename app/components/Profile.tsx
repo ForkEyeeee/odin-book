@@ -14,14 +14,20 @@ import { Box, Text, VStack } from '@chakra-ui/react';
 import { ProfileProps } from '../lib/definitions';
 import { Switch } from '@chakra-ui/react';
 
-export default function Profile({ profile }, formState) {
+export default function Profile({ profile, formState }) {
   const [value, setValue] = useState('1');
   const [isEdit, setIsEdit] = useState(false);
+
+  useEffect(() => {
+    if (formState.message !== null) setIsEdit(false);
+  }, [formState]);
+
   if (profile === undefined) return;
+
   const dateTimeString = '2023-12-02T04:01:07.818Z';
   const dateString = dateTimeString.split('T')[0];
-  console.log(formState);
 
+  console.log(formState);
   return (
     <>
       <FormControl display="flex" alignItems="center">
