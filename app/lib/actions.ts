@@ -117,15 +117,76 @@ export async function getUsers() {
 }
 
 export async function searchUsers(query) {
-  console.log('query is' + query);
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
   const users = await prisma.user.findMany({
     where: {
       name: {
         contains: query,
         mode: 'insensitive',
       },
+      AND: {
+        id: {
+          not: userId,
+        },
+      },
     },
   });
   // console.log(users);
   return users;
+}
+
+export async function addFriend(friendUserId) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+
+    // const user = await prisma.user.findUnique({
+    //   id: userId,
+    // });
+    const friendToCreate = {
+      user1Id: userId,
+      user2Id: friendUserId,
+      status: 'ACCEPTED',
+    };
+    const existingFriend = await prisma.friend.findFirst({
+      where: {
+        user1Id: userId,
+        user2Id: friendUserId,
+      },
+    });
+
+    if (existingFriend !== null) throw new Error('Friend Already Added');
+
+    let updateFriends = await prisma.friend.create({ data: friendToCreate });
+    return updateFriends;
+  } catch (error) {
+    return console.error(error);
+  }
+
+  // const friend = await prisma.user.findUnique({
+  //   id: friendUserId,
+  // });
+}
+
+export async function removeFriend(userFriendId) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+
+    const friend = await prisma.friend.findFirst({
+      where: {
+        AND: [{ user1Id: userId }, { user2Id: userFriendId }],
+      },
+    });
+
+    const deleteFriend = await prisma.friend.delete({
+      where: {
+        id: friend.id,
+      },
+    });
+    return deleteFriend;
+  } catch (error) {
+    console.error(error);
+  }
 }

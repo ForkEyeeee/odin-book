@@ -35,13 +35,16 @@ model Profile {
 
 
 model Friend {
-  id      Int             @id @default(autoincrement())
-  user1   User            @relation("UserToFriend1", fields: [user1Id], references: [id])
+  id      Int               @id @default(autoincrement())
+  user1   User              @relation("UserToFriend1", fields: [user1Id], references: [id])
   user1Id Int
-  user2   User            @relation("UserToFriend2", fields: [user2Id], references: [id])
+  user2   User              @relation("UserToFriend2", fields: [user2Id], references: [id])
   user2Id Int
   status  FriendshipStatus
+
+  @@unique([user1Id, user2Id])
 }
+
 
 model Post {
   id        Int       @id @default(autoincrement())
