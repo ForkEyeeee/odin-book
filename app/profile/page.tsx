@@ -1,13 +1,12 @@
 'use client';
 import Profile from '../components/Profile';
-import { useFormStatus, useFormState } from 'react-dom';
+import { useFormState } from 'react-dom';
 import { updateProfile } from '../lib/actions';
-import prisma from '../lib/prisma';
-import { SessionProvider, getSession } from 'next-auth/react';
-import { serverComponent } from '../lib/actions';
+import { getSession } from 'next-auth/react';
 import { getProfile } from '../lib/actions';
 import { useEffect, useState } from 'react';
 import { ProfileProps } from '../lib/definitions';
+
 const initialState = {
   message: null,
 };
@@ -20,7 +19,6 @@ export default function Page() {
     async function fetchData() {
       const session = await getSession();
       if (session === null) return;
-
       setSession(session);
       const profile = await getProfile(session?.user.id);
       if (profile === null) return;

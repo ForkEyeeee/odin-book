@@ -75,7 +75,7 @@ export default function AppBar() {
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem color={'black'}>
-                    <Link href={`${pathSegment}api/auth/signout`}>Logout</Link>
+                    <Link href={`api/auth/signout`}>Logout</Link>
                   </MenuItem>
                 </MenuList>
               </Menu>

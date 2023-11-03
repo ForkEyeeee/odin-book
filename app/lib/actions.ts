@@ -4,41 +4,45 @@ import { getServerSession } from 'next-auth';
 import prisma from './prisma';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
-import { User } from './definitions';
 import { revalidatePath } from 'next/cache';
-const ProfileSchema = z.object({
-  bio: z.string().optional(),
-  gender: z.string().optional(),
-  dateOfBirth: z.string().optional(),
-});
 
 export async function updateProfile(prevState: any, formData: FormData) {
+  const ProfileSchema = z.object({
+    bio: z.string().optional(),
+    gender: z.string().optional(),
+    dateOfBirth: z.string().optional(),
+  });
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
+    let profile;
 
     const form = {
       bio: formData.get('bio'),
       gender: formData.get('gender'),
       dateOfBirth: formData.get('dateOfBirth'),
     };
-    const parsedData = ProfileSchema.parse(form);
 
-    const dateObj = new Date(parsedData.dateOfBirth ?? '');
-    const isoString = dateObj.toISOString();
+    const { bio, dateOfBirth, gender } = prevState.profile;
+    if (bio === form.bio && gender === form.gender && dateOfBirth === form.dateOfBirth)
+      return { message: `Profile updated`, profile: form };
+
+    const parsedForm = ProfileSchema.parse(form);
+    const parsedDateOfBirth = new Date(parsedForm.dateOfBirth ?? '');
+    const isoDateString = parsedDateOfBirth.toISOString();
 
     const userProfile = {
-      bio: parsedData.bio,
-      gender: parsedData.gender,
-      dateOfBirth: isoString,
+      bio: parsedForm.bio,
+      gender: parsedForm.gender,
+      dateOfBirth: isoDateString,
       userId: userId,
     };
 
-    const user = (await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: {
         id: userId,
       },
-    })) as User | null;
+    });
 
     if (user === null) return NextResponse.json({ message: 'Unable to find user' });
 
@@ -52,6 +56,7 @@ export async function updateProfile(prevState: any, formData: FormData) {
           profileId: createUser.id,
         },
       });
+      profile = updateUser;
     } else {
       const updateProfile = await prisma.profile.update({
         where: {
@@ -59,10 +64,11 @@ export async function updateProfile(prevState: any, formData: FormData) {
         },
         data: userProfile,
       });
+      profile = updateProfile;
     }
 
     revalidatePath('/profile');
-    return { message: `Profile updated`, profile: updateProfile };
+    return { message: `Profile updated`, profile: profile };
   } catch (e) {
     return console.error(e);
   }
@@ -98,7 +104,7 @@ export async function getFriends() {
       },
     },
   });
-  return friends;
+  return { friends, userFriends };
 }
 
 export async function getUsers() {
@@ -147,7 +153,7 @@ export async function addFriend(friendUserId) {
     const friendToCreate = {
       user1Id: userId,
       user2Id: friendUserId,
-      status: 'ACCEPTED',
+      status: 'PENDING',
     };
     const existingFriend = await prisma.friend.findFirst({
       where: {
@@ -186,6 +192,29 @@ export async function removeFriend(userFriendId) {
       },
     });
     return deleteFriend;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function acceptFriend({ userFriendId }) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    const friend = {
+      user1Id: userId,
+      user2Id: userFriendId,
+      status: 'ACCEPTED',
+    };
+
+    const updateFriend = await prisma.friend.update({
+      where: {
+        user1Id: userId,
+        user2Id: userFriendId,
+      },
+      data: friend,
+    });
+    return updateFriend;
   } catch (error) {
     console.error(error);
   }

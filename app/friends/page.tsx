@@ -10,11 +10,12 @@ import Link from 'next/link';
 
 export default async function Page() {
   try {
-    const friends = await getFriends();
+    const friends = (await getFriends()).userFriends;
+    const users = (await getFriends()).friends;
     return (
       <main>
         <Link href={'/friends/addfriend'}>Add Friends</Link>
-        <FriendsList friends={friends} />
+        <FriendsList friends={friends} users={users} />
       </main>
     );
   } catch (error) {

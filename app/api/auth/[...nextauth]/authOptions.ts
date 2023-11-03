@@ -41,9 +41,11 @@ export const authOptions: AuthOptions = {
               hashedPassword: '',
               profilePicture: user.image,
               googleId: user.id,
+              profile: {
+                create: {}, // This will create a new Profile with default values
+              },
             },
           });
-
           return true;
         }
       } catch (error) {
@@ -65,6 +67,10 @@ export const authOptions: AuthOptions = {
         };
       }
       return session;
+    },
+    async redirect({ url, baseUrl }) {
+      // Redirect to the home page
+      return baseUrl;
     },
   },
 };
