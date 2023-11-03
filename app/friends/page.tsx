@@ -6,12 +6,14 @@ import { NextResponse } from 'next/server';
 import { Post, Friend } from '../lib/definitions';
 import { getFriends } from '../lib/actions';
 import FriendsList from '../components/FriendList';
+import Link from 'next/link';
 
 export default async function Page() {
   try {
     const friends = await getFriends();
     return (
       <main>
+        <Link href={'/friends/addfriend'}>Add Friends</Link>
         <FriendsList friends={friends} />
       </main>
     );

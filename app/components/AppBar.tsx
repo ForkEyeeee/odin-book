@@ -23,7 +23,7 @@ import NavLink from './NavLink';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-const Links = ['Friends', 'Messages', 'Post'];
+const Links = ['friends', 'messages', 'post'];
 
 export default function AppBar() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,7 +46,9 @@ export default function AppBar() {
             </Link>
             <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
               {Links.map(link => (
-                <NavLink key={link}>{link}</NavLink>
+                <Link key={link} href={`/${link}`}>
+                  {link}
+                </Link>
               ))}
             </HStack>
           </HStack>
@@ -69,7 +71,7 @@ export default function AppBar() {
                     {/* <Button onClick={() => signOut()}>Logout</Button> */}
                   </MenuItem>
                   <MenuItem color={'black'}>
-                    <Link href={'/'}>Friends</Link>
+                    <Link href={`/friends`}>Friends</Link>
                   </MenuItem>
                   <MenuDivider />
                   <MenuItem color={'black'}>

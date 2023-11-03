@@ -90,7 +90,6 @@ export async function getFriends() {
   const friendIds = userFriends.map(friend => {
     return friend.user2Id;
   });
-  console.log(friendIds);
 
   const friends = await prisma.user.findMany({
     where: {
@@ -99,6 +98,34 @@ export async function getFriends() {
       },
     },
   });
-  console.log(friends);
   return friends;
+}
+
+export async function getUsers() {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
+
+  const users = await prisma.user.findMany({
+    where: {
+      id: {
+        not: userId,
+      },
+    },
+  });
+
+  return users;
+}
+
+export async function searchUsers(query) {
+  console.log('query is' + query);
+  const users = await prisma.user.findMany({
+    where: {
+      name: {
+        contains: query,
+        mode: 'insensitive',
+      },
+    },
+  });
+  // console.log(users);
+  return users;
 }
