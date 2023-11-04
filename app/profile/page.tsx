@@ -32,12 +32,12 @@ export default function Page() {
   // }, [state]);
   return (
     <>
-      {profile && (
+      {
         <form action={formAction}>
           <Profile profile={profile} formState={state} />
           <button type="submit">Submit</button>
         </form>
-      )}
+      }
     </>
   );
 }

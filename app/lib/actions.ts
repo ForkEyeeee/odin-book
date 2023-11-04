@@ -11,7 +11,7 @@ export async function updateProfile(prevState: any, formData: FormData) {
     bio: z.string().optional(),
     gender: z.string().optional(),
     dateOfBirth: z.string().optional(),
-  });
+  }); //remove logic that sets profile id here, we are doing in in autotpions
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
@@ -23,9 +23,9 @@ export async function updateProfile(prevState: any, formData: FormData) {
       dateOfBirth: formData.get('dateOfBirth'),
     };
 
-    const { bio, dateOfBirth, gender } = prevState.profile;
-    if (bio === form.bio && gender === form.gender && dateOfBirth === form.dateOfBirth)
-      return { message: `Profile updated`, profile: form };
+    // const { bio, dateOfBirth, gender } = prevState.profile;
+    // if (bio === form.bio && gender === form.gender && dateOfBirth === form.dateOfBirth)
+    //   return { message: `Profile updated`, profile: form };
 
     const parsedForm = ProfileSchema.parse(form);
     const parsedDateOfBirth = new Date(parsedForm.dateOfBirth ?? '');

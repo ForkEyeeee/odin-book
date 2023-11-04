@@ -34,6 +34,9 @@ export const authOptions: AuthOptions = {
         if (existingUser) {
           return true;
         } else {
+          console.log(user);
+          console.log(account);
+          console.log(profile);
           await prisma.user.create({
             data: {
               name: user.name as string,
@@ -41,9 +44,6 @@ export const authOptions: AuthOptions = {
               hashedPassword: '',
               profilePicture: user.image,
               googleId: user.id,
-              profile: {
-                create: {}, // This will create a new Profile with default values
-              },
             },
           });
           return true;
