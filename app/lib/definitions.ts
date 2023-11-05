@@ -65,12 +65,18 @@ export interface Friend {
   user1Id: number;
   user2Id: number;
   status: string;
+  googleId: string;
+  name: string;
+  email: string;
+  hashedPassword: string;
+  profileId: number | null;
+  profilePicture: string | null;
 }
 
 export interface Profile {
   id: number;
-  bio: string;
-  dateOfBirth: string;
-  gender: string;
-  userId: number;
+  bio: string | null;
+  dateOfBirth: Date | null;
+  gender: string | null;
+  userId: number | null;
 }

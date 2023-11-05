@@ -5,15 +5,15 @@ import prisma from './prisma';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { revalidateTag } from 'next/cache';
 
 export async function updateProfile(prevState: any, formData: FormData) {
-  const ProfileSchema = z.object({
-    bio: z.string().optional(),
-    gender: z.string().optional(),
-    dateOfBirth: z.string().optional(),
-  });
   try {
+    const ProfileSchema = z.object({
+      bio: z.string().optional(),
+      gender: z.string().optional(),
+      dateOfBirth: z.string().optional(),
+    });
+
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
     let profile;
@@ -63,7 +63,6 @@ export async function updateProfile(prevState: any, formData: FormData) {
       });
       profile = updateProfile;
     }
-
     revalidatePath('/profile');
 
     return { message: `Profile updated`, profile: profile };
