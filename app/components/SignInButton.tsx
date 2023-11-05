@@ -21,7 +21,7 @@ const SignInButton = () => {
         <button
           onClick={() => {
             signOut({ redirect: false }).then(() => {
-              Router.push('/'); // Redirect to the dashboard page after signing out
+              Router.push('/');
             });
           }}
         >

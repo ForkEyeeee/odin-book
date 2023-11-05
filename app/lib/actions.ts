@@ -5,13 +5,14 @@ import prisma from './prisma';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 
 export async function updateProfile(prevState: any, formData: FormData) {
   const ProfileSchema = z.object({
     bio: z.string().optional(),
     gender: z.string().optional(),
     dateOfBirth: z.string().optional(),
-  }); //remove logic that sets profile id here, we are doing in in autotpions
+  });
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
@@ -22,10 +23,6 @@ export async function updateProfile(prevState: any, formData: FormData) {
       gender: formData.get('gender'),
       dateOfBirth: formData.get('dateOfBirth'),
     };
-
-    // const { bio, dateOfBirth, gender } = prevState.profile;
-    // if (bio === form.bio && gender === form.gender && dateOfBirth === form.dateOfBirth)
-    //   return { message: `Profile updated`, profile: form };
 
     const parsedForm = ProfileSchema.parse(form);
     const parsedDateOfBirth = new Date(parsedForm.dateOfBirth ?? '');
@@ -68,9 +65,10 @@ export async function updateProfile(prevState: any, formData: FormData) {
     }
 
     revalidatePath('/profile');
+
     return { message: `Profile updated`, profile: profile };
   } catch (e) {
-    return console.error(e);
+    return { message: `Unable to update profile` };
   }
 }
 
@@ -93,9 +91,7 @@ export async function getFriends() {
     },
   });
 
-  const friendIds = userFriends.map(friend => {
-    return friend.user2Id;
-  });
+  const friendIds = userFriends.map(friend => friend.user2Id);
 
   const friends = await prisma.user.findMany({
     where: {
@@ -104,7 +100,42 @@ export async function getFriends() {
       },
     },
   });
-  return { friends, userFriends };
+
+  const combinedFriendsData = userFriends.map(userFriend => {
+    const friendData = friends.find(friend => friend.id === userFriend.user2Id);
+    return {
+      ...userFriend,
+      ...friendData,
+    };
+  });
+
+  return combinedFriendsData;
+}
+
+export async function changeStatus(friendUserId) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+
+    const friend = await prisma.friend.findUnique({
+      where: {
+        id: friendUserId,
+      },
+    });
+
+    const updateFriend = await prisma.friend.update({
+      where: {
+        user1Id: userId,
+        user2Id: friendUserId,
+      },
+      data: {
+        status: 'ACCEPTED',
+      },
+    });
+    return updateFriend;
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export async function getUsers() {
@@ -197,24 +228,61 @@ export async function removeFriend(userFriendId) {
   }
 }
 
-export async function acceptFriend({ userFriendId }) {
+export async function acceptFriend(userFriendId) {
+  try {
+    console.log('friend id' + userFriendId);
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+
+    const getFriend = await prisma.friend.findFirst({
+      where: {
+        OR: [
+          {
+            user1Id: userId,
+            user2Id: userFriendId,
+          },
+          {
+            user1Id: userFriendId,
+            user2Id: userId,
+          },
+        ],
+      },
+    });
+
+    if (getFriend) {
+      const updateFriend = await prisma.friend.update({
+        where: {
+          id: getFriend.id,
+        },
+        data: {
+          status: 'ACCEPTED',
+        },
+      });
+      return updateFriend;
+    } else {
+      throw new Error('Friend request not found.');
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function createPost(prevState: any, formData: FormData) {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
-    const friend = {
-      user1Id: userId,
-      user2Id: userFriendId,
-      status: 'ACCEPTED',
+
+    const postData = {
+      content: formData.get('post'),
+      authorId: userId,
+      createdAt: new Date(),
     };
 
-    const updateFriend = await prisma.friend.update({
-      where: {
-        user1Id: userId,
-        user2Id: userFriendId,
-      },
-      data: friend,
+    const createPost = await prisma.post.create({
+      data: postData,
     });
-    return updateFriend;
+    return createPost;
   } catch (error) {
     console.error(error);
   }

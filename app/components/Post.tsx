@@ -16,7 +16,7 @@ export function Post({ post, index }: PostProps) {
         <Avatar size="md" name="John Doe" src={`${post.author.profilePicture}`} />
         <Box ml="4">
           <Text fontWeight="bold">{post.author.name}</Text>
-          <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: '200px' }}>
+          <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: '200px', sm: '100%' }}>
             {post.author.email}
           </Text>
           <Text color="gray.500">{post.createdAt.toDateString()}</Text>

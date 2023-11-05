@@ -5,39 +5,32 @@ import { updateProfile } from '../lib/actions';
 import { getSession } from 'next-auth/react';
 import { getProfile } from '../lib/actions';
 import { useEffect, useState } from 'react';
-import { ProfileProps } from '../lib/definitions';
+import { Profile as ProfileType } from '../lib/definitions';
 
 const initialState = {
   message: null,
 };
 
 export default function Page() {
-  const [state, formAction] = useFormState(updateProfile, initialState); //state is what it returns from return in the serve raction
-  const [session, setSession] = useState({});
-  const [profile, setProfile] = useState<ProfileProps>();
+  const [state, formAction] = useFormState(updateProfile, initialState);
+  const [profile, setProfile] = useState<ProfileType>();
+
   useEffect(() => {
-    async function fetchData() {
+    const getData = async () => {
       const session = await getSession();
-      if (session === null) return;
-      setSession(session);
-      const profile = await getProfile(session?.user.id);
-      if (profile === null) return;
+      const userId = session?.user.id;
+      const profile = await getProfile(userId);
       setProfile(profile);
-    }
-    fetchData();
+    };
+    getData();
   }, []);
 
-  // useEffect(() => {
-  //   setFormMessage(state);
-  // }, [state]);
   return (
     <>
-      {
-        <form action={formAction}>
-          <Profile profile={profile} formState={state} />
-          <button type="submit">Submit</button>
-        </form>
-      }
+      <form action={formAction}>
+        <Profile profile={profile} formState={state} />
+        <button type="submit">Submit</button>
+      </form>
     </>
   );
 }

@@ -1,7 +1,8 @@
+'use client';
 import { List, ListItem, ListIcon, OrderedList, UnorderedList } from '@chakra-ui/react';
+import { acceptFriend, changeStatus } from '../lib/actions';
 
-const FriendsList = ({ friends, users }) => {
-  console.log(friends);
+const FriendsList = ({ friends }) => {
   return (
     <>
       <UnorderedList>
@@ -12,16 +13,15 @@ const FriendsList = ({ friends, users }) => {
                 {friend.name}
                 {friend.email}
                 {friend.status}
-                {users.map(user => (
-                  <ListItem key={user.id}>
-                    {user.name}
-                    {user.email}
-                    {user.status}
-                  </ListItem>
-                ))}
+                <button onClick={() => acceptFriend(friend.id)}>Accept</button>
               </ListItem>
             )
         )}
+        {/* {users.map(user => (
+          <ListItem key={user.id}>
+        
+          </ListItem>
+        ))} */}
       </UnorderedList>
     </>
   );

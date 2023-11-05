@@ -67,7 +67,7 @@ export interface Friend {
   status: string;
 }
 
-export interface ProfileProps {
+export interface Profile {
   id: number;
   bio: string;
   dateOfBirth: string;

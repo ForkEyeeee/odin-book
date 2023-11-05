@@ -29,6 +29,7 @@ interface ProfileProps {
 export default function Profile({ profile, formState }: ProfileProps) {
   const [value, setValue] = useState('1');
   const [isEdit, setIsEdit] = useState(false);
+
   console.log(profile);
   useEffect(() => {
     console.log(formState);

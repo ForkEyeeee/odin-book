@@ -19,9 +19,12 @@ import {
   MenuDivider,
   useColorModeValue,
 } from '@chakra-ui/react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { PlusSquareIcon } from '@chakra-ui/icons';
+import { useRouter } from 'next/navigation';
 
-const Links = ['View Profile', 'Messages', 'Friends', 'Settings', 'Sign Out'];
+const Links = ['Profile', 'Messages', 'Friends', 'Settings', 'Sign Out'];
 
 const IconButton = ({ children, ...props }: { children: any }) => {
   return (
@@ -41,6 +44,10 @@ const IconButton = ({ children, ...props }: { children: any }) => {
 
 const NavBar = () => {
   const { data: session } = useSession();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  console.log(pathname);
   return (
     <Box
       py="2"
@@ -59,7 +66,9 @@ const NavBar = () => {
             w={'auto'}
             h={12}
             src="https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png"
+            onClick={() => router.push('/')}
           />
+
           <Input maxW="26rem" placeholder="Search..." borderColor={'gray.300'} borderRadius="5px" />
           <Spacer />
           <HStack spacing={3}>
@@ -87,8 +96,24 @@ const NavBar = () => {
                 <MenuDivider />
                 {session &&
                   Links.map(link => (
-                    <MenuItem key={link} onClick={link === 'Sign Out' ? () => signIn() : undefined}>
-                      <Text fontWeight="500">{link}</Text>
+                    <MenuItem
+                      key={link}
+                      onClick={
+                        link === 'Sign Out'
+                          ? () =>
+                              signOut({ redirect: false }).then(() => {
+                                router.push('/');
+                              })
+                          : undefined
+                      }
+                    >
+                      {link === 'Sign Out' ? (
+                        'Sign Out'
+                      ) : (
+                        <Link href={`/${link.toLowerCase()}`}>
+                          <Text fontWeight="500">{link}</Text>
+                        </Link>
+                      )}
                     </MenuItem>
                   ))}
               </MenuList>

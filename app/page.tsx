@@ -1,7 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/authOptions';
 import prisma from './lib/prisma';
-import { Post, Friend } from './lib/definitions';
+import { Friend } from './lib/definitions';
 import TimeLineTabs from './components/TimeLineTabs';
 
 export default async function Page() {
