@@ -23,7 +23,7 @@ import { PlusSquareIcon } from '@chakra-ui/icons';
 
 const Links = ['View Profile', 'Messages', 'Friends', 'Settings', 'Sign Out'];
 
-const IconButton = ({ children, ...props }) => {
+const IconButton = ({ children, ...props }: { children: any }) => {
   return (
     <Button
       padding="0.4rem"
@@ -39,15 +39,14 @@ const IconButton = ({ children, ...props }) => {
   );
 };
 
-const AppBar = () => {
+const NavBar = () => {
   const { data: session } = useSession();
-  console.log(session);
   return (
     <Box
       py="2"
       boxShadow="sm"
       border="0 solid #e5e7eb"
-      position="fixed"
+      position="relative"
       top="0"
       bg={'gray.700'}
       width="100%"
@@ -61,13 +60,7 @@ const AppBar = () => {
             h={12}
             src="https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png"
           />
-          <Input
-            maxW="26rem"
-            placeholder="Search..."
-            borderColor={'gray.300'}
-            borderRadius="5px"
-            d={{ base: 'none', md: 'block' }}
-          />
+          <Input maxW="26rem" placeholder="Search..." borderColor={'gray.300'} borderRadius="5px" />
           <Spacer />
           <HStack spacing={3}>
             <IconButton>
@@ -75,7 +68,7 @@ const AppBar = () => {
             </IconButton>
             <Menu isLazy>
               <MenuButton as={Button} size="sm" px={0} py={0} rounded="full">
-                <Avatar size="sm" src={session !== undefined ? session?.user.image : ''} />
+                <Avatar size="sm" src={session !== undefined ? session?.user.image!! : ''} />
               </MenuButton>
               <MenuList
                 zIndex={5}
@@ -108,4 +101,4 @@ const AppBar = () => {
   );
 };
 
-export default AppBar;
+export default NavBar;

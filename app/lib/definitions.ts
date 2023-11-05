@@ -12,29 +12,45 @@ export interface User {
   profilePicture: string | null;
 }
 
+export interface PostProps {
+  post: PostWithAuthor;
+  index: number;
+}
+
+export interface TimeLineTabsProps {
+  forYouPosts: PostWithAuthor[];
+  discoverPosts: PostWithAuthor[];
+}
+
+export interface Author {
+  id: number;
+  googleId: string;
+  name: string;
+  email: string;
+  hashedPassword: string;
+  profileId: number | null;
+  profilePicture: string | null;
+}
 export interface Post {
+  id: number;
+  content: string;
+  imageUrl: string | null;
+  authorId: number | null;
+  createdAt: Date;
+  author: Author;
+}
+
+export interface PostWithAuthor {
   id: number;
   content: string;
   imageUrl: string | null;
   authorId: number;
   createdAt: Date;
+  author: Author;
 }
-
-export interface HomePageProps {
-  data: Post[];
-  otherData: Post[];
-  name: string;
-  email: string;
-  profilePicture: string;
-  userId: number;
-}
-
-export interface UserPostProps {
-  post: Post;
-  name: string;
-  email: string;
-  profilePicture: string;
-  userId: number;
+export interface PostProps {
+  post: PostWithAuthor;
+  index: number;
 }
 
 export interface UserSession {

@@ -2,7 +2,7 @@ import { render, screen, act } from '@testing-library/react';
 import React from 'react';
 import Providers from '../../app/components/Providers';
 import pretty from 'pretty';
-import AppBar from '../../app/components/AppBar';
+import NavBar from '../../app/components/NavBar';
 
 describe('Test HTML generation for AppBar component', () => {
   it('should generate HTML without crashing', async () => {

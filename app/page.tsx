@@ -1,16 +1,15 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from './api/auth/[...nextauth]/authOptions';
-import HomePage from './components/HomePage';
 import prisma from './lib/prisma';
-import { NextResponse } from 'next/server';
 import { Post, Friend } from './lib/definitions';
+import TimeLineTabs from './components/TimeLineTabs';
 
 export default async function Page() {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
 
-    if (userId === undefined) return NextResponse.json({ error: 'Unable to find user' });
+    if (userId === undefined) throw new Error();
 
     const userFriends = await prisma.friend.findMany({
       where: {
@@ -19,15 +18,26 @@ export default async function Page() {
     });
     const userfriendIds = userFriends.map((friend: Friend) => friend.user2Id);
 
-    const timelinePosts: Post[] = await prisma.post.findMany({
+    const timelinePosts = await prisma.post.findMany({
       where: {
         authorId: {
           in: [userId, ...userfriendIds],
         },
       },
+      orderBy: [
+        {
+          authorId: 'asc',
+        },
+        {
+          createdAt: 'desc',
+        },
+      ],
+      include: {
+        author: true,
+      },
     });
 
-    const otherTimeLinePosts: Post[] = await prisma.post.findMany({
+    const otherTimeLinePosts = await prisma.post.findMany({
       where: {
         authorId: {
           not: {
@@ -35,14 +45,13 @@ export default async function Page() {
           },
         },
       },
+      include: {
+        author: true,
+      },
     });
 
-    return (
-      <main>
-        <HomePage data={timelinePosts} otherData={otherTimeLinePosts} />;
-      </main>
-    );
+    return <TimeLineTabs forYouPosts={timelinePosts} discoverPosts={otherTimeLinePosts} />;
   } catch (error) {
-    return NextResponse.error();
+    return { message: 'Failed to Fetch Posts.' };
   }
 }

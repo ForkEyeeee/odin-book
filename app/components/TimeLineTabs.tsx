@@ -1,15 +1,8 @@
 import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
-import { UserPost } from './UserPost';
-import { HomePageProps } from '../lib/definitions';
+import { Post } from './Post';
+import { TimeLineTabsProps } from '../lib/definitions';
 
-export async function TimeLineTabs({
-  data,
-  otherData,
-  name,
-  email,
-  profilePicture,
-  userId,
-}: HomePageProps) {
+export function TimeLineTabs({ forYouPosts, discoverPosts }: TimeLineTabsProps) {
   return (
     <Tabs isFitted variant="enclosed">
       <TabList mb="1em">
@@ -18,27 +11,13 @@ export async function TimeLineTabs({
       </TabList>
       <TabPanels>
         <TabPanel>
-          {data.map(post => (
-            <UserPost
-              key={post.id}
-              post={post}
-              name={name}
-              email={email}
-              profilePicture={profilePicture}
-              userId={userId}
-            ></UserPost>
+          {forYouPosts.map((post, index) => (
+            <Post key={post.id} post={post} index={index}></Post>
           ))}
         </TabPanel>
         <TabPanel>
-          {otherData.map(post => (
-            <UserPost
-              key={post.id}
-              post={post}
-              name={name}
-              email={email}
-              profilePicture={profilePicture}
-              userId={userId}
-            ></UserPost>
+          {discoverPosts.map((post, index) => (
+            <Post key={post.id} post={post} index={index}></Post>
           ))}
         </TabPanel>
       </TabPanels>
