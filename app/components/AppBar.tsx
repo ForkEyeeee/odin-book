@@ -1,110 +1,111 @@
 'use client';
 import React from 'react';
-import SignInButton from './SignInButton';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import {
+  Container,
   Box,
-  Flex,
   Avatar,
-  HStack,
-  Text,
-  IconButton,
   Button,
+  HStack,
+  VStack,
+  Image,
+  Input,
+  Spacer,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
+  Text,
   MenuDivider,
-  useDisclosure,
   useColorModeValue,
-  Stack,
 } from '@chakra-ui/react';
-import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons';
-import NavLink from './NavLink';
-import { signIn, signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-const Links = ['friends', 'messages', 'post'];
+import { PlusSquareIcon } from '@chakra-ui/icons';
 
-export default function AppBar() {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const session = useSession();
-  const pathSegment = usePathname();
+const Links = ['View Profile', 'Messages', 'Friends', 'Settings', 'Sign Out'];
+
+const IconButton = ({ children, ...props }) => {
   return (
-    <>
-      <Box bg={useColorModeValue('gray.900', 'gray.900')} px={4}>
-        <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <IconButton
-            size={'md'}
-            icon={isOpen ? <CloseIcon /> : <HamburgerIcon />}
-            aria-label={'Open Menu'}
-            display={{ md: 'none' }}
-            onClick={isOpen ? onClose : onOpen}
-          />
-          <HStack spacing={8} alignItems={'center'}>
-            <Link href={'/'}>
-              <Box>Logo</Box>
-            </Link>
-            <HStack as={'nav'} spacing={4} display={{ base: 'none', md: 'flex' }}>
-              {Links.map(link => (
-                <Link key={link} href={`/${link}`}>
-                  {link}
-                </Link>
-              ))}
-            </HStack>
-          </HStack>
-          <Flex alignItems={'center'}>
-            {session.status === 'authenticated' ? (
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rounded={'full'}
-                  variant={'link'}
-                  cursor={'pointer'}
-                  minW={0}
-                >
-                  <Avatar size={'sm'} src={session.data?.user?.image as undefined | string} />
-                </MenuButton>
-                <MenuList>
-                  <MenuItem color={'black'}>
-                    <Link href={'/profile'}>Profile</Link>
-
-                    {/* <Button onClick={() => signOut()}>Logout</Button> */}
-                  </MenuItem>
-                  <MenuItem color={'black'}>
-                    <Link href={`/friends`}>Friends</Link>
-                  </MenuItem>
-                  <MenuDivider />
-                  <MenuItem color={'black'}>
-                    <Link href={`api/auth/signout`}>Logout</Link>
-                  </MenuItem>
-                </MenuList>
-              </Menu>
-            ) : (
-              <button onClick={() => signIn()}>Sign In</button>
-            )}
-          </Flex>
-        </Flex>
-
-        {/* {isOpen ? (
-          <Box pb={4} display={{ md: "none" }}>
-            <Stack as={"nav"} spacing={4}>
-              {Links.map((link) => (
-                <NavLink key={link}>{link}</NavLink>
-              ))}
-            </Stack>
-          </Box>
-        ) : null} */}
-      </Box>
-    </>
+    <Button
+      padding="0.4rem"
+      width="auto"
+      height="auto"
+      borderRadius="100%"
+      bg="transparent"
+      _hover={{ bg: 'gray.800' }}
+      {...props}
+    >
+      {children}
+    </Button>
   );
-}
+};
 
-// const AppBar = () => {
-//   return (
-//     <header className="flex justify-between">
-//       <Link href={"/"}>Home page</Link>
-//       <Link href={"/UserPost"}>User Post Page</Link>
-//       <SignInButton />
-//     </header>
-//   );
-// };
+const AppBar = () => {
+  const { data: session } = useSession();
+  console.log(session);
+  return (
+    <Box
+      py="2"
+      boxShadow="sm"
+      border="0 solid #e5e7eb"
+      position="fixed"
+      top="0"
+      bg={'gray.700'}
+      width="100%"
+      zIndex="1"
+    >
+      <Container px={4} mx="auto">
+        <HStack spacing={4}>
+          <Image
+            alt="dev logo"
+            w={'auto'}
+            h={12}
+            src="https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png"
+          />
+          <Input
+            maxW="26rem"
+            placeholder="Search..."
+            borderColor={'gray.300'}
+            borderRadius="5px"
+            d={{ base: 'none', md: 'block' }}
+          />
+          <Spacer />
+          <HStack spacing={3}>
+            <IconButton>
+              <PlusSquareIcon />
+            </IconButton>
+            <Menu isLazy>
+              <MenuButton as={Button} size="sm" px={0} py={0} rounded="full">
+                <Avatar size="sm" src={session !== undefined ? session?.user.image : ''} />
+              </MenuButton>
+              <MenuList
+                zIndex={5}
+                border="2px solid"
+                borderColor={useColorModeValue('gray.700', 'gray.100')}
+                boxShadow="4px 4px 0"
+              >
+                <MenuItem>
+                  <VStack justify="start" alignItems="left">
+                    <Text size="sm" fontWeight={'bold'} mt="0 !important">
+                      {session !== undefined ? session?.user.name : ''}
+                    </Text>
+                  </VStack>
+                </MenuItem>
+
+                <MenuDivider />
+                {session &&
+                  Links.map(link => (
+                    <MenuItem key={link} onClick={link === 'Sign Out' ? () => signIn() : undefined}>
+                      <Text fontWeight="500">{link}</Text>
+                    </MenuItem>
+                  ))}
+              </MenuList>
+            </Menu>
+            {!session && <Button onClick={() => signIn()}>Sign In</Button>}
+          </HStack>
+        </HStack>
+      </Container>
+    </Box>
+  );
+};
+
+export default AppBar;
