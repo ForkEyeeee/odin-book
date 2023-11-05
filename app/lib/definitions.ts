@@ -65,12 +65,6 @@ export interface Friend {
   user1Id: number;
   user2Id: number;
   status: string;
-  googleId: string;
-  name: string;
-  email: string;
-  hashedPassword: string;
-  profileId: number | null;
-  profilePicture: string | null;
 }
 
 export interface Profile {

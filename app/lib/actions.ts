@@ -88,6 +88,9 @@ export async function getFriends() {
     where: {
       user1Id: userId,
     },
+    orderBy: {
+      status: 'asc',
+    },
   });
 
   const friendIds = userFriends.map(friend => friend.user2Id);
@@ -109,32 +112,6 @@ export async function getFriends() {
   });
 
   return combinedFriendsData;
-}
-
-export async function changeStatus(friendUserId) {
-  try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
-
-    const friend = await prisma.friend.findUnique({
-      where: {
-        id: friendUserId,
-      },
-    });
-
-    const updateFriend = await prisma.friend.update({
-      where: {
-        user1Id: userId,
-        user2Id: friendUserId,
-      },
-      data: {
-        status: 'ACCEPTED',
-      },
-    });
-    return updateFriend;
-  } catch (error) {
-    console.error(error);
-  }
 }
 
 export async function getUsers() {
@@ -205,65 +182,59 @@ export async function addFriend(friendUserId) {
   // });
 }
 
-export async function removeFriend(userFriendId) {
+export async function changeStatus(userFriendId: number, action: 'accept' | 'remove') {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
+
+    if (!userId) {
+      throw new Error('User not authenticated');
+    }
 
     const friend = await prisma.friend.findFirst({
       where: {
-        AND: [{ user1Id: userId }, { user2Id: userFriendId }],
-      },
-    });
-
-    const deleteFriend = await prisma.friend.delete({
-      where: {
-        id: friend.id,
-      },
-    });
-    return deleteFriend;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-export async function acceptFriend(userFriendId) {
-  try {
-    console.log('friend id' + userFriendId);
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
-
-    const getFriend = await prisma.friend.findFirst({
-      where: {
         OR: [
           {
-            user1Id: userId,
-            user2Id: userFriendId,
+            AND: [{ user1Id: userId }, { user2Id: userFriendId }],
           },
           {
-            user1Id: userFriendId,
-            user2Id: userId,
+            AND: [{ user1Id: userFriendId }, { user2Id: userId }],
           },
         ],
       },
     });
 
-    if (getFriend) {
-      const updateFriend = await prisma.friend.update({
-        where: {
-          id: getFriend.id,
-        },
-        data: {
-          status: 'ACCEPTED',
-        },
-      });
-      return updateFriend;
-    } else {
-      throw new Error('Friend request not found.');
+    if (!friend) {
+      throw new Error('Friend relationship not found.');
+    }
+
+    switch (action) {
+      case 'accept':
+        const updatedFriend = await prisma.friend.update({
+          where: {
+            id: friend.id,
+          },
+          data: {
+            status: 'ACCEPTED',
+          },
+        });
+        revalidatePath('/friends');
+        return updatedFriend;
+
+      case 'remove':
+        const deletedFriend = await prisma.friend.delete({
+          where: {
+            id: friend.id,
+          },
+        });
+        revalidatePath('/friends');
+        return deletedFriend;
+
+      default:
+        throw new Error('Invalid action specified.');
     }
   } catch (error) {
-    console.error(error);
-    throw error;
+    return { message: `Unable to change friend status` };
   }
 }
 

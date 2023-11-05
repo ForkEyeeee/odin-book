@@ -5,12 +5,8 @@ import Link from 'next/link';
 export default async function Page() {
   try {
     const friendUsers = await getFriends();
-    return (
-      <main>
-        <Link href={'/friends/addfriend'}>Add Friends</Link>
-        <FriendsList friends={friendUsers} />
-      </main>
-    );
+    if (friendUsers === undefined) return;
+    return <FriendsList friends={friendUsers} />;
   } catch (error) {
     return { message: `Unable to fetch friends` };
   }
