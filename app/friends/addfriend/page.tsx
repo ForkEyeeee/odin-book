@@ -12,11 +12,8 @@ import Search from '@/app/components/Search';
 
 export default async function Page() {
   try {
-    const users = await getUsers();
-
     return (
       <main>
-        {/* <AddFriends users={users} /> */}
         <Search />
       </main>
     );

@@ -5,9 +5,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [Next.js](https://nextjs.org/)
 - [Prisma](https://www.prisma.io/)
 - [ChakraUI](https://chakra-ui.com/)
-- [Jest](https://jestjs.io/)
-- [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/)
-- [node-mocks-http](https://github.com/howardabrams/node-mocks-http)
+- [Cypress](https://www.cypress.io/)
 
 ## Getting Started
 
