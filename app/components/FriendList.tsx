@@ -24,7 +24,7 @@ interface FriendsListProps {
 
 const initialState = { message: null, errors: {} };
 
-const FriendsList = ({ friends }: FriendsListProps) => {
+export default function FriendsList({ friends }: FriendsListProps) {
   const [state, formAction] = useFormState(changeStatus, initialState);
 
   return (
@@ -99,6 +99,4 @@ const FriendsList = ({ friends }: FriendsListProps) => {
       </form>
     </>
   );
-};
-
-export default FriendsList;
+}
