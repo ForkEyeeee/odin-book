@@ -29,7 +29,6 @@ export default function FriendsList({ friends }: FriendsListProps) {
 
   return (
     <>
-      <Box>TEST</Box>
       <Flex justifyContent="flex-end" mt={4}>
         <Button rightIcon={<AddIcon />} colorScheme="green" variant="solid" color={'white'}>
           <Link href={'/friends/addfriend'}>Add Friends</Link>

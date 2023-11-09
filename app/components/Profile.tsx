@@ -56,7 +56,7 @@ export default function Profile({ profile }: FormProps) {
   return (
     <Container maxW="container.md" mt={10}>
       <Heading mb={6}>User Profile</Heading>
-      <form onSubmit={formAction}>
+      <form action={formAction}>
         {profile !== null && isUser ? (
           <FormControl display="flex" alignItems="center" mb={6}>
             <FormLabel htmlFor="email-alerts" mb="0">

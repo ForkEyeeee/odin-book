@@ -45,6 +45,14 @@ export default async function Page() {
           },
         },
       },
+      orderBy: [
+        {
+          authorId: 'asc',
+        },
+        {
+          createdAt: 'desc',
+        },
+      ],
       include: {
         author: true,
       },

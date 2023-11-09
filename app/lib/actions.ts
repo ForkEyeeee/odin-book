@@ -240,6 +240,7 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
 
 export async function createPost(prevState: any, formData: FormData) {
   try {
+    console.log('here');
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
 
@@ -252,6 +253,7 @@ export async function createPost(prevState: any, formData: FormData) {
     const createPost = await prisma.post.create({
       data: postData,
     });
+    revalidatePath('/');
     return createPost;
   } catch (error) {
     console.error(error);

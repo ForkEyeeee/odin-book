@@ -24,6 +24,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/navigation';
+import CreatePostModal from './CreatePostModal';
 
 const Links = ['Profile', 'Messages', 'Friends', 'Settings', 'Sign Out'];
 
@@ -42,6 +43,7 @@ const IconButton = ({ children, ...props }: { children: any }) => {
     </Button>
   );
 };
+const initialState = { message: null, errors: {} };
 
 const NavBar = () => {
   const { data: session } = useSession();
@@ -73,8 +75,9 @@ const NavBar = () => {
           <Spacer />
           <HStack spacing={3}>
             <IconButton>
-              <PlusSquareIcon />
+              <CreatePostModal />
             </IconButton>
+
             <Menu isLazy>
               <MenuButton as={Button} size="sm" px={0} py={0} rounded="full">
                 <Avatar size="sm" src={session !== undefined ? session?.user.image!! : ''} />
