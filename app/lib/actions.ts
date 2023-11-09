@@ -262,8 +262,6 @@ export async function createPost(prevState: any, formData: FormData) {
 
 export async function likePost(postAuthor, postId, likesLength) {
   try {
-    console.log(likesLength);
-
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
     if (likesLength !== 0) {
@@ -323,5 +321,26 @@ export async function likePost(postAuthor, postId, likesLength) {
     return like;
   } catch (error) {
     return { message: `Unable to change like post` };
+  }
+}
+
+export async function createComment(prevState: any, formData: FormData) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    //check validity of userId and postId combo
+    const form = {
+      content: formData.get('comment'),
+      authorId: userId,
+      postId: Number(formData.get('postId')),
+      createdAt: new Date(),
+    };
+    const comment = await prisma.comment.create({
+      data: form,
+    });
+    revalidatePath('/');
+    console.log(comment);
+  } catch (error) {
+    console.error(error);
   }
 }

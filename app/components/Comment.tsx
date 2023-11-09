@@ -4,7 +4,6 @@ import { FaRegCommentDots, FaRegHeart, FaRegShareSquare } from 'react-icons/fa';
 import Link from 'next/link';
 
 export default function Comment({ comments }) {
-  console.log(comments);
   if (comments === undefined || comments.length === 0) return null;
 
   return (

@@ -1,14 +1,32 @@
 'use client';
-import { Box, Text, Flex, Avatar, Spacer, IconButton, HStack } from '@chakra-ui/react';
+import {
+  Box,
+  Text,
+  Flex,
+  Avatar,
+  Spacer,
+  IconButton,
+  HStack,
+  Textarea,
+  FormControl,
+  FormLabel,
+  Button,
+} from '@chakra-ui/react';
 import { FaComment, FaRetweet, FaHeart, FaShareAlt } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { likePost } from '../lib/actions';
 import Comment from './Comment';
+import { useState, useEffect } from 'react';
+import { useFormState } from 'react-dom';
+import { createComment } from '../lib/actions';
 
 export function Post({ post, index }: PostProps) {
-  // console.log(post.comments);
+  const initialState = post.id;
+
+  const [state, formAction] = useFormState(createComment, initialState);
+
   return (
     <Box
       borderWidth="1px"
@@ -33,8 +51,6 @@ export function Post({ post, index }: PostProps) {
       </Flex>
       <Text mt="4">{post.content}</Text>
       <Flex justifyContent="space-between" mt={{ base: '10px' }}>
-        <IconButton aria-label="Comment" icon={<FaComment />} />
-        <IconButton aria-label="Retweet" icon={<FaRetweet />} />
         <IconButton
           aria-label="Like"
           icon={<FaHeart />}
@@ -44,6 +60,16 @@ export function Post({ post, index }: PostProps) {
         <IconButton aria-label="Share" icon={<FaShareAlt />} />
       </Flex>
       <Comment comments={post.comments} />
+      <form action={formAction}>
+        <FormControl>
+          <FormLabel htmlFor="comment">Edit Mode</FormLabel>
+          <input type="hidden" name="postId" value={post.id} />
+          <Textarea name="comment" placeholder="Enter a new comment" />
+        </FormControl>
+        <Button type="submit" variant={'solid'}>
+          Submit
+        </Button>
+      </form>
     </Box>
   );
 }
