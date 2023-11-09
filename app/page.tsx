@@ -35,6 +35,7 @@ export default async function Page() {
       include: {
         author: true,
         likes: true,
+        comments: true,
       },
     });
     const otherTimeLinePosts = await prisma.post.findMany({
@@ -56,6 +57,7 @@ export default async function Page() {
       include: {
         author: true,
         likes: true,
+        comments: true,
       },
     });
 

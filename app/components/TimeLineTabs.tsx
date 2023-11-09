@@ -3,7 +3,6 @@ import { Post } from './Post';
 import { TimeLineTabsProps } from '../lib/definitions';
 
 export function TimeLineTabs({ forYouPosts, discoverPosts }: TimeLineTabsProps) {
-  // console.log(forYouPosts);
   return (
     <Tabs isFitted variant="enclosed">
       <TabList mb="1em">

@@ -5,8 +5,10 @@ import { PostProps } from '../lib/definitions';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { likePost } from '../lib/actions';
+import Comment from './Comment';
 
 export function Post({ post, index }: PostProps) {
+  // console.log(post.comments);
   return (
     <Box
       borderWidth="1px"
@@ -41,6 +43,7 @@ export function Post({ post, index }: PostProps) {
         />
         <IconButton aria-label="Share" icon={<FaShareAlt />} />
       </Flex>
+      <Comment comments={post.comments} />
     </Box>
   );
 }
