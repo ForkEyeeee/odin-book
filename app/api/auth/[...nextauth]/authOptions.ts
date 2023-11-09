@@ -1,4 +1,4 @@
-import prisma from '@/app/lib/prisma';
+import prisma from 'app/lib/prisma';
 import GoogleProvider from 'next-auth/providers/google';
 import type { AuthOptions } from 'next-auth';
 import type { Session } from 'next-auth';

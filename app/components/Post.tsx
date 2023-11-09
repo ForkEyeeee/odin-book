@@ -1,6 +1,8 @@
 import { Box, Text, Flex, Avatar, Spacer, IconButton, HStack } from '@chakra-ui/react';
 import { FaComment, FaRetweet, FaHeart, FaShareAlt } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export function Post({ post, index }: PostProps) {
   return (
@@ -13,7 +15,9 @@ export function Post({ post, index }: PostProps) {
       mt={index > 0 ? 10 : 0}
     >
       <Flex>
-        <Avatar size="md" name="John Doe" src={`${post.author.profilePicture}`} />
+        <Link href={`/profile/${post.author.id}`}>
+          <Avatar size="md" name="John Doe" src={`${post.author.profilePicture}`} />
+        </Link>
         <Box ml="4">
           <Text fontWeight="bold">{post.author.name}</Text>
           <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: '200px', sm: '100%' }}>

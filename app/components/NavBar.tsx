@@ -1,6 +1,7 @@
 'use client';
 import React from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
+
 import {
   Container,
   Box,
@@ -47,7 +48,6 @@ const NavBar = () => {
   const pathname = usePathname();
   const router = useRouter();
 
-  console.log(pathname);
   return (
     <Box
       py="2"
@@ -84,6 +84,7 @@ const NavBar = () => {
                 border="2px solid"
                 borderColor={useColorModeValue('gray.700', 'gray.100')}
                 boxShadow="4px 4px 0"
+                bg={'gray.500'}
               >
                 <MenuItem>
                   <VStack justify="start" alignItems="left">

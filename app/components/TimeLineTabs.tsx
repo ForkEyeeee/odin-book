@@ -1,8 +1,9 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import { Tabs, TabList, TabPanels, Tab, TabPanel, Text } from '@chakra-ui/react';
 import { Post } from './Post';
 import { TimeLineTabsProps } from '../lib/definitions';
 
 export function TimeLineTabs({ forYouPosts, discoverPosts }: TimeLineTabsProps) {
+  // console.log(forYouPosts);
   return (
     <Tabs isFitted variant="enclosed">
       <TabList mb="1em">
@@ -11,9 +12,11 @@ export function TimeLineTabs({ forYouPosts, discoverPosts }: TimeLineTabsProps) 
       </TabList>
       <TabPanels>
         <TabPanel>
-          {forYouPosts.map((post, index) => (
-            <Post key={post.id} post={post} index={index}></Post>
-          ))}
+          {forYouPosts.length !== 0 ? (
+            forYouPosts.map((post, index) => <Post key={post.id} post={post} index={index}></Post>)
+          ) : (
+            <Text>you have no friends</Text>
+          )}
         </TabPanel>
         <TabPanel>
           {discoverPosts.map((post, index) => (

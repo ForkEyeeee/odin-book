@@ -16,8 +16,8 @@ export default async function Page() {
         user1Id: userId,
       },
     });
-    const userfriendIds = userFriends.map((friend: Friend) => friend.user2Id);
 
+    const userfriendIds = userFriends.map((friend: Friend) => friend.user2Id);
     const timelinePosts = await prisma.post.findMany({
       where: {
         authorId: {
@@ -36,7 +36,7 @@ export default async function Page() {
         author: true,
       },
     });
-
+    // console.log(timelinePosts);
     const otherTimeLinePosts = await prisma.post.findMany({
       where: {
         authorId: {

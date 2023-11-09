@@ -20,6 +20,8 @@ import {
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { Profile } from '../lib/definitions';
+import { getSession } from 'next-auth/react';
+import { useSearchParams } from 'next/navigation';
 
 interface FormProps {
   profile?: Profile;
@@ -30,27 +32,41 @@ const initialState = { message: null, errors: {} };
 export default function Profile({ profile }: FormProps) {
   const [state, formAction] = useFormState(updateProfile, initialState);
   const [isEdit, setIsEdit] = useState(false);
+  const [isUser, setIsUser] = useState(false);
 
   useEffect(() => {
     if (state !== null) setIsEdit(false);
   }, [state]);
 
+  useEffect(() => {
+    const getData = async () => {
+      const session = await getSession();
+      if (session.user.id === profile?.userId) setIsUser(true);
+      console.log(session?.user.id);
+      console.log(profile?.userId);
+      console.log(isUser);
+    };
+    getData();
+  }, [profile]);
+
   const newProfile = profile === undefined || profile === null;
-  const dateTimeString = '2023-12-02T04:01:07.818Z';
-  const dateString = dateTimeString.split('T')[0];
+  const dateTimeString = profile?.dateOfBirth;
+  const dateString = dateTimeString ?? ''.split('T')[0];
 
   return (
     <Container maxW="container.md" mt={10}>
       <Heading mb={6}>User Profile</Heading>
-      <form action={formAction}>
-        <FormControl display="flex" alignItems="center" mb={6}>
-          <FormLabel htmlFor="email-alerts" mb="0">
-            Edit Mode
-          </FormLabel>
-          <Switch isChecked={isEdit} id="email-alerts" onChange={() => setIsEdit(!isEdit)} />
-        </FormControl>
+      <form onSubmit={formAction}>
+        {profile !== null && isUser ? (
+          <FormControl display="flex" alignItems="center" mb={6}>
+            <FormLabel htmlFor="email-alerts" mb="0">
+              Edit Mode
+            </FormLabel>
+            <Switch isChecked={isEdit} id="email-alerts" onChange={() => setIsEdit(!isEdit)} />
+          </FormControl>
+        ) : null}
 
-        {!isEdit ? (
+        {!isEdit && profile !== null ? (
           <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={5}>
             <VStack spacing={4} align="stretch">
               <Box>
@@ -76,43 +92,47 @@ export default function Profile({ profile }: FormProps) {
           </Box>
         ) : (
           <>
-            <FormControl id="bio" mb={4}>
-              <FormLabel htmlFor="bio">Bio</FormLabel>
-              <Textarea
-                id="bio"
-                name="bio"
-                defaultValue={profile === undefined || profile.bio === null ? '' : profile?.bio}
-                placeholder="Tell us about yourself"
-              />
-            </FormControl>
-            <FormControl id="dateOfBirth" mb={4}>
-              <FormLabel htmlFor="dateOfBirth">Date of Birth</FormLabel>
-              <Input
-                id="dateOfBirth"
-                name="dateOfBirth"
-                type="date"
-                defaultValue={newProfile ? '' : dateString}
-              />
-            </FormControl>
-            <FormControl id="gender" mb={6}>
-              <FormLabel htmlFor="gender">Gender</FormLabel>
-              <RadioGroup
-                id="gender"
-                name="gender"
-                defaultValue={
-                  profile === undefined || profile.gender === null ? '' : profile?.gender
-                }
-              >
-                <Stack direction="row">
-                  <Radio value="male">Male</Radio>
-                  <Radio value="female">Female</Radio>
-                  <Radio value="other">Other</Radio>
-                </Stack>
-              </RadioGroup>
-            </FormControl>
-            <Button variant={'outline'} type="submit">
-              Update Profile
-            </Button>
+            {profile !== null && (
+              <Box>
+                <FormControl id="bio" mb={4}>
+                  <FormLabel htmlFor="bio">Bio</FormLabel>
+                  <Textarea
+                    id="bio"
+                    name="bio"
+                    defaultValue={profile === undefined || profile.bio === null ? '' : profile?.bio}
+                    placeholder="Tell us about yourself"
+                  />
+                </FormControl>
+                <FormControl id="dateOfBirth" mb={4}>
+                  <FormLabel htmlFor="dateOfBirth">Date of Birth</FormLabel>
+                  <Input
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    type="date"
+                    defaultValue={newProfile ? '' : dateString}
+                  />
+                </FormControl>
+                <FormControl id="gender" mb={6}>
+                  <FormLabel htmlFor="gender">Gender</FormLabel>
+                  <RadioGroup
+                    id="gender"
+                    name="gender"
+                    defaultValue={
+                      profile === undefined || profile.gender === null ? '' : profile?.gender
+                    }
+                  >
+                    <Stack direction="row">
+                      <Radio value="male">Male</Radio>
+                      <Radio value="female">Female</Radio>
+                      <Radio value="other">Other</Radio>
+                    </Stack>
+                  </RadioGroup>
+                </FormControl>
+                <Button variant={'outline'} type="submit">
+                  Update Profile
+                </Button>
+              </Box>
+            )}
           </>
         )}
       </form>
