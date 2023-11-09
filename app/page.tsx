@@ -26,17 +26,17 @@ export default async function Page() {
       },
       orderBy: [
         {
-          authorId: 'asc',
+          createdAt: 'desc',
         },
         {
-          createdAt: 'desc',
+          authorId: 'asc',
         },
       ],
       include: {
         author: true,
+        likes: true,
       },
     });
-    // console.log(timelinePosts);
     const otherTimeLinePosts = await prisma.post.findMany({
       where: {
         authorId: {
@@ -47,14 +47,15 @@ export default async function Page() {
       },
       orderBy: [
         {
-          authorId: 'asc',
+          createdAt: 'desc',
         },
         {
-          createdAt: 'desc',
+          authorId: 'asc',
         },
       ],
       include: {
         author: true,
+        likes: true,
       },
     });
 

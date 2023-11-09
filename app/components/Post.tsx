@@ -1,8 +1,10 @@
+'use client';
 import { Box, Text, Flex, Avatar, Spacer, IconButton, HStack } from '@chakra-ui/react';
 import { FaComment, FaRetweet, FaHeart, FaShareAlt } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { likePost } from '../lib/actions';
 
 export function Post({ post, index }: PostProps) {
   return (
@@ -31,7 +33,12 @@ export function Post({ post, index }: PostProps) {
       <Flex justifyContent="space-between" mt={{ base: '10px' }}>
         <IconButton aria-label="Comment" icon={<FaComment />} />
         <IconButton aria-label="Retweet" icon={<FaRetweet />} />
-        <IconButton aria-label="Like" icon={<FaHeart />} />
+        <IconButton
+          aria-label="Like"
+          icon={<FaHeart />}
+          onClick={() => likePost(post.authorId, post.id, post.likes.length)}
+          color={post.likes.length !== 0 ? 'pink' : 'initial'}
+        />
         <IconButton aria-label="Share" icon={<FaShareAlt />} />
       </Flex>
     </Box>

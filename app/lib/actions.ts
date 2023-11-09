@@ -259,3 +259,69 @@ export async function createPost(prevState: any, formData: FormData) {
     console.error(error);
   }
 }
+
+export async function likePost(postAuthor, postId, likesLength) {
+  try {
+    console.log(likesLength);
+
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    if (likesLength !== 0) {
+      const like = await prisma.postLike.deleteMany({
+        where: {
+          authorId: postAuthor,
+          postId: postId,
+        },
+      });
+      revalidatePath('/');
+      return like;
+    }
+    if (userId === undefined) {
+      console.log('User ID is undefined, cannot proceed with finding likes.');
+      return;
+    }
+
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+    });
+
+    const like = await prisma.postLike.findFirst({
+      where: {
+        authorId: postAuthor,
+        postId: postId,
+      },
+    });
+
+    const likeData = {
+      authorId: postAuthor,
+      postId: postId,
+      createdAt: new Date(),
+    };
+    console.log(like);
+    if (like === null) {
+      const createLike = await prisma.postLike.create({
+        data: likeData,
+      });
+      console.log('here');
+    } else {
+      console.log('already liked');
+    }
+
+    // const updatePost = await prisma.post.update({
+    //   where: {
+    //     id: postId,
+    //   },
+    //   data: {
+    //     status: 'ACCEPTED',
+    //   },
+    // });
+    // console.log(postId);
+    revalidatePath('/');
+
+    return like;
+  } catch (error) {
+    return { message: `Unable to change like post` };
+  }
+}
