@@ -1,5 +1,5 @@
 import { getFriends } from '../lib/actions';
-import FriendsList from '../components/FriendList';
+import FriendsList from '../components/FriendsList';
 import Link from 'next/link';
 
 export default async function Page() {

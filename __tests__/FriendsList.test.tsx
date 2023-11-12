@@ -1,29 +1,49 @@
 /**
  * @jest-environment jsdom
  */
-// FriendsList.test.tsx
-import { render, screen } from '@testing-library/react';
-import FriendsList from '../app/components/FriendList';
+import React from 'react';
+import { render, fireEvent, screen } from '@testing-library/react';
+import FriendsList from '@/app/components/FriendsList';
+import '@testing-library/jest-dom';
+import { useFormState } from 'react-dom';
+import { changeStatus } from '../app/lib/actions';
 
-describe('FriendsList component', () => {
-  it('renders correctly with provided data', () => {
-    const dummyData = [
-      {
-        id: 4,
-        user1Id: 2,
-        user2Id: 4,
-        status: 'ACCEPTED',
-        googleId: 'googleId4',
-        name: 'John Doe',
-        email: 'user4@example.com',
-        hashedPassword: 'hashedPassword4',
-        profileId: null,
-        profilePicture: null,
-      },
-    ];
+jest.mock('react-dom', () => ({
+  ...jest.requireActual('react-dom'),
+  useFormState: jest.fn(),
+}));
 
-    render(<FriendsList friends={dummyData} />);
+jest.mock('../app/lib/actions', () => ({
+  changeStatus: jest.fn(),
+}));
 
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
+describe('FriendsList Component', () => {
+  const mockFriends = [
+    {
+      id: '1',
+      name: 'Friend One',
+      email: 'friend1@example.com',
+      profilePicture: 'http://example.com/picture1.jpg',
+      status: 'PENDING',
+    },
+    {
+      id: '2',
+      name: 'Friend Two',
+      email: 'friend2@example.com',
+      profilePicture: 'http://example.com/picture2.jpg',
+      status: 'ACCEPTED',
+    },
+  ];
+
+  beforeEach(() => {
+    useFormState.mockImplementation(() => [{}]);
+    changeStatus.mockImplementation(() => {});
+  });
+
+  it('renders friends list', () => {
+    render(<FriendsList friends={mockFriends} />);
+
+    expect(screen.getByText('Friend One')).toBeInTheDocument();
+    expect(screen.getByText('Friend Two')).toBeInTheDocument();
   });
 });

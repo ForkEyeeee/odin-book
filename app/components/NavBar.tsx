@@ -1,7 +1,6 @@
 'use client';
 import React from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
-
 import {
   Container,
   Box,
@@ -22,7 +21,6 @@ import {
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/navigation';
 import CreatePostModal from './CreatePostModal';
 

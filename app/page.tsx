@@ -16,6 +16,7 @@ export default async function Page() {
         user1Id: userId,
       },
     });
+    console.log(userFriends);
 
     const userfriendIds = userFriends.map((friend: Friend) => friend.user2Id);
     const timelinePosts = await prisma.post.findMany({
@@ -63,6 +64,6 @@ export default async function Page() {
 
     return <TimeLineTabs forYouPosts={timelinePosts} discoverPosts={otherTimeLinePosts} />;
   } catch (error) {
-    return { message: 'Failed to Fetch Posts.' };
+    return <div>Failed to Fetch Posts.</div>; // Return a JSX element for error message
   }
 }
