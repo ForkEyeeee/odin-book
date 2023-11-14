@@ -324,6 +324,75 @@ export async function likePost(postAuthor, postId, likesLength) {
   }
 }
 
+export async function likeComment(postAuthor, commentId, likesLength) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    if (likesLength !== 0) {
+      const like = await prisma.commentLike.deleteMany({
+        where: {
+          authorId: postAuthor,
+          commentId: commentId,
+        },
+      });
+      revalidatePath('/');
+      return like;
+    }
+    if (userId === undefined) {
+      console.log('User ID is undefined, cannot proceed with finding likes.');
+      return;
+    }
+
+    const comment = await prisma.comment.findUnique({
+      where: {
+        id: commentId,
+      },
+    });
+
+    const like = await prisma.commentLike.findFirst({
+      where: {
+        authorId: postAuthor,
+        commentId: commentId,
+      },
+    });
+    console.log(like);
+
+    const likeData = {
+      authorId: postAuthor,
+      commentId: commentId,
+      createdAt: new Date(),
+    };
+
+    if (like === null) {
+      const createLike = await prisma.commentLike.create({
+        data: likeData,
+      });
+    } else {
+      const like = await prisma.commentLike.deleteMany({
+        where: {
+          authorId: postAuthor,
+          commentId: commentId,
+        },
+      });
+      console.log('already liked');
+    }
+
+    // const updatePost = await prisma.post.update({
+    //   where: {
+    //     id: postId,
+    //   },
+    //   data: {
+    //     status: 'ACCEPTED',
+    //   },
+    // });
+    // console.log(postId);
+    revalidatePath('/');
+    return like;
+  } catch (error) {
+    return { message: `Unable to change like post` };
+  }
+}
+
 export async function createComment(prevState: any, formData: FormData) {
   try {
     const session = await getServerSession(authOptions);

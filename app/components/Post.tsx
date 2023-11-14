@@ -59,7 +59,7 @@ export function Post({ post, index }: PostProps) {
         />
         <IconButton aria-label="Share" icon={<FaShareAlt />} />
       </Flex>
-      <Comment comments={post.comments} />
+      <Comment comments={post.comments} post={post} />
       <form action={formAction}>
         <FormControl>
           <FormLabel htmlFor="comment">Edit Mode</FormLabel>

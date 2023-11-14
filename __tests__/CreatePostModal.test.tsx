@@ -25,6 +25,7 @@ describe('CreatePostModal Component', () => {
 
   it('opens and closes the modal', () => {
     render(<CreatePostModal />);
+    fireEvent.click(screen.getByTestId('open-modal-button'));
 
     expect(screen.getByText('Create a Post')).toBeInTheDocument();
   });

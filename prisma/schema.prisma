@@ -14,57 +14,56 @@ model User {
   email          String        @unique
   hashedPassword String
   profileId      Int?          @unique
-  profile        Profile?      @relation(fields: [profileId], references: [id]) 
+  profile        Profile?      @relation(fields: [profileId], references: [id])
   profilePicture String?
   posts          Post[]
   friendsAsUser1 Friend[]      @relation("UserToFriend1")
   friendsAsUser2 Friend[]      @relation("UserToFriend2")
   comments       Comment[]
-  postLikes      PostLike[]   
+  postLikes      PostLike[]
   commentLikes   CommentLike[]
 }
 
 model Profile {
-  id             Int     @id @default(autoincrement())
-  bio            String? 
-  dateOfBirth    DateTime?
-  gender         String?
-  userId         Int?          @unique
-  user           User?  
+  id          Int       @id @default(autoincrement())
+  bio         String?
+  dateOfBirth DateTime?
+  gender      String?
+  userId      Int?      @unique
+  user        User?
 }
 
-
 model Friend {
-  id      Int               @id @default(autoincrement())
-  user1   User              @relation("UserToFriend1", fields: [user1Id], references: [id])
+  id      Int              @id @default(autoincrement())
+  user1   User             @relation("UserToFriend1", fields: [user1Id], references: [id])
   user1Id Int
-  user2   User              @relation("UserToFriend2", fields: [user2Id], references: [id])
+  user2   User             @relation("UserToFriend2", fields: [user2Id], references: [id])
   user2Id Int
   status  FriendshipStatus
 
   @@unique([user1Id, user2Id])
 }
 
-
 model Post {
-  id        Int       @id @default(autoincrement())
-  content   String
-  imageUrl  String?
-  author    User      @relation(fields: [authorId], references: [id])
-  authorId  Int
-  comments  Comment[]
-  likes     PostLike[] 
-  createdAt DateTime  @default(now())
+  id           Int           @id @default(autoincrement())
+  content      String
+  imageUrl     String?
+  author       User          @relation(fields: [authorId], references: [id])
+  authorId     Int
+  comments     Comment[]
+  likes        PostLike[]
+  commentLikes CommentLike[]
+  createdAt    DateTime      @default(now())
 }
 
 model Comment {
-  id           Int          @id @default(autoincrement())
+  id           Int           @id @default(autoincrement())
   content      String
-  author       User         @relation(fields: [authorId], references: [id])
+  author       User          @relation(fields: [authorId], references: [id])
   authorId     Int
-  post         Post         @relation(fields: [postId], references: [id])
+  post         Post          @relation(fields: [postId], references: [id])
   postId       Int
-  createdAt    DateTime     @default(now())
+  createdAt    DateTime      @default(now())
   commentLikes CommentLike[]
 }
 
@@ -84,6 +83,8 @@ model CommentLike {
   comment   Comment  @relation(fields: [commentId], references: [id])
   commentId Int
   createdAt DateTime @default(now())
+  Post      Post?    @relation(fields: [postId], references: [id])
+  postId    Int?
 }
 
 enum FriendshipStatus {

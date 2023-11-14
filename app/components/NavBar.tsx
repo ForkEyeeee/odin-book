@@ -22,7 +22,10 @@ import {
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
+import { ChatIcon } from 'react-icons';
 import CreatePostModal from './CreatePostModal';
+import SideBar from './SideBar';
+import { useState, useEffect } from 'react';
 
 const Links = ['Profile', 'Messages', 'Friends', 'Settings', 'Sign Out'];
 
@@ -47,6 +50,7 @@ const NavBar = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
   const router = useRouter();
+  // const [isOpen, setIsOpen] = useState(false);
 
   return (
     <Box
@@ -77,6 +81,7 @@ const NavBar = () => {
             </IconButton>
 
             <Menu isLazy>
+              <SideBar />
               <MenuButton as={Button} size="sm" px={0} py={0} rounded="full">
                 <Avatar size="sm" src={session !== undefined ? session?.user.image!! : ''} />
               </MenuButton>

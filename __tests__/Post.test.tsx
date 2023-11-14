@@ -18,6 +18,7 @@ jest.mock('next/router', () => ({
     push: jest.fn(),
   }),
 }));
+
 jest.mock('../app/lib/actions', () => ({
   likePost: jest.fn(),
   createComment: jest.fn(),
@@ -52,8 +53,11 @@ describe('Post Component', () => {
     imageUrl: 'http://example.com/image1.jpg',
     authorId: 1,
   };
+
   it('renders post content, author information, and action buttons', () => {
+    // render(<Post post={mockPost} index={0} />);
     render(<Post post={mockPost} index={0} />);
+    // const { getByRole } = render(serverComponent);
 
     expect(screen.getByText('Author One')).toBeInTheDocument();
     expect(screen.getByText('Sample post content')).toBeInTheDocument();

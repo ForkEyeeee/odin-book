@@ -2,8 +2,9 @@
 import { Box, Text, Flex, Avatar, Spacer, IconButton, VStack } from '@chakra-ui/react';
 import { FaRegCommentDots, FaRegHeart, FaRegShareSquare } from 'react-icons/fa';
 import Link from 'next/link';
+import { likeComment } from '../lib/actions';
 
-export default function Comment({ comments }) {
+export default function Comment({ comments, post }) {
   if (comments === undefined || comments.length === 0) return null;
 
   return (
@@ -32,12 +33,13 @@ export default function Comment({ comments }) {
             </Text>
             <Flex mt="2" color="gray.400" fontSize="sm">
               <IconButton
-                aria-label="Reply"
+                aria-label="Like"
                 variant="ghost"
-                icon={<FaRegCommentDots />}
+                icon={<FaRegHeart />}
+                onClick={() => likeComment(post.authorId, comment.id, post.likes.length)}
                 size="sm"
+                color={comment.commentLikes.length !== 0 ? 'pink' : 'white'}
               />
-              <IconButton aria-label="Like" variant="ghost" icon={<FaRegHeart />} size="sm" />
               <IconButton
                 aria-label="Share"
                 variant="ghost"
