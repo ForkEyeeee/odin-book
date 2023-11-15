@@ -11,6 +11,8 @@ import {
   Spinner,
   Center,
 } from '@chakra-ui/react';
+import Link from 'next/link';
+import { Avatar } from '@chakra-ui/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUserCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import Message from './Message';
@@ -18,11 +20,12 @@ import { BsSendFill } from 'react-icons/bs';
 import { useEffect, useState } from 'react';
 import { getMessages } from '../lib/actions';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 
 export default function Chat() {
   const [senderMessages, setSenderMessages] = useState([]);
   const [recipientMessages, setRecipientMessages] = useState([]);
-
+  const [profilePicture, setProfilePicture] = useState('');
   const [sender, setSender] = useState('');
   const [recipient, setRecipient] = useState('');
   // const recipient = { firstName: 'John', lastName: 'Doe' };
@@ -39,6 +42,7 @@ export default function Chat() {
         setRecipientMessages(messages?.recipientMessages);
         setSender(messages?.sender.name);
         setRecipient(messages?.recipient.name);
+        setProfilePicture(messages.recipient.profilePicture);
         console.log(messages);
       } catch (error) {
         console.error(error);
@@ -49,37 +53,37 @@ export default function Chat() {
   return (
     <Box flex="1" display="flex" flexDirection="column" h="100vh" p={{ xl: 5 }}>
       <HStack justifyContent={'space-between'} p={2}>
-        <FontAwesomeIcon
-          icon={faUserCircle as IconDefinition}
-          style={{ color: '#808080' }}
-          size="2x"
-        />
+        <Link href={`/profile/${pathname.slice(10)}`}>
+          <Avatar size="md" name="John Doe" src={`${profilePicture}`} />
+        </Link>{' '}
         <Heading color={'white'} noOfLines={1} pb={5}>
           {recipient}
         </Heading>
       </HStack>
       <VStack flex="1" overflowY="scroll">
         {senderMessages.map(message => (
-          <Message
-            justifyContent="flex-end"
-            backGround="blue"
-            color="white"
-            popOverPlacement="left"
-            key={message.id}
-            content={message.content}
-            // isSender={message.sender !== 'user1'}
-          />
+          <Suspense key={message.id}>
+            <Message
+              justifyContent="flex-end"
+              backGround="blue"
+              color="white"
+              popOverPlacement="left"
+              content={message.content}
+              // isSender={message.sender !== 'user1'}
+            />
+          </Suspense>
         ))}
         {recipientMessages.map(message => (
-          <Message
-            justifyContent="flex-start"
-            backGround="white"
-            color="black"
-            popOverPlacement="left"
-            key={message.id}
-            content={message.content}
-            // isSender={message.sender !== 'user1'}
-          />
+          <Suspense key={message.id}>
+            <Message
+              justifyContent="flex-start"
+              backGround="white"
+              color="black"
+              popOverPlacement="left"
+              content={message.content}
+              // isSender={message.sender !== 'user1'}
+            />
+          </Suspense>
         ))}
       </VStack>
       <form>
