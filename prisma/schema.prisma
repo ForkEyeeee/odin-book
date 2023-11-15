@@ -8,20 +8,22 @@ datasource db {
 }
 
 model User {
-  id             Int           @id @default(autoincrement())
-  googleId       String        @unique
-  name           String
-  email          String        @unique
-  hashedPassword String
-  profileId      Int?          @unique
-  profile        Profile?      @relation(fields: [profileId], references: [id])
-  profilePicture String?
-  posts          Post[]
-  friendsAsUser1 Friend[]      @relation("UserToFriend1")
-  friendsAsUser2 Friend[]      @relation("UserToFriend2")
-  comments       Comment[]
-  postLikes      PostLike[]
-  commentLikes   CommentLike[]
+  id               Int             @id @default(autoincrement())
+  googleId         String          @unique
+  name             String
+  email            String          @unique
+  hashedPassword   String
+  profileId        Int?            @unique
+  profile          Profile?        @relation(fields: [profileId], references: [id])
+  profilePicture   String?
+  posts            Post[]
+  friendsAsUser1   Friend[]        @relation("UserToFriend1")
+  friendsAsUser2   Friend[]        @relation("UserToFriend2")
+  comments         Comment[]
+  postLikes        PostLike[]
+  commentLikes     CommentLike[]
+  sentMessages     Message[]       @relation("UserSentMessages")
+  receivedMessages Message[]       @relation("UserReceivedMessages")
 }
 
 model Profile {
@@ -40,7 +42,6 @@ model Friend {
   user2   User             @relation("UserToFriend2", fields: [user2Id], references: [id])
   user2Id Int
   status  FriendshipStatus
-
   @@unique([user1Id, user2Id])
 }
 
@@ -85,6 +86,17 @@ model CommentLike {
   createdAt DateTime @default(now())
   Post      Post?    @relation(fields: [postId], references: [id])
   postId    Int?
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  senderId  Int
+  sender    User     @relation("UserSentMessages", fields: [senderId], references: [id])
+  receiverId Int
+  receiver  User     @relation("UserReceivedMessages", fields: [receiverId], references: [id])
+  createdAt DateTime @default(now())
+  read      Boolean  @default(false)
 }
 
 enum FriendshipStatus {

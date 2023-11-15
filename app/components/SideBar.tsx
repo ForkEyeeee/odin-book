@@ -45,7 +45,6 @@ const SideBar = () => {
       try {
         const friends = await getFriends();
         if (friends !== null) setFriends(friends);
-        console.log(friends);
       } catch (error) {
         console.log(error);
       }

@@ -416,3 +416,42 @@ export async function createComment(prevState: any, formData: FormData) {
     console.error(error);
   }
 }
+
+export async function getMessages(friendId) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+
+    const senderMessages = await prisma.message.findMany({
+      where: {
+        senderId: userId,
+        receiverId: friendId,
+      },
+      include: {
+        sender: true,
+      },
+    });
+    const recipientMessages = await prisma.message.findMany({
+      where: {
+        senderId: friendId,
+        receiverId: userId,
+      },
+      include: {
+        sender: true,
+      },
+    });
+
+    const sender = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    const recipient = await prisma.user.findUnique({
+      where: { id: friendId },
+    });
+    return { senderMessages, recipientMessages, sender, recipient };
+  } catch (error) {
+    console.error(error);
+  }
+}

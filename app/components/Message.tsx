@@ -32,6 +32,7 @@ const Message = ({
   isSender,
   isOpen,
 }: Props) => {
+  console.log('here');
   return (
     <Popover placement={popOverPlacement}>
       <Flex justifyContent={justifyContent} w={'100%'}>
