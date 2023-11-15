@@ -91,6 +91,9 @@ export async function getFriends() {
     orderBy: {
       status: 'asc',
     },
+    // include: {
+    //   user2: true,
+    // },
   });
 
   const friendIds = userFriends.map(friend => friend.user2Id);

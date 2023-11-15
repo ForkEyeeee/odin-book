@@ -13,9 +13,13 @@ import {
   Text,
   Spinner,
   useDisclosure,
+  Button,
 } from '@chakra-ui/react';
 import { HamburgerIcon, ChatIcon } from '@chakra-ui/icons';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { getFriends } from '../lib/actions';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface User {
   messages: [];
@@ -33,6 +37,21 @@ const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [users, setUsers] = useState<User[]>();
   const [loading, setLoading] = useState(false);
+  const [friends, setFriends] = useState([]);
+  const router = useRouter();
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const friends = await getFriends();
+        if (friends !== null) setFriends(friends);
+        console.log(friends);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
 
   return (
     <>
@@ -66,13 +85,17 @@ const SideBar = () => {
           ) : (
             <DrawerBody>
               <VStack borderStyle={'solid'} spacing={10}>
-                {users &&
-                  users.map(user => (
-                    <SideBarItem key={user._id} url={user._id} onClose={onClose}>
-                      {user.username}
-                      {user.firstname}
-                      {user.lastname}
-                    </SideBarItem>
+                {friends &&
+                  friends.map(friend => (
+                    <Box key={friend.id}>
+                      <Link href={`/profile/${friend.id}`}>
+                        <div>
+                          {friend.name}
+                          {friend.email}
+                        </div>
+                      </Link>
+                      <Button onClick={() => router.push(`/messages/${friend.id}`)}>Message</Button>
+                    </Box>
                   ))}
               </VStack>
             </DrawerBody>
