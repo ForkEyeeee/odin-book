@@ -11,11 +11,13 @@ import {
   HStack,
   Input,
   Button,
+  IconButton,
+  Box,
 } from '@chakra-ui/react';
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { EditIcon, DeleteIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
-import { deleteMessage } from '../lib/actions';
-
+import { deleteMessage, updateMessage } from '../lib/actions';
+import { useFormState } from 'react-dom';
 interface Props {
   justifyContent: string;
   backGround: string;
@@ -45,6 +47,9 @@ const Message = ({
   senderId,
 }: Props) => {
   const [messageInfo, setMessageInfo] = useState<Message[]>([]);
+  const initialState = { message: null, errors: {} };
+  const [isEdit, setIsEdit] = useState(false);
+  const [state, formAction] = useFormState(updateMessage, initialState);
 
   const handleClick = () => {
     const messageInfo = {
@@ -54,16 +59,20 @@ const Message = ({
     };
     setMessageInfo(messageInfo);
   };
-  console.log(messageInfo);
+  console.log(isEdit);
   return (
     <Popover placement={popOverPlacement}>
       <Flex justifyContent={justifyContent} w={'100%'}>
         <PopoverTrigger>
           <Card maxW={'75%'} bg={backGround} role="message-card" onClick={() => handleClick()}>
             <CardBody pb={isOpen ? 0 : undefined}>
-              <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
-                {content}
-              </Text>
+              {!isEdit ? (
+                <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
+                  {content}
+                </Text>
+              ) : (
+                <Input defaultValue={content} />
+              )}
             </CardBody>
           </Card>
         </PopoverTrigger>
@@ -72,7 +81,21 @@ const Message = ({
         <PopoverContent w={'fit-content'}>
           <Flex justifyContent={popOverPlacement === 'left' ? 'flex-end' : 'flex-start'}>
             <HStack spacing={5} p={1}>
-              <EditIcon />
+              <form action={formAction}>
+                {!isEdit ? (
+                  <IconButton aria-label="edit-button" onClick={() => setIsEdit(!isEdit)}>
+                    <EditIcon />
+                  </IconButton>
+                ) : (
+                  <Box>
+                    <IconButton aria-label="cancel button" onClick={() => setIsEdit(!isEdit)}>
+                      <SmallCloseIcon />
+                    </IconButton>
+                    <Button type="submit">Submit</Button>
+                  </Box>
+                )}
+              </form>
+
               <DeleteIcon color={'red'} onClick={() => deleteMessage(messageInfo)} />
             </HStack>
           </Flex>

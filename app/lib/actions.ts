@@ -438,7 +438,7 @@ export async function getMessages(friendId) {
         sender: true,
       },
       orderBy: {
-        createdAt: 'asc', // or 'desc' depending on how you want to sort
+        createdAt: 'asc',
       },
     });
 
@@ -473,7 +473,6 @@ export async function createMessage(prevState: any, formData: FormData) {
     const message = await prisma.message.create({
       data: messageData,
     });
-    console.log(message);
     revalidatePath(`/messages/${message.receiverId}`);
   } catch (error) {
     console.error(error);
@@ -489,6 +488,32 @@ export async function deleteMessage(messageInfo) {
       where: {
         id: messageInfo.messageId,
       },
+    });
+
+    revalidatePath(`/messages/${messageInfo.receiverId}`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function updateMessage(formData: FormData, messageInfo) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    console.log(formData);
+    console.log('adawdaw');
+    // const messageData = {
+    //   content: formData.get('message'),
+    //   senderId: userId,
+    //   receiverId: Number(formData.get('receiverId')),
+    //   createdAt: new Date(),
+    //   read: false,
+    // };
+    const message = await prisma.message.update({
+      where: {
+        id: messageInfo.messageId,
+      },
+      data: {},
     });
 
     revalidatePath(`/messages/${messageInfo.receiverId}`);
