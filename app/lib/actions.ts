@@ -421,23 +421,24 @@ export async function getMessages(friendId) {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
-
-    const senderMessages = await prisma.message.findMany({
+    const messages = await prisma.message.findMany({
       where: {
-        senderId: userId,
-        receiverId: friendId,
+        OR: [
+          {
+            senderId: userId,
+            receiverId: friendId,
+          },
+          {
+            senderId: friendId,
+            receiverId: userId,
+          },
+        ],
       },
       include: {
         sender: true,
       },
-    });
-    const recipientMessages = await prisma.message.findMany({
-      where: {
-        senderId: friendId,
-        receiverId: userId,
-      },
-      include: {
-        sender: true,
+      orderBy: {
+        createdAt: 'asc', // or 'desc' depending on how you want to sort
       },
     });
 
@@ -450,7 +451,47 @@ export async function getMessages(friendId) {
     const recipient = await prisma.user.findUnique({
       where: { id: friendId },
     });
-    return { senderMessages, recipientMessages, sender, recipient };
+    return { messages, sender, recipient };
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function createMessage(prevState: any, formData: FormData) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    console.log(formData);
+
+    const messageData = {
+      content: formData.get('message'),
+      senderId: userId,
+      receiverId: Number(formData.get('receiverId')),
+      createdAt: new Date(),
+      read: false,
+    };
+    const message = await prisma.message.create({
+      data: messageData,
+    });
+    console.log(message);
+    revalidatePath(`/messages/${message.receiverId}`);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function deleteMessage(messageInfo) {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+
+    const message = await prisma.message.delete({
+      where: {
+        id: messageInfo.messageId,
+      },
+    });
+
+    revalidatePath(`/messages/${messageInfo.receiverId}`);
   } catch (error) {
     console.error(error);
   }

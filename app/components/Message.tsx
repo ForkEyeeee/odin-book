@@ -1,3 +1,4 @@
+'use client';
 import {
   Flex,
   Card,
@@ -12,6 +13,8 @@ import {
   Button,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon } from '@chakra-ui/icons';
+import { useState, useEffect } from 'react';
+import { deleteMessage } from '../lib/actions';
 
 interface Props {
   justifyContent: string;
@@ -23,6 +26,12 @@ interface Props {
   isOpen: boolean;
 }
 
+interface Message {
+  messageId: number;
+  senderId: number;
+  receiverId: number;
+}
+
 const Message = ({
   justifyContent,
   backGround,
@@ -31,13 +40,26 @@ const Message = ({
   popOverPlacement,
   isSender,
   isOpen,
+  messageId,
+  receiverId,
+  senderId,
 }: Props) => {
-  console.log('here');
+  const [messageInfo, setMessageInfo] = useState<Message[]>([]);
+
+  const handleClick = () => {
+    const messageInfo = {
+      messageId,
+      receiverId,
+      senderId,
+    };
+    setMessageInfo(messageInfo);
+  };
+  console.log(messageInfo);
   return (
     <Popover placement={popOverPlacement}>
       <Flex justifyContent={justifyContent} w={'100%'}>
         <PopoverTrigger>
-          <Card maxW={'75%'} bg={backGround} role="message-card">
+          <Card maxW={'75%'} bg={backGround} role="message-card" onClick={() => handleClick()}>
             <CardBody pb={isOpen ? 0 : undefined}>
               <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
                 {content}
@@ -51,7 +73,7 @@ const Message = ({
           <Flex justifyContent={popOverPlacement === 'left' ? 'flex-end' : 'flex-start'}>
             <HStack spacing={5} p={1}>
               <EditIcon />
-              <DeleteIcon color={'red'} />
+              <DeleteIcon color={'red'} onClick={() => deleteMessage(messageInfo)} />
             </HStack>
           </Flex>
         </PopoverContent>
