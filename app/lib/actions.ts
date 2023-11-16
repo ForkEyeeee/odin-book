@@ -489,34 +489,33 @@ export async function deleteMessage(messageInfo) {
         id: messageInfo.messageId,
       },
     });
-
-    revalidatePath(`/messages/${messageInfo.receiverId}`);
+    console.log('revalidating');
+    revalidatePath(`/`);
   } catch (error) {
     console.error(error);
   }
 }
 
-export async function updateMessage(formData: FormData, messageInfo) {
+export async function updateMessage(prevState: any, formData: FormData) {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
-    console.log(formData);
-    console.log('adawdaw');
-    // const messageData = {
-    //   content: formData.get('message'),
-    //   senderId: userId,
-    //   receiverId: Number(formData.get('receiverId')),
-    //   createdAt: new Date(),
-    //   read: false,
-    // };
+
+    const messageData = {
+      content: formData.get('message'),
+      senderId: userId,
+      receiverId: Number(formData.get('receiverId')),
+      createdAt: new Date(),
+      read: false,
+    };
     const message = await prisma.message.update({
       where: {
-        id: messageInfo.messageId,
+        id: Number(formData.get('messageId')),
       },
-      data: {},
+      data: messageData,
     });
-
-    revalidatePath(`/messages/${messageInfo.receiverId}`);
+    console.log('revalidating');
+    revalidatePath(`/messages/${formData.get('receiverId')}`);
   } catch (error) {
     console.error(error);
   }
