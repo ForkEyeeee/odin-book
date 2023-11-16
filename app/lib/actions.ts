@@ -6,6 +6,12 @@ import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
+const getUserId = async () => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
+  return userId;
+};
+
 export async function updateProfile(prevState: any, formData: FormData) {
   try {
     const ProfileSchema = z.object({
@@ -434,9 +440,7 @@ export async function getMessages(friendId) {
           },
         ],
       },
-      include: {
-        sender: true,
-      },
+
       orderBy: {
         createdAt: 'asc',
       },
@@ -479,44 +483,59 @@ export async function createMessage(prevState: any, formData: FormData) {
   }
 }
 
-export async function deleteMessage(messageInfo) {
+export async function deleteMessage(messageId: number, receiverId: number) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
+    const userId = await getUserId();
 
     const message = await prisma.message.delete({
       where: {
-        id: messageInfo.messageId,
+        id: messageId,
       },
     });
-    console.log('revalidating');
-    revalidatePath(`/`);
+
+    revalidatePath(`/messages/${receiverId}`);
   } catch (error) {
-    console.error(error);
+    return { message: `Message unsuccessfully deleted` };
   }
 }
 
 export async function updateMessage(prevState: any, formData: FormData) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
+    const userId = await getUserId();
+
+    const ProfileSchema = z.object({
+      message: z.string(),
+      receiverId: z.string().transform(str => Number(str)),
+      messageId: z.string(),
+    });
+
+    const form = {
+      message: formData.get('message'),
+      senderId: userId,
+      receiverId: formData.get('receiverId'),
+      messageId: formData.get('messageId'),
+    };
+
+    const parsedForm = ProfileSchema.parse(form);
+    console.log(userId);
 
     const messageData = {
-      content: formData.get('message'),
+      content: parsedForm.message,
       senderId: userId,
-      receiverId: Number(formData.get('receiverId')),
+      receiverId: parsedForm.receiverId,
       createdAt: new Date(),
       read: false,
     };
-    const message = await prisma.message.update({
+
+    const updatedMessage = await prisma.message.update({
       where: {
         id: Number(formData.get('messageId')),
       },
       data: messageData,
     });
-    console.log('revalidating');
-    revalidatePath(`/messages/${formData.get('receiverId')}`);
+
+    revalidatePath(`/messages/${form.receiverId}`);
   } catch (error) {
-    console.error(error);
+    return { message: `Message unsuccessfully updated` };
   }
 }

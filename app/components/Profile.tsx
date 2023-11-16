@@ -42,9 +42,6 @@ export default function Profile({ profile }: FormProps) {
     const getData = async () => {
       const session = await getSession();
       if (session.user.id === profile?.userId) setIsUser(true);
-      console.log(session?.user.id);
-      console.log(profile?.userId);
-      console.log(isUser);
     };
     getData();
   }, [profile]);

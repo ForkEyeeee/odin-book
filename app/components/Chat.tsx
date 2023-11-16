@@ -8,60 +8,55 @@ import {
   InputRightElement,
   Heading,
   HStack,
-  Spinner,
-  Center,
+  Text,
   IconButton,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { Avatar } from '@chakra-ui/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserCircle, IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import Message from './Message';
 import { BsSendFill } from 'react-icons/bs';
 import { useEffect, useState } from 'react';
 import { createMessage, getMessages } from '../lib/actions';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Suspense } from 'react';
 import { useFormState } from 'react-dom';
+import { Message as MessageType } from '../lib/definitions';
 
 export default function Chat() {
-  const [senderMessages, setSenderMessages] = useState([]);
-  const [recipientMessages, setRecipientMessages] = useState([]);
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<MessageType[]>([]);
   const [profilePicture, setProfilePicture] = useState('');
   const [sender, setSender] = useState('');
   const [recipient, setRecipient] = useState('');
-  // const recipient = { firstName: 'John', lastName: 'Doe' };
-  // const messages = [
-  //   { _id: '1', content: 'Hello there!', sender: 'user1' },
-  //   { _id: '2', content: 'How are you?', sender: 'user2' },
-  // ];
 
-  const pathname = usePathname();
-  const initialState = { message: null, errors: {}, receiverId: Number(pathname.slice(10)) };
+  const initialState = { message: null, errors: {} };
   const [state, formAction] = useFormState(createMessage, initialState);
-  const receiverId = Number(pathname.slice(10));
+  const receiverId = Number(usePathname().slice(10));
+
+  useEffect(() => {}, [state]);
+
   useEffect(() => {
-    const getData = async () => {
+    const getData = async (receiverId: number) => {
       try {
-        const messages = await getMessages(Number(pathname.slice(10)));
-        // setSenderMessages(messages?.senderMessages);
-        // setRecipientMessages(messages?.recipientMessages);
-        setSender(messages?.sender.name);
-        setRecipient(messages?.recipient.name);
-        setProfilePicture(messages.recipient.profilePicture);
-        setMessages(messages.messages);
-        console.log(messages);
+        const { messages, recipient, sender } = (await getMessages(receiverId)) as any;
+        setMessages(messages);
+        setRecipient(recipient);
+        setSender(sender);
+        return;
       } catch (error) {
-        console.error(error);
+        return (
+          <Box>
+            <Text>Unable to Fetch data</Text>
+          </Box>
+        );
       }
     };
-    getData();
-  }, [pathname]);
+    getData(receiverId);
+  }, [receiverId]);
+
   return (
     <Box flex="1" display="flex" flexDirection="column" h="100vh" p={{ xl: 5 }}>
       <HStack justifyContent={'space-between'} p={2}>
-        <Link href={`/profile/${pathname.slice(10)}`}>
+        <Link href={`/profile/${receiverId}`}>
           <Avatar size="md" name="John Doe" src={`${profilePicture}`} />
         </Link>{' '}
         <Heading color={'white'} noOfLines={1} pb={5}>
@@ -80,22 +75,9 @@ export default function Chat() {
               messageId={message.id}
               receiverId={message.receiverId}
               senderId={message.senderId}
-              // isSender={message.sender !== 'user1'}
             />
           </Suspense>
         ))}
-        {/* {recipientMessages.map(message => (
-          <Suspense key={message.id}>
-            <Message
-              justifyContent="flex-start"
-              backGround="white"
-              color="black"
-              popOverPlacement="left"
-              content={message.content}
-              // isSender={message.sender !== 'user1'}
-            />
-          </Suspense>
-        ))} */}
       </VStack>
       <form action={formAction}>
         <FormControl pt={5}>
@@ -113,7 +95,7 @@ export default function Chat() {
               maxLength={200}
               size={{ sm: 'lg' }}
             />
-            <input type="hidden" name="receiverId" value={Number(pathname.slice(10))} />
+            <input type="hidden" name="receiverId" value={receiverId} />
           </InputGroup>
         </FormControl>
       </form>

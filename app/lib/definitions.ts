@@ -74,3 +74,12 @@ export interface Profile {
   gender: string | null;
   userId: number | null;
 }
+
+export interface Message {
+  id: number;
+  content: string;
+  senderId: number;
+  receiverId: number;
+  createdAt: string; // Use Date or string depending on how you handle dates
+  read: boolean;
+}
