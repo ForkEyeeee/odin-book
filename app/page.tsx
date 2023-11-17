@@ -37,6 +37,7 @@ export default async function Page() {
         likes: true,
         comments: {
           include: {
+            author: true,
             commentLikes: true,
           },
         },
@@ -63,12 +64,12 @@ export default async function Page() {
         likes: true,
         comments: {
           include: {
+            author: true,
             commentLikes: true,
           },
         },
       },
     });
-
     return (
       <TimeLineTabs
         forYouPosts={timelinePosts}

@@ -49,22 +49,23 @@ export interface PostWithAuthor {
   authorId: number;
   createdAt: Date;
   author: Author;
-  likes: [
-    {
-      id: number;
-      authorId: number;
-      postId: number;
-      createdAt: Date;
-    }
-  ];
+  likes: {
+    id: number;
+    authorId: number;
+    postId: number;
+    createdAt: Date;
+  }[];
   comments: {
     id: number;
     content: string;
     authorId: number;
     postId: number;
     createdAt: Date;
-  };
+    author: Author;
+    commentLikes: CommentLike[];
+  }[];
 }
+
 export interface PostProps {
   post: PostWithAuthor;
   index: number;
@@ -97,7 +98,7 @@ export interface Message {
   content: string;
   senderId: number;
   receiverId: number;
-  createdAt: string; // Use Date or string depending on how you handle dates
+  createdAt: string;
   read: boolean;
 }
 
@@ -106,4 +107,28 @@ export enum FriendshipStatus {
   ACCEPTED,
   DECLINED,
   BLOCKED,
+}
+
+export interface CommentLike {
+  id: number;
+  authorId: number;
+  commentId: number;
+  createdAt: Date;
+  postId: number | null;
+}
+
+export interface Comment {
+  id: number;
+  content: string;
+  authorId: number;
+  postId: number;
+  createdAt: Date;
+  author: Author;
+  commentLikes: CommentLike[];
+}
+
+export interface CommentProps {
+  comments: Comment[];
+  post: PostWithAuthor;
+  userId: number;
 }

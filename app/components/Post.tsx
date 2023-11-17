@@ -25,7 +25,6 @@ export function Post({ post, index, userId }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
 
   const isLiked = post.likes.find(element => element.authorId === userId);
-  console.log(post.comments);
   return (
     <Box
       borderWidth="1px"
@@ -58,7 +57,7 @@ export function Post({ post, index, userId }: PostProps) {
         />
         <Text>{post.likes.length}</Text>
       </Flex>
-      <Comment comments={post.comments} post={post} />
+      <Comment comments={post.comments} post={post} userId={userId} />
       <form action={formAction}>
         <FormControl>
           <FormLabel htmlFor="comment">Edit Mode</FormLabel>

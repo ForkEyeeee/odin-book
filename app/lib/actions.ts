@@ -323,8 +323,6 @@ export async function likePost(postId: number) {
       },
     });
 
-    console.log(userLike);
-
     if (userLike.length > 0) {
       const deletedLike = await prisma.postLike.delete({
         where: {
@@ -348,49 +346,37 @@ export async function likePost(postId: number) {
   }
 }
 
-export async function likeComment(postAuthor: number, commentId: number, likesLength: number) {
+export async function likeComment(commentId: number, postId: number) {
   try {
-    if (likesLength !== 0) {
-      const like = await prisma.commentLike.deleteMany({
+    const userId = await getUserId();
+
+    const userLike = await prisma.commentLike.findMany({
+      where: {
+        authorId: userId,
+        commentId: commentId,
+        postId: postId,
+      },
+    });
+
+    if (userLike.length > 0) {
+      const deletedLike = await prisma.commentLike.delete({
         where: {
-          authorId: postAuthor,
-          commentId: commentId,
+          id: userLike[0].id,
         },
       });
-      revalidatePath('/');
-    }
-
-    const foundComment = await prisma.comment.findUnique({
-      where: {
-        id: commentId,
-      },
-    });
-
-    const foundLike = await prisma.commentLike.findFirst({
-      where: {
-        authorId: postAuthor,
+    } else {
+      const likeData = {
+        authorId: userId,
         commentId: commentId,
-      },
-    });
+        createdAt: new Date(),
+        postId: postId,
+      };
 
-    const likeData = {
-      authorId: postAuthor,
-      commentId: commentId,
-      createdAt: new Date(),
-    };
-
-    if (foundLike === null) {
       const createdLike = await prisma.commentLike.create({
         data: likeData,
       });
-    } else {
-      const foundLike = await prisma.commentLike.deleteMany({
-        where: {
-          authorId: postAuthor,
-          commentId: commentId,
-        },
-      });
     }
+
     revalidatePath('/');
   } catch (error) {
     return { message: `Unable to like comment` };
@@ -409,10 +395,9 @@ export async function createComment(prevState: any, formData: FormData) {
     const form = {
       content: formData.get('comment'),
       authorId: userId,
-      postId: Number(formData.get('postId')),
+      postId: formData.get('postId'),
       createdAt: new Date(),
     };
-
     const parsedForm = commentSchema.parse(form);
 
     const commentData = {
@@ -430,6 +415,23 @@ export async function createComment(prevState: any, formData: FormData) {
     return createdComment;
   } catch (error) {
     return { message: `Messages unsuccessfully created` };
+  }
+}
+
+export async function deleteComment(commentId: number) {
+  try {
+    const userId = await getUserId();
+
+    const deletedComment = await prisma.comment.delete({
+      where: {
+        id: commentId,
+      },
+    });
+
+    revalidatePath('/');
+    return deleteComment;
+  } catch (error) {
+    return { message: `Comment unsuccessfully deleted` };
   }
 }
 
