@@ -249,7 +249,6 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
 
 export async function createPost(prevState: any, formData: FormData) {
   try {
-    console.log('here');
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
 
@@ -404,8 +403,8 @@ export async function likeComment(postAuthor, commentId, likesLength) {
 
 export async function createComment(prevState: any, formData: FormData) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
+    const userId = await getUserId();
+
     //check validity of userId and postId combo
     const form = {
       content: formData.get('comment'),
@@ -423,19 +422,19 @@ export async function createComment(prevState: any, formData: FormData) {
   }
 }
 
-export async function getMessages(friendId) {
+export async function getMessages(receiverId: number) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
+    const userId = await getUserId();
+
     const messages = await prisma.message.findMany({
       where: {
         OR: [
           {
             senderId: userId,
-            receiverId: friendId,
+            receiverId: receiverId,
           },
           {
-            senderId: friendId,
+            senderId: receiverId,
             receiverId: userId,
           },
         ],
@@ -446,54 +445,73 @@ export async function getMessages(friendId) {
       },
     });
 
-    const sender = await prisma.user.findUnique({
+    const senderResult = await prisma.user.findUnique({
       where: {
         id: userId,
       },
     });
 
-    const recipient = await prisma.user.findUnique({
-      where: { id: friendId },
+    const recipientResult = await prisma.user.findUnique({
+      where: {
+        id: receiverId,
+      },
     });
-    return { messages, sender, recipient };
+
+    const sender = senderResult ? senderResult.name : null;
+    const recipient = recipientResult ? recipientResult.name : null;
+    const profilePicture = recipientResult ? recipientResult.profilePicture : null;
+
+    return { messages, sender, recipient, profilePicture };
   } catch (error) {
-    console.error(error);
+    return { message: `Messages unsuccessfully fetched` };
   }
 }
 
 export async function createMessage(prevState: any, formData: FormData) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
-    console.log(formData);
+    const userId = await getUserId();
+    if (userId === undefined) throw new Error('Unable to find user');
 
-    const messageData = {
+    const messageSchema = z.object({
+      content: z.string(),
+      receiverId: z.string().transform(str => Number(str)),
+    });
+
+    const form = {
       content: formData.get('message'),
       senderId: userId,
-      receiverId: Number(formData.get('receiverId')),
+      receiverId: formData.get('receiverId'),
       createdAt: new Date(),
       read: false,
     };
-    const message = await prisma.message.create({
-      data: messageData,
+
+    const parsedForm = messageSchema.parse(form);
+
+    const createdMessage = await prisma.message.create({
+      data: {
+        content: parsedForm.content,
+        senderId: userId,
+        receiverId: parsedForm.receiverId,
+        createdAt: new Date(),
+        read: false,
+      },
     });
-    revalidatePath(`/messages/${message.receiverId}`);
+    revalidatePath(`/`);
+    return createdMessage;
   } catch (error) {
-    console.error(error);
+    return { message: `Message unsuccessfully created` };
   }
 }
 
 export async function deleteMessage(messageId: number, receiverId: number) {
   try {
-    const userId = await getUserId();
-
     const message = await prisma.message.delete({
       where: {
         id: messageId,
       },
     });
-
     revalidatePath(`/messages/${receiverId}`);
+    return message;
   } catch (error) {
     return { message: `Message unsuccessfully deleted` };
   }
@@ -503,7 +521,9 @@ export async function updateMessage(prevState: any, formData: FormData) {
   try {
     const userId = await getUserId();
 
-    const ProfileSchema = z.object({
+    if (userId === undefined) throw new Error('Unable to find user');
+
+    const messageSchema = z.object({
       message: z.string(),
       receiverId: z.string().transform(str => Number(str)),
       messageId: z.string(),
@@ -516,8 +536,7 @@ export async function updateMessage(prevState: any, formData: FormData) {
       messageId: formData.get('messageId'),
     };
 
-    const parsedForm = ProfileSchema.parse(form);
-    console.log(userId);
+    const parsedForm = messageSchema.parse(form);
 
     const messageData = {
       content: parsedForm.message,
@@ -533,8 +552,8 @@ export async function updateMessage(prevState: any, formData: FormData) {
       },
       data: messageData,
     });
-
     revalidatePath(`/messages/${form.receiverId}`);
+    return updatedMessage;
   } catch (error) {
     return { message: `Message unsuccessfully updated` };
   }

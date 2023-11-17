@@ -15,16 +15,26 @@ import {
   Box,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, SmallCloseIcon } from '@chakra-ui/icons';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { deleteMessage, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
+
+type PopoverPlacement =
+  | 'top'
+  | 'bottom'
+  | 'left'
+  | 'right'
+  | 'top-start'
+  | 'top-end'
+  | 'bottom-start'
+  | 'bottom-end';
 
 interface Props {
   justifyContent: string;
   backGround: string;
   color: string;
   content: string;
-  popOverPlacement: undefined | PlacementWithLogical;
+  popOverPlacement: PopoverPlacement;
   messageId: number;
   receiverId: number;
   senderId: number;
@@ -40,9 +50,14 @@ const Message = ({
   receiverId,
   senderId,
 }: Props) => {
-  const [isEdit, setIsEdit] = useState(false);
   const initialState = { message: null, errors: {} };
+  const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
+
+  useEffect(() => {
+    if (state !== null) setIsEdit(false);
+  }, [state]);
+
   return (
     <Popover placement={popOverPlacement}>
       <Flex justifyContent={justifyContent} w={'100%'}>

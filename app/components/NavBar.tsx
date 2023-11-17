@@ -1,5 +1,4 @@
 'use client';
-import React from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 import {
   Container,
@@ -18,39 +17,17 @@ import {
   Text,
   MenuDivider,
   useColorModeValue,
+  IconButton,
 } from '@chakra-ui/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { ChatIcon } from 'react-icons';
 import CreatePostModal from './CreatePostModal';
 import SideBar from './SideBar';
-import { useState, useEffect } from 'react';
-
-const Links = ['Profile', 'Messages', 'Friends', 'Settings', 'Sign Out'];
-
-const IconButton = ({ children, ...props }: { children: any }) => {
-  return (
-    <Button
-      padding="0.4rem"
-      width="auto"
-      height="auto"
-      borderRadius="100%"
-      bg="transparent"
-      _hover={{ bg: 'gray.800' }}
-      {...props}
-    >
-      {children}
-    </Button>
-  );
-};
-const initialState = { message: null, errors: {} };
 
 const NavBar = () => {
   const { data: session } = useSession();
-  const pathname = usePathname();
   const router = useRouter();
-  // const [isOpen, setIsOpen] = useState(false);
+  const Links = ['Profile', 'Friends', 'Settings', 'Sign Out'];
 
   return (
     <Box
@@ -76,10 +53,9 @@ const NavBar = () => {
           <Input maxW="26rem" placeholder="Search..." borderColor={'gray.300'} borderRadius="5px" />
           <Spacer />
           <HStack spacing={3}>
-            <IconButton>
+            <IconButton aria-label="create post">
               <CreatePostModal />
             </IconButton>
-
             <Menu isLazy>
               <SideBar />
               <MenuButton as={Button} size="sm" px={0} py={0} rounded="full">
