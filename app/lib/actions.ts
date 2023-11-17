@@ -7,9 +7,15 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
 const getUserId = async () => {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user.id;
-  return userId;
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    if (userId === undefined) throw new Error('Unable to find user');
+
+    return userId;
+  } catch (error) {
+    throw new Error(`Error finding current user`);
+  }
 };
 
 export async function updateProfile(prevState: any, formData: FormData) {
@@ -332,7 +338,7 @@ export async function likePost(postAuthor, postId, likesLength) {
   }
 }
 
-export async function likeComment(postAuthor, commentId, likesLength) {
+export async function likeComment(postAuthor: number, commentId: number, likesLength: number) {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
@@ -384,41 +390,46 @@ export async function likeComment(postAuthor, commentId, likesLength) {
       });
       console.log('already liked');
     }
-
-    // const updatePost = await prisma.post.update({
-    //   where: {
-    //     id: postId,
-    //   },
-    //   data: {
-    //     status: 'ACCEPTED',
-    //   },
-    // });
-    // console.log(postId);
     revalidatePath('/');
     return like;
   } catch (error) {
     return { message: `Unable to change like post` };
   }
 }
-
+//
 export async function createComment(prevState: any, formData: FormData) {
   try {
     const userId = await getUserId();
 
-    //check validity of userId and postId combo
+    const commentSchema = z.object({
+      content: z.string(),
+      postId: z.string().transform(str => Number(str)),
+    });
+
     const form = {
       content: formData.get('comment'),
       authorId: userId,
       postId: Number(formData.get('postId')),
       createdAt: new Date(),
     };
-    const comment = await prisma.comment.create({
-      data: form,
+
+    const parsedForm = commentSchema.parse(form);
+
+    const commentData = {
+      content: parsedForm.content,
+      authorId: userId,
+      postId: parsedForm.postId,
+      createdAt: new Date(),
+    };
+
+    const createdComment = await prisma.comment.create({
+      data: commentData,
     });
+
     revalidatePath('/');
-    console.log(comment);
+    return createdComment;
   } catch (error) {
-    console.error(error);
+    return { message: `Messages unsuccessfully created` };
   }
 }
 
@@ -487,14 +498,16 @@ export async function createMessage(prevState: any, formData: FormData) {
 
     const parsedForm = messageSchema.parse(form);
 
+    const messageData = {
+      content: parsedForm.content,
+      senderId: userId,
+      receiverId: parsedForm.receiverId,
+      createdAt: new Date(),
+      read: false,
+    };
+
     const createdMessage = await prisma.message.create({
-      data: {
-        content: parsedForm.content,
-        senderId: userId,
-        receiverId: parsedForm.receiverId,
-        createdAt: new Date(),
-        read: false,
-      },
+      data: messageData,
     });
     revalidatePath(`/`);
     return createdMessage;
@@ -526,7 +539,7 @@ export async function updateMessage(prevState: any, formData: FormData) {
     const messageSchema = z.object({
       message: z.string(),
       receiverId: z.string().transform(str => Number(str)),
-      messageId: z.string(),
+      messageId: z.string().transform(str => Number(str)),
     });
 
     const form = {
@@ -539,6 +552,7 @@ export async function updateMessage(prevState: any, formData: FormData) {
     const parsedForm = messageSchema.parse(form);
 
     const messageData = {
+      messageId: parsedForm.messageId,
       content: parsedForm.message,
       senderId: userId,
       receiverId: parsedForm.receiverId,
@@ -548,7 +562,7 @@ export async function updateMessage(prevState: any, formData: FormData) {
 
     const updatedMessage = await prisma.message.update({
       where: {
-        id: Number(formData.get('messageId')),
+        id: parsedForm.messageId,
       },
       data: messageData,
     });
