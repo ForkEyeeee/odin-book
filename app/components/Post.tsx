@@ -6,27 +6,26 @@ import {
   Avatar,
   Spacer,
   IconButton,
-  HStack,
   Textarea,
   FormControl,
   FormLabel,
   Button,
 } from '@chakra-ui/react';
-import { FaComment, FaRetweet, FaHeart, FaShareAlt } from 'react-icons/fa';
+import { FaHeart } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { likePost } from '../lib/actions';
 import Comment from './Comment';
-import { useState, useEffect } from 'react';
 import { useFormState } from 'react-dom';
 import { createComment } from '../lib/actions';
 
-export function Post({ post, index }: PostProps) {
-  const initialState = post.id;
+const initialState = { message: null, errors: {} };
 
+export function Post({ post, index, userId }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
 
+  const isLiked = post.likes.find(element => element.authorId === userId);
+  console.log(post.comments);
   return (
     <Box
       borderWidth="1px"
@@ -54,10 +53,10 @@ export function Post({ post, index }: PostProps) {
         <IconButton
           aria-label="Like"
           icon={<FaHeart />}
-          onClick={() => likePost(post.authorId, post.id, post.likes.length)}
-          color={post.likes.length !== 0 ? 'pink' : 'initial'}
+          onClick={() => likePost(post.id)}
+          color={isLiked ? 'pink' : 'initial'}
         />
-        <IconButton aria-label="Share" icon={<FaShareAlt />} />
+        <Text>{post.likes.length}</Text>
       </Flex>
       <Comment comments={post.comments} post={post} />
       <form action={formAction}>

@@ -15,11 +15,13 @@ export interface User {
 export interface PostProps {
   post: PostWithAuthor;
   index: number;
+  userId: number;
 }
 
 export interface TimeLineTabsProps {
   forYouPosts: PostWithAuthor[];
   discoverPosts: PostWithAuthor[];
+  userId: number;
 }
 
 export interface Author {
@@ -47,6 +49,21 @@ export interface PostWithAuthor {
   authorId: number;
   createdAt: Date;
   author: Author;
+  likes: [
+    {
+      id: number;
+      authorId: number;
+      postId: number;
+      createdAt: Date;
+    }
+  ];
+  comments: {
+    id: number;
+    content: string;
+    authorId: number;
+    postId: number;
+    createdAt: Date;
+  };
 }
 export interface PostProps {
   post: PostWithAuthor;

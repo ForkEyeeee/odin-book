@@ -280,43 +280,67 @@ export async function createPost(prevState: any, formData: FormData) {
   }
 }
 
-export async function likePost(postAuthor: number, postId: number, likesLength: number) {
-  try {
-    if (likesLength !== 0) {
-      const foundLike = await prisma.postLike.deleteMany({
-        where: {
-          authorId: postAuthor,
-          postId: postId,
-        },
-      });
-      revalidatePath('/');
-    }
+// export async function getLikedPosts(postId: number) {
+//   try {
+//     const userId = await getUserId();
+//     const postLikes = await prisma.postLike.findMany({
+//       where: {
+//         authorId: userId,
+//         postId: postId,
+//       },
+//     });
+//     if (postLikes.length > 0) {
+//       revalidatePath('/');
+//       return true;
+//     } else {
+//       revalidatePath('/');
+//       return false;
+//     }
+//   } catch (error) {
+//     return { message: `Unable to get post likes` };
+//   }
+// }
 
-    const foundPost = await prisma.post.findUnique({
+export async function likePost(postId: number) {
+  try {
+    const userId = await getUserId();
+
+    const post = await prisma.post.findUnique({
       where: {
         id: postId,
       },
+      include: {
+        likes: true,
+      },
     });
 
-    const foundLike = await prisma.postLike.findFirst({
+    const totalLikes = post?.likes.length;
+
+    const userLike = await prisma.postLike.findMany({
       where: {
-        authorId: postAuthor,
+        authorId: userId,
         postId: postId,
       },
     });
 
-    const likeData = {
-      authorId: postAuthor,
-      postId: postId,
-      createdAt: new Date(),
-    };
+    console.log(userLike);
 
-    if (foundLike === null) {
-      const createLike = await prisma.postLike.create({
-        data: likeData,
+    if (userLike.length > 0) {
+      const deletedLike = await prisma.postLike.delete({
+        where: {
+          id: userLike[0].id,
+        },
       });
     } else {
-      throw new Error(`You've already liked this post`);
+      const likeData = {
+        authorId: userId,
+        postId: postId,
+        createdAt: new Date(),
+      };
+
+      const createdLike = await prisma.postLike.create({
+        data: likeData,
+      });
     }
     revalidatePath('/');
   } catch (error) {

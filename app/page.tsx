@@ -69,7 +69,13 @@ export default async function Page() {
       },
     });
 
-    return <TimeLineTabs forYouPosts={timelinePosts} discoverPosts={otherTimeLinePosts} />;
+    return (
+      <TimeLineTabs
+        forYouPosts={timelinePosts}
+        discoverPosts={otherTimeLinePosts}
+        userId={userId}
+      />
+    );
   } catch (error) {
     return <div>Failed to Fetch Posts.</div>;
   }
