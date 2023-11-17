@@ -5,6 +5,7 @@ import prisma from './prisma';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
+import { FriendshipStatus } from '@prisma/client';
 
 const getUserId = async () => {
   try {
@@ -26,8 +27,8 @@ export async function updateProfile(prevState: any, formData: FormData) {
       dateOfBirth: z.string().optional(),
     });
 
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
+    const userId = await getUserId();
+
     let profile;
 
     const form = {
@@ -103,9 +104,6 @@ export async function getFriends() {
     orderBy: {
       status: 'asc',
     },
-    // include: {
-    //   user2: true,
-    // },
   });
 
   const friendIds = userFriends.map(friend => friend.user2Id);
@@ -130,81 +128,75 @@ export async function getFriends() {
 }
 
 export async function getUsers() {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user.id;
+  try {
+    const userId = await getUserId();
 
-  const users = await prisma.user.findMany({
-    where: {
-      id: {
-        not: userId,
-      },
-    },
-  });
-
-  return users;
-}
-
-export async function searchUsers(query) {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user.id;
-  const users = await prisma.user.findMany({
-    where: {
-      name: {
-        contains: query,
-        mode: 'insensitive',
-      },
-      AND: {
+    const users = await prisma.user.findMany({
+      where: {
         id: {
           not: userId,
         },
       },
-    },
-  });
-  // console.log(users);
-  return users;
+    });
+
+    return users;
+  } catch (error) {
+    return { message: `Unable to get all users` };
+  }
 }
 
-export async function addFriend(friendUserId) {
+export async function searchUsers(query: string) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
+    const userId = await getUserId();
+    const users = await prisma.user.findMany({
+      where: {
+        name: {
+          contains: query,
+          mode: 'insensitive',
+        },
+        AND: {
+          id: {
+            not: userId,
+          },
+        },
+      },
+    });
+    return users;
+  } catch (error) {
+    return { message: `Unable to search for friends` };
+  }
+}
 
-    // const user = await prisma.user.findUnique({
-    //   id: userId,
-    // });
+export async function addFriend(friendUserId: number) {
+  try {
+    const userId = await getUserId();
+
     const friendToCreate = {
       user1Id: userId,
       user2Id: friendUserId,
-      status: 'PENDING',
+      status: FriendshipStatus.PENDING,
     };
+
     const existingFriend = await prisma.friend.findFirst({
       where: {
         user1Id: userId,
         user2Id: friendUserId,
+        status: FriendshipStatus.PENDING,
       },
     });
 
     if (existingFriend !== null) throw new Error('Friend Already Added');
 
-    let updateFriends = await prisma.friend.create({ data: friendToCreate });
+    const updateFriends = await prisma.friend.create({ data: friendToCreate });
     return updateFriends;
   } catch (error) {
     return console.error(error);
   }
-
-  // const friend = await prisma.user.findUnique({
-  //   id: friendUserId,
-  // });
 }
 
 export async function changeStatus(userFriendId: number, action: 'accept' | 'remove') {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
-
-    if (!userId) {
-      throw new Error('User not authenticated');
-    }
+    const userId = await getUserId();
 
     const friend = await prisma.friend.findFirst({
       where: {
@@ -223,9 +215,11 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
       throw new Error('Friend relationship not found.');
     }
 
+    let changedFriend;
+
     switch (action) {
       case 'accept':
-        const updatedFriend = await prisma.friend.update({
+        changedFriend = await prisma.friend.update({
           where: {
             id: friend.id,
           },
@@ -234,16 +228,16 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
           },
         });
         revalidatePath('/friends');
-        return updatedFriend;
+        return changedFriend;
 
       case 'remove':
-        const deletedFriend = await prisma.friend.delete({
+        changedFriend = await prisma.friend.delete({
           where: {
             id: friend.id,
           },
         });
         revalidatePath('/friends');
-        return deletedFriend;
+        return changedFriend;
 
       default:
         throw new Error('Invalid action specified.');
@@ -255,51 +249,56 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
 
 export async function createPost(prevState: any, formData: FormData) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
+    const userId = await getUserId();
 
-    const postData = {
+    const postSchema = z.object({
+      content: z.string(),
+      createdAt: z.date(),
+    });
+
+    const form = {
       content: formData.get('post'),
       authorId: userId,
       createdAt: new Date(),
     };
 
-    const createPost = await prisma.post.create({
+    const parsedForm = postSchema.parse(form);
+
+    const postData = {
+      content: parsedForm.content,
+      authorId: userId,
+      createdAt: parsedForm.createdAt,
+    };
+
+    const createdPost = await prisma.post.create({
       data: postData,
     });
     revalidatePath('/');
-    return createPost;
+    return createdPost;
   } catch (error) {
-    console.error(error);
+    return { message: `Unable to create Post` };
   }
 }
 
-export async function likePost(postAuthor, postId, likesLength) {
+export async function likePost(postAuthor: number, postId: number, likesLength: number) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
     if (likesLength !== 0) {
-      const like = await prisma.postLike.deleteMany({
+      const foundLike = await prisma.postLike.deleteMany({
         where: {
           authorId: postAuthor,
           postId: postId,
         },
       });
       revalidatePath('/');
-      return like;
-    }
-    if (userId === undefined) {
-      console.log('User ID is undefined, cannot proceed with finding likes.');
-      return;
     }
 
-    const post = await prisma.post.findUnique({
+    const foundPost = await prisma.post.findUnique({
       where: {
         id: postId,
       },
     });
 
-    const like = await prisma.postLike.findFirst({
+    const foundLike = await prisma.postLike.findFirst({
       where: {
         authorId: postAuthor,
         postId: postId,
@@ -311,37 +310,22 @@ export async function likePost(postAuthor, postId, likesLength) {
       postId: postId,
       createdAt: new Date(),
     };
-    console.log(like);
-    if (like === null) {
+
+    if (foundLike === null) {
       const createLike = await prisma.postLike.create({
         data: likeData,
       });
-      console.log('here');
     } else {
-      console.log('already liked');
+      throw new Error(`You've already liked this post`);
     }
-
-    // const updatePost = await prisma.post.update({
-    //   where: {
-    //     id: postId,
-    //   },
-    //   data: {
-    //     status: 'ACCEPTED',
-    //   },
-    // });
-    // console.log(postId);
     revalidatePath('/');
-
-    return like;
   } catch (error) {
-    return { message: `Unable to change like post` };
+    return { message: `Unable to like post` };
   }
 }
 
 export async function likeComment(postAuthor: number, commentId: number, likesLength: number) {
   try {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user.id;
     if (likesLength !== 0) {
       const like = await prisma.commentLike.deleteMany({
         where: {
@@ -350,26 +334,20 @@ export async function likeComment(postAuthor: number, commentId: number, likesLe
         },
       });
       revalidatePath('/');
-      return like;
-    }
-    if (userId === undefined) {
-      console.log('User ID is undefined, cannot proceed with finding likes.');
-      return;
     }
 
-    const comment = await prisma.comment.findUnique({
+    const foundComment = await prisma.comment.findUnique({
       where: {
         id: commentId,
       },
     });
 
-    const like = await prisma.commentLike.findFirst({
+    const foundLike = await prisma.commentLike.findFirst({
       where: {
         authorId: postAuthor,
         commentId: commentId,
       },
     });
-    console.log(like);
 
     const likeData = {
       authorId: postAuthor,
@@ -377,26 +355,24 @@ export async function likeComment(postAuthor: number, commentId: number, likesLe
       createdAt: new Date(),
     };
 
-    if (like === null) {
-      const createLike = await prisma.commentLike.create({
+    if (foundLike === null) {
+      const createdLike = await prisma.commentLike.create({
         data: likeData,
       });
     } else {
-      const like = await prisma.commentLike.deleteMany({
+      const foundLike = await prisma.commentLike.deleteMany({
         where: {
           authorId: postAuthor,
           commentId: commentId,
         },
       });
-      console.log('already liked');
     }
     revalidatePath('/');
-    return like;
   } catch (error) {
-    return { message: `Unable to change like post` };
+    return { message: `Unable to like comment` };
   }
 }
-//
+
 export async function createComment(prevState: any, formData: FormData) {
   try {
     const userId = await getUserId();

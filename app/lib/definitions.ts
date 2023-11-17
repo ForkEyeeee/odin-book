@@ -83,3 +83,10 @@ export interface Message {
   createdAt: string; // Use Date or string depending on how you handle dates
   read: boolean;
 }
+
+export enum FriendshipStatus {
+  PENDING,
+  ACCEPTED,
+  DECLINED,
+  BLOCKED,
+}
