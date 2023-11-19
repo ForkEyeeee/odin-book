@@ -247,6 +247,21 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
   }
 }
 
+export async function deletePost(postId) {
+  try {
+    const deletedPost = await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+
+    revalidatePath('/');
+    return deletedPost;
+  } catch (error) {
+    return { message: `Post unsuccessfully deleted` };
+  }
+}
+
 export async function createPost(prevState: any, formData: FormData) {
   try {
     const userId = await getUserId();
@@ -279,27 +294,6 @@ export async function createPost(prevState: any, formData: FormData) {
     return { message: `Unable to create Post` };
   }
 }
-
-// export async function getLikedPosts(postId: number) {
-//   try {
-//     const userId = await getUserId();
-//     const postLikes = await prisma.postLike.findMany({
-//       where: {
-//         authorId: userId,
-//         postId: postId,
-//       },
-//     });
-//     if (postLikes.length > 0) {
-//       revalidatePath('/');
-//       return true;
-//     } else {
-//       revalidatePath('/');
-//       return false;
-//     }
-//   } catch (error) {
-//     return { message: `Unable to get post likes` };
-//   }
-// }
 
 export async function likePost(postId: number) {
   try {
@@ -573,4 +567,10 @@ export async function updateMessage(prevState: any, formData: FormData) {
   } catch (error) {
     return { message: `Message unsuccessfully updated` };
   }
+}
+
+export async function getFile(formData: FormData) {
+  'use server';
+  const file = formData.get('file') as File;
+  console.log('File name:', file.name, 'size:', file.size);
 }

@@ -11,13 +11,15 @@ import {
   FormLabel,
   Button,
 } from '@chakra-ui/react';
-import { FaHeart } from 'react-icons/fa';
+import { FaHeart, FaTrash } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
 import Link from 'next/link';
-import { likePost } from '../lib/actions';
+import { deletePost, likePost } from '../lib/actions';
 import Comment from './Comment';
 import { useFormState } from 'react-dom';
 import { createComment } from '../lib/actions';
+import { getFile } from '../lib/actions';
+import Image from 'next/image';
 
 const initialState = { message: null, errors: {} };
 
@@ -43,6 +45,7 @@ export function Post({ post, index, userId }: PostProps) {
           <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: '200px', sm: '100%' }}>
             {post.author.email}
           </Text>
+          {/* <Image src={post.imageUrl} width={100} height={100} unoptimized={true} /> */}
           <Text color="gray.500">{post.createdAt.toDateString()}</Text>
         </Box>
         <Spacer />
@@ -56,6 +59,11 @@ export function Post({ post, index, userId }: PostProps) {
           color={isLiked ? 'pink' : 'initial'}
         />
         <Text>{post.likes.length}</Text>
+        <IconButton
+          aria-label="trash icon"
+          icon={<FaTrash />}
+          onClick={() => deletePost(post.id)}
+        />
       </Flex>
       <Comment comments={post.comments} post={post} userId={userId} />
       <form action={formAction}>
