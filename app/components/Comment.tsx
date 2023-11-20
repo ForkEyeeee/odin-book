@@ -7,6 +7,7 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { CommentProps } from '../lib/definitions';
 
 export default function Comment({ comments, post, userId }: CommentProps) {
+  console.log(post.author.profilePicture);
   return (
     <VStack spacing={4} align="stretch" bg="#15202B" p={4} borderRadius={5} mt={5}>
       {comments.map(comment => {
@@ -14,8 +15,14 @@ export default function Comment({ comments, post, userId }: CommentProps) {
 
         return (
           <Flex key={comment.id} align="start" mt={comment.id > 0 ? 6 : 0}>
-            <Link href={`/profile/${'test'}`}>
-              <Avatar size="sm" cursor="pointer" bg="white" mt="1" />
+            <Link href={`/profile/${post.authorId}`}>
+              <Avatar
+                size="sm"
+                cursor="pointer"
+                bg="white"
+                mt="1"
+                src={post.author.profilePicture === null ? '' : post.author.profilePicture}
+              />
             </Link>
             <Box ml="3" pt="1">
               <Text fontWeight="bold" color="white" fontSize="sm">

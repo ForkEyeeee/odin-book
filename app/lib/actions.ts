@@ -7,7 +7,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { FriendshipStatus } from '@prisma/client';
 
-const getUserId = async () => {
+export const getUserId = async () => {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;

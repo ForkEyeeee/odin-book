@@ -19,17 +19,20 @@ import {
   Divider,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
-import { Profile } from '../lib/definitions';
+import { Post as PostType, Profile } from '../lib/definitions';
 import { getSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
+import { Post } from './Post';
+import ProfilePost from './ProfilePost';
 
 interface FormProps {
   profile?: Profile;
+  posts: PostType[];
 }
 
 const initialState = { message: null, errors: {} };
 
-export default function Profile({ profile }: FormProps) {
+export default function Profile({ profile, posts }: FormProps) {
   const [state, formAction] = useFormState(updateProfile, initialState);
   const [isEdit, setIsEdit] = useState(false);
   const [isUser, setIsUser] = useState(false);
@@ -133,6 +136,7 @@ export default function Profile({ profile }: FormProps) {
           </>
         )}
       </form>
+      <ProfilePost posts={posts} />
     </Container>
   );
 }

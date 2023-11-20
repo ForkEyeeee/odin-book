@@ -8,6 +8,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
         userId: Number(params.slug),
       },
     });
+
     return <Profile profile={profile} />;
   } catch (error) {
     return { message: `Unable to fetch profile` };
