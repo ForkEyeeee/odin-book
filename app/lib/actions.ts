@@ -574,3 +574,102 @@ export async function getFile(formData: FormData) {
   const file = formData.get('file') as File;
   console.log('File name:', file.name, 'size:', file.size);
 }
+
+export async function getPosts(page) {
+  try {
+    const userId = await getUserId();
+    if (userId === undefined) throw new Error();
+
+    const userFriends = await prisma.friend.findMany({
+      where: {
+        user1Id: userId,
+      },
+    });
+
+    const pageNumber = isNaN(page) || page < 1 ? 1 : parseInt(page, 10); // Default to page 1 if invalid
+    const take = 5;
+    const skip = (pageNumber - 1) * take;
+
+    const userfriendIds = userFriends.map(friend => friend.user2Id);
+
+    // Fetch timeline posts with pagination
+    const timelinePosts = await prisma.post.findMany({
+      where: {
+        authorId: {
+          in: [userId, ...userfriendIds],
+        },
+      },
+      take: take,
+      skip: skip,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        author: true,
+        likes: true,
+        comments: {
+          include: {
+            author: true,
+            commentLikes: true,
+          },
+        },
+      },
+    });
+
+    // Fetch other timeline posts with pagination
+    const otherTimeLinePosts = await prisma.post.findMany({
+      where: {
+        authorId: {
+          not: {
+            in: [userId, ...userfriendIds],
+          },
+        },
+      },
+      take: take,
+      skip: skip,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        author: true,
+        likes: true,
+        comments: {
+          include: {
+            author: true,
+            commentLikes: true,
+          },
+        },
+      },
+    });
+
+    // Get total count of timeline posts
+    const timelinePostsCount = await prisma.post.count({
+      where: {
+        authorId: {
+          in: [userId, ...userfriendIds],
+        },
+      },
+    });
+
+    // Get total count of other timeline posts
+    const otherTimelinePostsCount = await prisma.post.count({
+      where: {
+        authorId: {
+          not: {
+            in: [userId, ...userfriendIds],
+          },
+        },
+      },
+    });
+
+    return {
+      timelinePosts,
+      otherTimeLinePosts,
+      timelinePostsCount,
+      otherTimelinePostsCount,
+      userId,
+    };
+  } catch (error) {
+    console.error(error);
+  }
+}
