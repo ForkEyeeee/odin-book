@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Container, Text, Flex, Icon, useColorModeValue } from '@chakra-ui/react';
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 const PaginationContainer = ({ page, timelinePostsCount }) => {
   const postsPerPage = 5;
@@ -33,10 +33,14 @@ const PaginationContainer = ({ page, timelinePostsCount }) => {
 const Pagination = ({ page, totalPageCount, startIndex, endIndex, timelinePostsCount }) => {
   const router = useRouter();
   const [jumpPage, setJumpPage] = useState('');
+  const pathname = usePathname();
 
   const navigateToPage = newPage => {
-    if (newPage >= 1 && newPage <= totalPageCount) {
-      router.push(`/home/${newPage}`);
+    const currentTab = pathname.includes('/for-you');
+    if (newPage >= 1 && newPage <= totalPageCount && currentTab) {
+      router.push(`/for-you/${newPage}`);
+    } else if (newPage >= 1 && newPage <= totalPageCount && !currentTab) {
+      router.push(`/all-posts/${newPage}`);
     }
   };
 
@@ -68,12 +72,12 @@ const Pagination = ({ page, totalPageCount, startIndex, endIndex, timelinePostsC
     >
       <Text fontSize="lg">{`Showing ${startIndex} to ${endIndex} of ${timelinePostsCount} results`}</Text>
       <Flex as="nav" aria-label="Pagination" alignItems="center">
-        <PaginationButton isdisabled={page === 1} onClick={() => navigateToPage(page - 1)}>
+        <PaginationButton isDisabled={page === 1} onClick={() => navigateToPage(page - 1)}>
           <Icon as={FaChevronLeft} />
         </PaginationButton>
         {pageButtons}
         <PaginationButton
-          isdisabled={page === totalPageCount}
+          isDisabled={page === totalPageCount}
           onClick={() => navigateToPage(page + 1)}
         >
           <Icon as={FaChevronRight} />
@@ -90,7 +94,7 @@ const Pagination = ({ page, totalPageCount, startIndex, endIndex, timelinePostsC
   );
 };
 
-const PaginationButton = ({ children, isActive, isdisabled, onClick }) => {
+const PaginationButton = ({ children, isActive, isDisabled, onClick }) => {
   const activeStyle = {
     bg: useColorModeValue('gray.300', 'gray.700'),
     _hover: { bg: useColorModeValue('gray.400', 'gray.600') },
@@ -99,7 +103,7 @@ const PaginationButton = ({ children, isActive, isdisabled, onClick }) => {
   const inactiveStyle = {
     bg: useColorModeValue('white', 'gray.800'),
     _hover: { bg: useColorModeValue('gray.100', 'gray.700') },
-    cursor: isdisabled ? 'not-allowed' : 'pointer',
+    cursor: isDisabled ? 'not-allowed' : 'pointer',
   };
 
   return (
@@ -121,7 +125,7 @@ const PaginationButton = ({ children, isActive, isdisabled, onClick }) => {
       borderColor={useColorModeValue('gray.200', 'gray.700')}
       {...(isActive ? activeStyle : inactiveStyle)}
       onClick={onClick}
-      isdisabled={isdisabled}
+      disabled={isDisabled}
     >
       {children}
     </Flex>

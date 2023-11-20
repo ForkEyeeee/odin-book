@@ -1,33 +1,45 @@
-import { Tabs, TabList, TabPanels, Tab, TabPanel, Text, Box } from '@chakra-ui/react';
+import { Box, Flex, Link } from '@chakra-ui/react';
 import { Post } from './Post';
 import { TimeLineTabsProps } from '../lib/definitions';
 
 export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTabsProps) {
   return (
-    <Box>
-      <Tabs isFitted variant="enclosed">
-        <TabList mb="1em">
-          <Tab>For You</Tab>
-          <Tab>All Posts</Tab>
-        </TabList>
-        <TabPanels>
-          <TabPanel>
-            {forYouPosts.length !== 0 ? (
-              forYouPosts.map((post, index) => (
-                <Post key={post.id} post={post} index={index} userId={userId}></Post>
-              ))
-            ) : (
-              <Text>you have no friends</Text>
-            )}
-          </TabPanel>
-          <TabPanel>
-            {discoverPosts.map((post, index) => (
-              <Post key={post.id} post={post} index={index} userId={userId}></Post>
-            ))}
-          </TabPanel>
-        </TabPanels>
-      </Tabs>
-    </Box>
+    <>
+      <Flex justifyContent="space-around" p={4}>
+        <Link
+          href={'/for-you/1'}
+          color="blue.600"
+          _hover={{ textDecoration: 'underline', bg: 'gray.100' }}
+        >
+          For You
+        </Link>
+        <Link
+          href={'/all-posts/1'}
+          color="blue.600"
+          _hover={{ textDecoration: 'underline', bg: 'gray.100' }}
+        >
+          All Posts
+        </Link>
+      </Flex>
+
+      <Box>
+        {forYouPosts !== undefined &&
+          forYouPosts.map((post, index) => (
+            <Box key={post.id} mb={4}>
+              <Post post={post} index={index} userId={userId} />
+            </Box>
+          ))}
+      </Box>
+
+      <Box mt={8}>
+        {discoverPosts !== undefined &&
+          discoverPosts.map((post, index) => (
+            <Box key={post.id} mb={4}>
+              <Post post={post} index={index} userId={userId} />
+            </Box>
+          ))}
+      </Box>
+    </>
   );
 }
 

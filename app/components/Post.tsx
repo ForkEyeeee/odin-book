@@ -25,7 +25,6 @@ const initialState = { message: null, errors: {} };
 
 export function Post({ post, index, userId }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
-
   const isLiked = post.likes.find(element => element.authorId === userId);
   return (
     <Box
