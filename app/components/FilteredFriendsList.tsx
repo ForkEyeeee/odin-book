@@ -1,14 +1,7 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
-import { getUsers, searchUsers, addFriend, removeFriend } from '@/app/lib/actions';
+import { addFriend } from '@/app/lib/actions';
 import {
-  FormControl,
-  FormLabel,
-  FormHelperText,
-  Input,
-  Button,
   List,
   ListItem,
-  ListIcon,
   Box,
   Text,
   Tag,
@@ -20,7 +13,7 @@ import {
   Badge,
   IconButton,
 } from '@chakra-ui/react';
-import { AddIcon, CloseIcon } from '@chakra-ui/icons';
+import { AddIcon } from '@chakra-ui/icons';
 
 const FilteredFriendsList = ({ users, userId, isLoading }) => {
   return (
