@@ -6,7 +6,7 @@ import { PostProps } from '../lib/definitions';
 export default function ProfilePost({ posts }: PostProps) {
   return (
     <>
-      {posts.length !== 0 &&
+      {posts !== undefined &&
         posts.map(post => (
           <Box
             key={post.id}

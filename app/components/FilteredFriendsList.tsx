@@ -14,8 +14,9 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
-
+import { useRouter } from 'next/navigation';
 const FilteredFriendsList = ({ users, userId, isLoading }) => {
+  const router = useRouter();
   return (
     <Box>
       <Box p={5}>
@@ -42,7 +43,10 @@ const FilteredFriendsList = ({ users, userId, isLoading }) => {
                           color={'white'}
                           aria-label="Add friend"
                           colorScheme="green"
-                          onClick={() => addFriend(user.id)}
+                          onClick={() => {
+                            addFriend(user.id);
+                            router.push('/friends');
+                          }}
                         ></IconButton>
                         {isFriend && <Badge colorScheme="green">Added</Badge>}
                       </Box>
