@@ -1,4 +1,3 @@
-'use client';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { getUsers, searchUsers, addFriend, removeFriend } from '@/app/lib/actions';
 import {
@@ -22,25 +21,18 @@ import {
   IconButton,
 } from '@chakra-ui/react';
 import { AddIcon, CloseIcon } from '@chakra-ui/icons';
-import SearchBox from './SearchBox';
 
-const FilteredFriendsList = ({ users, userId }) => {
-  // const [users, setUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [value, setValue] = useState('');
-
-  // const filteredFriends = searchUsers(value);
+const FilteredFriendsList = ({ users, userId, isLoading }) => {
   return (
     <Box>
-      <SearchBox value={value} />
       <Box p={5}>
         {isLoading ? (
           <Spinner />
         ) : (
           <List spacing={3}>
-            {users.length > 0 ? (
+            {users !== undefined ? (
               users.map(user => {
-                const isFriend = user.friendsAsUser1.find(element => element.user2Id === userId);
+                const isFriend = user.friendsAsUser1.find(friend => friend.user2Id === userId);
                 return (
                   <ListItem key={user.id}>
                     <HStack spacing={4}>
