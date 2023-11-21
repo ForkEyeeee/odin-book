@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import Search from '@/app/components/Search';
+import Search from '@/app/components/FilteredFriendsList';
 import * as actionsModule from '@/app/lib/actions';
 
 jest.mock('../app/lib/actions', () => ({

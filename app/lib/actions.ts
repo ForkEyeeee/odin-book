@@ -94,8 +94,7 @@ export async function getProfile(userId: number) {
 }
 
 export async function getFriends() {
-  const session = await getServerSession(authOptions);
-  const userId = session?.user.id;
+  const userId = await getUserId();
 
   const userFriends = await prisma.friend.findMany({
     where: {
@@ -137,9 +136,12 @@ export async function getUsers() {
           not: userId,
         },
       },
+      include: {
+        friendsAsUser1: true,
+      },
     });
 
-    return users;
+    return { users, userId };
   } catch (error) {
     return { message: `Unable to get all users` };
   }
@@ -159,6 +161,9 @@ export async function searchUsers(query: string) {
             not: userId,
           },
         },
+      },
+      include: {
+        friendsAsUser1: true,
       },
     });
     return users;
