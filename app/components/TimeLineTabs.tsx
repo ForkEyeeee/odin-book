@@ -7,14 +7,14 @@ export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTab
     <>
       <Flex justifyContent="space-around" p={4}>
         <Link
-          href={'/for-you/1'}
+          href={'/for-you?page=1'}
           color="blue.600"
           _hover={{ textDecoration: 'underline', bg: 'gray.100' }}
         >
           For You
         </Link>
         <Link
-          href={'/all-posts/1'}
+          href={'all-posts?page=1'}
           color="blue.600"
           _hover={{ textDecoration: 'underline', bg: 'gray.100' }}
         >

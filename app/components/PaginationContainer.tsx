@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Container, Text, Flex, Icon, useColorModeValue } from '@chakra-ui/react';
 import { FaChevronRight, FaChevronLeft } from 'react-icons/fa';
 import { usePathname, useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { useSearchParams } from 'next/navigation';
 
 const PaginationContainer = ({ page, timelinePostsCount }) => {
   const postsPerPage = 5;
@@ -34,13 +36,13 @@ const Pagination = ({ page, totalPageCount, startIndex, endIndex, timelinePostsC
   const router = useRouter();
   const [jumpPage, setJumpPage] = useState('');
   const pathname = usePathname();
-
+  const searchParams = useSearchParams();
   const navigateToPage = newPage => {
     const currentTab = pathname.includes('/for-you');
     if (newPage >= 1 && newPage <= totalPageCount && currentTab) {
-      router.push(`/for-you/${newPage}`);
+      router.replace(`${pathname}?page=${newPage.toString()}`);
     } else if (newPage >= 1 && newPage <= totalPageCount && !currentTab) {
-      router.push(`/all-posts/${newPage}`);
+      router.replace(`${pathname}?page=${newPage.toString()}`);
     }
   };
 

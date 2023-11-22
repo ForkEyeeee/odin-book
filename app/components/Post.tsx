@@ -44,6 +44,7 @@ export function Post({ post, index, userId }: PostProps) {
           <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: '200px', sm: '100%' }}>
             {post.author.email}
           </Text>
+          <Text mt="4">{post.content}</Text>
           {post.imageUrl !== null && (
             <Image
               alt="post image"
@@ -58,7 +59,6 @@ export function Post({ post, index, userId }: PostProps) {
         </Box>
         <Spacer />
       </Flex>
-      <Text mt="4">{post.content}</Text>
       <Flex justifyContent="space-between" mt={{ base: '10px' }}>
         <IconButton
           aria-label="Like"
