@@ -12,6 +12,7 @@ import {
   Textarea,
   FormControl,
   FormLabel,
+  Input,
 } from '@chakra-ui/react';
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useFormState } from 'react-dom';
@@ -38,30 +39,35 @@ const CreatePostModal = () => {
                 {/* <FormLabel htmlFor="post" mb="0">
                   Edit Mode
                 </FormLabel> */}
-                <Textarea name="post" />
-                <Button
-                  variant="ghost"
-                  type="submit"
-                  onClick={onClose}
-                  data-testid="submit-modal-button"
-                >
-                  Submit
-                </Button>
+                <Textarea name="post" required />
               </FormControl>
+              <FormControl display="flex" alignItems="center" mb={6}>
+                <FormLabel htmlFor="image-url" mb="0">
+                  Image Url{' '}
+                </FormLabel>
+                <Input name="image-url" />
+              </FormControl>
+              <Button
+                variant="ghost"
+                type="submit"
+                onClick={onClose}
+                data-testid="submit-modal-button"
+              >
+                Submit
+              </Button>
+              <Button colorScheme="blue" mr={3} onClick={onClose}>
+                Cancel
+              </Button>
             </form>
-            <form action={getFile}>
+            {/* <form action={getFile}>
               <label htmlFor="file">Photo</label>
               <input type="file" name="file" id="file" />
               <button type="submit" id="upload">
                 Upload file
               </button>
-            </form>
+            </form> */}
           </ModalBody>
-          <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
-              Cancel
-            </Button>
-          </ModalFooter>
+          <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
     </>

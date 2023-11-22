@@ -44,7 +44,16 @@ export function Post({ post, index, userId }: PostProps) {
           <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: '200px', sm: '100%' }}>
             {post.author.email}
           </Text>
-          {/* <Image src={post.imageUrl} width={100} height={100} unoptimized={true} /> */}
+          {post.imageUrl !== null && (
+            <Image
+              alt="post image"
+              src={post.imageUrl}
+              width={800}
+              height={500}
+              unoptimized={true}
+              loading="lazy"
+            />
+          )}
           <Text color="gray.500">{post.createdAt.toDateString()}</Text>
         </Box>
         <Spacer />

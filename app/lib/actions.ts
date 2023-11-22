@@ -274,13 +274,16 @@ export async function createPost(prevState: any, formData: FormData) {
     const postSchema = z.object({
       content: z.string(),
       createdAt: z.date(),
+      imageUrl: z.string().optional(),
     });
 
     const form = {
       content: formData.get('post'),
       authorId: userId,
       createdAt: new Date(),
+      imageUrl: formData.get('image-url'),
     };
+    console.log(form);
 
     const parsedForm = postSchema.parse(form);
 
@@ -288,6 +291,7 @@ export async function createPost(prevState: any, formData: FormData) {
       content: parsedForm.content,
       authorId: userId,
       createdAt: parsedForm.createdAt,
+      imageUrl: parsedForm.imageUrl,
     };
 
     const createdPost = await prisma.post.create({
