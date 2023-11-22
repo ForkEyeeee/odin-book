@@ -39,10 +39,20 @@ const Pagination = ({ page, totalPageCount, startIndex, endIndex, timelinePostsC
   const searchParams = useSearchParams();
   const navigateToPage = newPage => {
     const currentTab = pathname.includes('/for-you');
+    console.log(pathname);
+
     if (newPage >= 1 && newPage <= totalPageCount && currentTab) {
       router.replace(`${pathname}?page=${newPage.toString()}`);
-    } else if (newPage >= 1 && newPage <= totalPageCount && !currentTab) {
+    } else if (
+      newPage >= 1 &&
+      newPage <= totalPageCount &&
+      !currentTab &&
+      pathname !== '/profile'
+    ) {
       router.replace(`${pathname}?page=${newPage.toString()}`);
+    } else if (newPage >= 1 && newPage <= totalPageCount) {
+      const userId = searchParams.get('userid');
+      router.replace(`${pathname}?userid=${userId}&page=${newPage.toString()}`);
     }
   };
 

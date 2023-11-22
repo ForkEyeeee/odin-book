@@ -79,25 +79,40 @@ const NavBar = () => {
                 <MenuDivider />
                 {session &&
                   Links.map(link => (
-                    <MenuItem
-                      key={link}
-                      onClick={
-                        link === 'Sign Out'
-                          ? () =>
-                              signOut({ redirect: false }).then(() => {
-                                router.push('/');
-                              })
-                          : undefined
-                      }
-                    >
-                      {link === 'Sign Out' ? (
-                        'Sign Out'
-                      ) : (
-                        <Link href={`/${link.toLowerCase()}`}>
+                    <>
+                      {link === 'Profile' && (
+                        <MenuItem
+                          key={link}
+                          onClick={() => {
+                            console.log(`Navigating to profile of user ${session.user.id}`);
+                            router.push(`/profile?userid=${session.user.id}&page=1`);
+                          }}
+                        >
                           <Text fontWeight="500">{link}</Text>
-                        </Link>
+                        </MenuItem>
                       )}
-                    </MenuItem>
+                      {link === 'Sign Out' ? (
+                        <MenuItem
+                          key={link}
+                          onClick={() => {
+                            signOut({ redirect: false }).then(() => {
+                              console.log('Signing out and redirecting to home');
+                              router.push('/');
+                            });
+                          }}
+                        >
+                          <Text fontWeight="500">{link}</Text>
+                        </MenuItem>
+                      ) : (
+                        link !== 'Profile' && (
+                          <MenuItem key={link}>
+                            <Link href={`/${link.toLowerCase()}`}>
+                              <Text fontWeight="500">{link}</Text>
+                            </Link>
+                          </MenuItem>
+                        )
+                      )}
+                    </>
                   ))}
               </MenuList>
             </Menu>

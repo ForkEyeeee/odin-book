@@ -682,3 +682,34 @@ export async function getPosts(page) {
     console.error(error);
   }
 }
+
+export async function getUserPosts(page) {
+  try {
+    const userId = await getUserId();
+
+    const pageNumber = isNaN(page) || page < 1 ? 1 : parseInt(page, 10); // Default to page 1 if invalid
+    const take = 5;
+
+    const skip = (pageNumber - 1) * take;
+    const userPosts = await prisma.post.findMany({
+      where: {
+        authorId: userId,
+      },
+      take: take,
+      skip: skip,
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    const postsCount = await prisma.post.count({
+      where: {
+        authorId: userId,
+      },
+    });
+    console.log(userPosts);
+    return { userPosts, postsCount };
+  } catch (error) {
+    return { message: 'Unable to fetch user posts' };
+  }
+}

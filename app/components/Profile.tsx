@@ -21,8 +21,6 @@ import {
 import { useState, useEffect } from 'react';
 import { Post as PostType, Profile } from '../lib/definitions';
 import { getSession } from 'next-auth/react';
-import { useSearchParams } from 'next/navigation';
-import { Post } from './Post';
 import ProfilePost from './ProfilePost';
 
 interface FormProps {
@@ -36,7 +34,6 @@ export default function Profile({ profile, posts }: FormProps) {
   const [state, formAction] = useFormState(updateProfile, initialState);
   const [isEdit, setIsEdit] = useState(false);
   const [isUser, setIsUser] = useState(false);
-
   useEffect(() => {
     if (state !== null) setIsEdit(false);
   }, [state]);
@@ -48,7 +45,6 @@ export default function Profile({ profile, posts }: FormProps) {
     };
     getData();
   }, [profile]);
-
   const newProfile = profile === undefined || profile === null;
   const dateTimeString = profile?.dateOfBirth;
   const dateString = dateTimeString ?? ''.split('T')[0];
