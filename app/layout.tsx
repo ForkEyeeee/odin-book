@@ -4,6 +4,7 @@ import './globals.css';
 import Providers from './components/Providers';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
+import { getUnreadMessagesCount } from './lib/actions';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {

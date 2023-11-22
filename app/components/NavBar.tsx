@@ -23,11 +23,22 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import CreatePostModal from './CreatePostModal';
 import SideBar from './SideBar';
+import { getUnreadMessagesCount } from '../lib/actions';
+import { useEffect, useState } from 'react';
 
 const NavBar = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const Links = ['Profile', 'Friends', 'Settings', 'Sign Out'];
+  const [unreadMessageCount, setUnreeadMessageCount] = useState(0);
+
+  useEffect(() => {
+    const getData = async () => {
+      const unreadMessageCount = await getUnreadMessagesCount();
+      setUnreeadMessageCount(Number(unreadMessageCount));
+    };
+    getData();
+  }, []);
 
   return (
     <Box
@@ -57,6 +68,7 @@ const NavBar = () => {
               <CreatePostModal />
             </IconButton>
             <Menu isLazy>
+              <Text>{unreadMessageCount}</Text>
               <SideBar />
               <MenuButton as={Button} size="sm" px={0} py={0} rounded="full">
                 <Avatar size="sm" src={session !== undefined ? session?.user.image!! : ''} />
@@ -105,7 +117,7 @@ const NavBar = () => {
                         </MenuItem>
                       ) : (
                         link !== 'Profile' && (
-                          <MenuItem key={link}>
+                          <MenuItem>
                             <Link href={`/${link.toLowerCase()}`}>
                               <Text fontWeight="500">{link}</Text>
                             </Link>

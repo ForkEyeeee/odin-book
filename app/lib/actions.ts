@@ -260,7 +260,7 @@ export async function deletePost(postId) {
       },
     });
 
-    revalidatePath('/');
+    revalidatePath('/for-you?page=1');
     return deletedPost;
   } catch (error) {
     return { message: `Post unsuccessfully deleted` };
@@ -297,7 +297,7 @@ export async function createPost(prevState: any, formData: FormData) {
     const createdPost = await prisma.post.create({
       data: postData,
     });
-    revalidatePath('/');
+    revalidatePath('/for-you');
     return createdPost;
   } catch (error) {
     return { message: `Unable to create Post` };
@@ -711,5 +711,20 @@ export async function getUserPosts(page) {
     return { userPosts, postsCount };
   } catch (error) {
     return { message: 'Unable to fetch user posts' };
+  }
+}
+
+export async function getUnreadMessagesCount() {
+  try {
+    const userId = await getUserId();
+    const unreadMessageCount = await prisma.message.count({
+      where: {
+        receiverId: userId,
+      },
+    });
+    console.log(unreadMessageCount);
+    return unreadMessageCount;
+  } catch (error) {
+    return { message: 'Unable to fetch unread message count' };
   }
 }

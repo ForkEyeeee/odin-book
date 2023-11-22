@@ -48,11 +48,12 @@ export function Post({ post, index, userId }: PostProps) {
           {post.imageUrl !== null && (
             <Image
               alt="post image"
-              src={post.imageUrl}
-              width={800}
-              height={500}
+              src={`${post.imageUrl}`}
+              width={0}
+              height={0}
               unoptimized={true}
               loading="lazy"
+              style={{ width: '100%', height: 'auto' }} // optional
             />
           )}
           <Text color="gray.500">{post.createdAt.toDateString()}</Text>
