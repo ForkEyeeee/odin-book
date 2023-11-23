@@ -112,7 +112,7 @@ const PaginationButton = ({ children, isDisabled, isActive, ...props }) => {
   return (
     <Flex
       p={{ base: 3, sm: 3 }}
-      px={{ base: 4, sm: 5 }}
+      px={{ base: 4, sm: 5, md: 8 }}
       fontSize="lg"
       lineHeight={1}
       transition="all 0.2s"
