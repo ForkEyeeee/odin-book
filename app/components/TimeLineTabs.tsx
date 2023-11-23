@@ -1,3 +1,4 @@
+'use client';
 import { Box, Flex, Link } from '@chakra-ui/react';
 import { Post } from './Post';
 import { TimeLineTabsProps } from '../lib/definitions';

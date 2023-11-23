@@ -24,7 +24,7 @@ export default async function Page({
           page={page}
           pageCountOtherTimelinePosts={otherTimeLinePosts.length} //total amount of records for current page
           otherTimelinePostsCount={otherTimelinePostsCount} //total amount of records
-        ></TimeLineTabs>
+        />
       </>
     );
   } catch (error) {

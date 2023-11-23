@@ -30,12 +30,12 @@ const NavBar = () => {
   const { data: session } = useSession();
   const router = useRouter();
   const Links = ['Profile', 'Friends', 'Settings', 'Sign Out'];
-  const [unreadMessageCount, setUnreeadMessageCount] = useState(0);
+  const [unreadMessageCount, setUnreadMessageCount] = useState(0);
 
   useEffect(() => {
     const getData = async () => {
-      const unreadMessageCount = await getUnreadMessagesCount();
-      setUnreeadMessageCount(Number(unreadMessageCount));
+      const count = await getUnreadMessagesCount();
+      setUnreadMessageCount(Number(count));
     };
     getData();
   }, []);
@@ -60,18 +60,37 @@ const NavBar = () => {
             src="https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png"
             onClick={() => router.push('/')}
           />
-
           <Input maxW="26rem" placeholder="Search..." borderColor={'gray.300'} borderRadius="5px" />
           <Spacer />
           <HStack spacing={3}>
             <IconButton aria-label="create post">
               <CreatePostModal />
             </IconButton>
+            <Box position="relative">
+              <IconButton aria-label="unread messages" icon={<SideBar />} />
+              {unreadMessageCount > 0 && (
+                <Box
+                  position="absolute"
+                  top="-1"
+                  right="-1"
+                  bg="red.500"
+                  borderRadius="full"
+                  width="auto"
+                  minWidth="1.5em"
+                  height="1.5em"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontSize="0.8em"
+                  color="white"
+                >
+                  {unreadMessageCount}
+                </Box>
+              )}
+            </Box>
             <Menu isLazy>
-              <Text>{unreadMessageCount}</Text>
-              <SideBar />
               <MenuButton as={Button} size="sm" px={0} py={0} rounded="full">
-                <Avatar size="sm" src={session !== undefined ? session?.user.image!! : ''} />
+                <Avatar size="sm" src={session !== undefined ? session?.user.image : ''} />
               </MenuButton>
               <MenuList
                 zIndex={5}
@@ -87,45 +106,37 @@ const NavBar = () => {
                     </Text>
                   </VStack>
                 </MenuItem>
-
                 <MenuDivider />
                 {session &&
-                  Links.map(link => (
-                    <>
-                      {link === 'Profile' && (
-                        <MenuItem
-                          key={link}
-                          onClick={() => {
-                            console.log(`Navigating to profile of user ${session.user.id}`);
-                            router.push(`/profile?userid=${session.user.id}&page=1`);
-                          }}
-                        >
+                  Links.map(link =>
+                    link === 'Profile' ? (
+                      <MenuItem
+                        key={link}
+                        onClick={() => {
+                          router.push(`/profile?userid=${session.user.id}&page=1`);
+                        }}
+                      >
+                        <Text fontWeight="500">{link}</Text>
+                      </MenuItem>
+                    ) : link === 'Sign Out' ? (
+                      <MenuItem
+                        key={link}
+                        onClick={() => {
+                          signOut({ redirect: false }).then(() => {
+                            router.push('/');
+                          });
+                        }}
+                      >
+                        <Text fontWeight="500">{link}</Text>
+                      </MenuItem>
+                    ) : (
+                      <MenuItem key={link}>
+                        <Link href={`/${link.toLowerCase()}`}>
                           <Text fontWeight="500">{link}</Text>
-                        </MenuItem>
-                      )}
-                      {link === 'Sign Out' ? (
-                        <MenuItem
-                          key={link}
-                          onClick={() => {
-                            signOut({ redirect: false }).then(() => {
-                              console.log('Signing out and redirecting to home');
-                              router.push('/');
-                            });
-                          }}
-                        >
-                          <Text fontWeight="500">{link}</Text>
-                        </MenuItem>
-                      ) : (
-                        link !== 'Profile' && (
-                          <MenuItem>
-                            <Link href={`/${link.toLowerCase()}`}>
-                              <Text fontWeight="500">{link}</Text>
-                            </Link>
-                          </MenuItem>
-                        )
-                      )}
-                    </>
-                  ))}
+                        </Link>
+                      </MenuItem>
+                    )
+                  )}
               </MenuList>
             </Menu>
             {!session && <Button onClick={() => signIn()}>Sign In</Button>}

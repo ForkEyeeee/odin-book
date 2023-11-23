@@ -43,7 +43,6 @@ const SideBar = () => {
   const countUnreadMessages = friend => {
     return friend.sentMessages.concat(friend.receivedMessages).filter(msg => !msg.read).length;
   };
-
   return (
     <>
       <IconButton
@@ -60,24 +59,36 @@ const SideBar = () => {
           <DrawerHeader borderBottomWidth="1px">Friends</DrawerHeader>
           <DrawerBody>
             <VStack spacing={4} align="stretch">
-              {friends.map(friend => (
-                <Flex key={friend.id} align="center" justify="space-between" p={3} boxShadow="base">
-                  <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
-                  <Box flex="1">
-                    <Text fontWeight="bold">{friend.name}</Text>
-                    <Text fontSize="sm">{friend.email}</Text>
-                    <Badge colorScheme="red">{countUnreadMessages(friend)}</Badge>
-                  </Box>
-                  <Button
-                    colorScheme="teal"
-                    onClick={() =>
-                      router.push(`/messages?userId=${userId}&receiverId=${friend.id}`)
-                    }
+              {friends.map(friend => {
+                const isRead = countUnreadMessages(friend);
+                return (
+                  <Flex
+                    key={friend.id}
+                    align="center"
+                    justify="space-between"
+                    p={3}
+                    boxShadow="base"
                   >
-                    Message
-                  </Button>
-                </Flex>
-              ))}
+                    <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
+                    <Box flex="1">
+                      <Text fontWeight="bold">{friend.name}</Text>
+                      <Text fontSize="sm">{friend.email}</Text>
+                      <Badge colorScheme={isRead ? 'red' : 'green'}>
+                        {isRead ? `${isRead} Unread` : 'No New Messages'}
+                      </Badge>
+                    </Box>
+                    <Button
+                      colorScheme="facebook"
+                      color={'white'}
+                      onClick={() =>
+                        router.push(`/messages?userId=${userId}&receiverId=${friend.id}`)
+                      }
+                    >
+                      Message
+                    </Button>
+                  </Flex>
+                );
+              })}
             </VStack>
           </DrawerBody>
         </DrawerContent>

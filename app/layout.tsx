@@ -6,6 +6,8 @@ import NavBar from './components/NavBar';
 import Footer from './components/Footer';
 import { getUnreadMessagesCount } from './lib/actions';
 const inter = Inter({ subsets: ['latin'] });
+import { Suspense } from 'react';
+import Loading from './loading';
 
 export const metadata: Metadata = {
   title: 'Social Media App',
@@ -17,9 +19,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={inter.className}>
         <Providers>
+          {/* <Suspense fallback={<Loading />}> */}
           <NavBar />
+          {/* </Suspense> */}
           {children}
-          {/* <Footer /> */}
+          <Footer />
         </Providers>
       </body>
     </html>

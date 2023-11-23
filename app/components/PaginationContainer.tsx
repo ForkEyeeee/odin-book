@@ -11,7 +11,6 @@ const PaginationContainer = ({ page, timelinePostsCount }) => {
   const totalPageCount = Math.ceil(timelinePostsCount / postsPerPage);
   const startIndex = (page - 1) * postsPerPage + 1;
   const endIndex = Math.min(startIndex + postsPerPage - 1, timelinePostsCount);
-
   return (
     <Container
       display="flex"
@@ -40,7 +39,6 @@ const Pagination = ({ page, totalPageCount, startIndex, endIndex, timelinePostsC
   const navigateToPage = newPage => {
     const currentTab = pathname.includes('/for-you');
     console.log(pathname);
-
     if (newPage >= 1 && newPage <= totalPageCount && currentTab) {
       router.replace(`${pathname}?page=${newPage.toString()}`);
     } else if (
@@ -55,18 +53,15 @@ const Pagination = ({ page, totalPageCount, startIndex, endIndex, timelinePostsC
       router.replace(`${pathname}?userid=${userId}&page=${newPage.toString()}`);
     }
   };
-
   const handleJumpInputChange = e => {
     setJumpPage(e.target.value);
   };
-
   const handleJump = () => {
     const pageNumber = parseInt(jumpPage, 10);
     if (!isNaN(pageNumber) && pageNumber >= 1 && pageNumber <= totalPageCount) {
       navigateToPage(pageNumber);
     }
   };
-
   const pageButtons = Array.from({ length: totalPageCount }, (_, i) => i + 1)
     .filter(p => p === 1 || p === totalPageCount || (p >= page - 2 && p <= page + 2))
     .map(p => (
@@ -74,7 +69,6 @@ const Pagination = ({ page, totalPageCount, startIndex, endIndex, timelinePostsC
         {p}
       </PaginationButton>
     ));
-
   return (
     <Flex
       direction={{ base: 'column', md: 'row' }}
@@ -117,7 +111,6 @@ const PaginationButton = ({ children, isActive, isDisabled, onClick }) => {
     _hover: { bg: useColorModeValue('gray.100', 'gray.700') },
     cursor: isDisabled ? 'not-allowed' : 'pointer',
   };
-
   return (
     <Flex
       as="button"
