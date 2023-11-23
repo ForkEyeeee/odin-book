@@ -5,7 +5,6 @@ const CenteredMessage = () => {
   return (
     <Center h="100vh">
       {' '}
-      {/* Full viewport height */}
       <Box textAlign="center">
         <Text fontSize="xl" fontWeight="bold">
           No User Selected

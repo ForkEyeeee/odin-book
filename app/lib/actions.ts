@@ -747,7 +747,6 @@ export async function getUnreadMessagesCount() {
         },
       },
     });
-    console.log('unread count ' + unreadMessageCount);
     return unreadMessageCount;
   } catch (error) {
     return { message: 'Unable to fetch unread message count' };
@@ -767,7 +766,7 @@ export async function setReadMessages(receiverId) {
         read: true,
       },
     });
-    console.log(receivedMessages);
+    revalidatePath('/for-you');
     return receivedMessages;
   } catch (error) {
     return { message: 'Unable to set messages as read' };

@@ -55,7 +55,7 @@ const Message = ({
   const initialState = { message: null, errors: {} };
   const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
-  console.log(senderId);
+
   useEffect(() => {
     try {
       const getData = async () => {
@@ -63,9 +63,9 @@ const Message = ({
       };
       getData();
     } catch (error) {
-      console.error(error);
+      return { message: 'Unable to set Read Messages' };
     }
-  }, [receiverId]);
+  }, [senderId]);
 
   useEffect(() => {
     if (state !== null) setIsEdit(false);
@@ -81,7 +81,7 @@ const Message = ({
                 {!isEdit ? (
                   <Box>
                     <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
-                      {content} + {messageStatus.toString()}
+                      {content}
                     </Text>
                   </Box>
                 ) : (

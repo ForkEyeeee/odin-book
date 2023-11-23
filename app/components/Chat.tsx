@@ -17,6 +17,7 @@ import { BsSendFill } from 'react-icons/bs';
 import { createMessage } from '../lib/actions';
 
 import { useFormState } from 'react-dom';
+import { useEffect, useState } from 'react';
 
 interface Message {
   id: number;
@@ -44,6 +45,11 @@ export default function Chat({
 }: ChatProps) {
   const initialState = { message: null, errors: {} };
   const [state, formAction] = useFormState(createMessage, initialState);
+  const [inputText, setInputText] = useState('');
+
+  useEffect(() => {
+    if (state !== null) setInputText('');
+  }, [state]);
 
   return (
     <Box flex="1" display="flex" flexDirection="column" h="100vh" p={{ xl: 5 }}>
@@ -87,6 +93,8 @@ export default function Chat({
               placeholder={`Message ${recipient}`}
               maxLength={200}
               size={{ sm: 'lg' }}
+              onChange={e => setInputText(e.currentTarget.value)}
+              value={inputText}
             />
             <input type="hidden" name="receiverId" value={receiverId} />
           </InputGroup>
