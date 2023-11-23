@@ -1,6 +1,6 @@
 'use client';
-import { Box, Text, Flex, Avatar, Spacer, IconButton, VStack } from '@chakra-ui/react';
-import { FaRegHeart } from 'react-icons/fa';
+import { Box, Text, Flex, Avatar, Spacer, IconButton, VStack, HStack } from '@chakra-ui/react';
+import { FaHeart, FaTrash } from 'react-icons/fa';
 import Link from 'next/link';
 import { likeComment, deleteComment } from '../lib/actions';
 import { DeleteIcon } from '@chakra-ui/icons';
@@ -8,7 +8,7 @@ import { CommentProps } from '../lib/definitions';
 
 export default function Comment({ comments, post, userId }: CommentProps) {
   return (
-    <VStack spacing={4} align="stretch" p={4} borderRadius={5} mt={5}>
+    <VStack spacing={4} align="stretch" p={4} borderRadius={5}>
       {comments.map(comment => {
         const userLikedComment = comment.commentLikes.some(like => like.authorId === userId);
 
@@ -20,7 +20,7 @@ export default function Comment({ comments, post, userId }: CommentProps) {
                 cursor="pointer"
                 bg="white"
                 mt="1"
-                src={post.author.profilePicture === null ? '' : post.author.profilePicture}
+                src={comment.author.profilePicture === null ? '' : comment.author.profilePicture}
               />
             </Link>
             <Box ml="3" pt="1">
@@ -33,23 +33,28 @@ export default function Comment({ comments, post, userId }: CommentProps) {
               <Text color="gray.200" fontSize="sm" mt="1">
                 {comment.content}
               </Text>
-              <Flex mt="2" color="gray.400" fontSize="sm">
-                <IconButton
-                  aria-label="Like"
-                  variant="ghost"
-                  icon={<FaRegHeart />}
-                  onClick={() => likeComment(comment.id, post.id)}
-                  size="sm"
-                  color={userLikedComment ? 'pink' : 'white'}
-                />
+              <HStack justifyContent="space-between" minW={{ base: '100%' }}>
+                <Flex alignItems={'center'}>
+                  <IconButton
+                    aria-label="Like"
+                    icon={<FaHeart color={userLikedComment ? '#f91880' : '#71767C'} />}
+                    onClick={() => likeComment(comment.id, post.id)}
+                    size="sm"
+                    _hover={{
+                      bg: 'pink.200',
+                    }}
+                    isRound
+                  />
+                  <Text color={'#71767C'}>{comment.commentLikes.length}</Text>
+                </Flex>
                 <IconButton
                   aria-label="delete"
-                  icon={<DeleteIcon />}
+                  icon={<FaTrash />}
                   onClick={() => deleteComment(comment.id)}
+                  size="sm"
+                  color={'red'}
                 />
-                <Text>{comment.commentLikes.length}</Text>
-                <Spacer />
-              </Flex>
+              </HStack>
             </Box>
           </Flex>
         );

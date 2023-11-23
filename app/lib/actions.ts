@@ -436,7 +436,7 @@ export async function createComment(prevState: any, formData: FormData) {
     const createdComment = await prisma.comment.create({
       data: commentData,
     });
-
+    console.log(createdComment);
     revalidatePath('/');
     return createdComment;
   } catch (error) {
