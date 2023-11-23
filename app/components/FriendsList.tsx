@@ -17,6 +17,7 @@ import { changeStatus } from '../lib/actions';
 import { Friend } from '../lib/definitions';
 import { useFormState } from 'react-dom';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
 interface FriendsListProps {
   friends?: Friend[];
@@ -26,7 +27,8 @@ const initialState = { message: null, errors: {} };
 
 export default function FriendsList({ friends }: FriendsListProps) {
   const [state, formAction] = useFormState(changeStatus, initialState);
-
+  const { data: session } = useSession();
+  const userId = session?.user.id;
   return (
     <>
       <Flex justifyContent="flex-end" mt={4}>

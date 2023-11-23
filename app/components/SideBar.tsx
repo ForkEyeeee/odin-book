@@ -1,3 +1,4 @@
+'use client';
 import {
   Avatar,
   Box,
@@ -12,29 +13,36 @@ import {
   Button,
   VStack,
   Text,
+  Badge,
 } from '@chakra-ui/react';
 import { ChatIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getFriends } from '../lib/actions';
+import { useSession } from 'next-auth/react';
 
 const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const [friends, setFriends] = useState([]);
+  const { data: session } = useSession();
+  const userId = session?.user.id;
 
   useEffect(() => {
     const fetchFriends = async () => {
       try {
         const fetchedFriends = await getFriends();
-
         setFriends(fetchedFriends);
       } catch (error) {
-        return { message: 'Unable to fetch friends' };
+        console.error('Unable to fetch friends', error);
       }
     };
     fetchFriends();
   }, []);
+
+  const countUnreadMessages = friend => {
+    return friend.sentMessages.concat(friend.receivedMessages).filter(msg => !msg.read).length;
+  };
 
   return (
     <>
@@ -53,22 +61,18 @@ const SideBar = () => {
           <DrawerBody>
             <VStack spacing={4} align="stretch">
               {friends.map(friend => (
-                <Flex
-                  key={friend._id}
-                  align="center"
-                  justify="space-between"
-                  p={3}
-                  boxShadow="base"
-                >
-                  <Avatar size="md" src={friend.profilePicture} name={friend.username} mr={4} />
+                <Flex key={friend.id} align="center" justify="space-between" p={3} boxShadow="base">
+                  <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
                   <Box flex="1">
                     <Text fontWeight="bold">{friend.name}</Text>
                     <Text fontSize="sm">{friend.email}</Text>
+                    <Badge colorScheme="red">{countUnreadMessages(friend)}</Badge>
                   </Box>
                   <Button
-                    color="white"
                     colorScheme="teal"
-                    onClick={() => router.push(`/messages/${friend._id}`)}
+                    onClick={() =>
+                      router.push(`/messages?userId=${userId}&receiverId=${friend.id}`)
+                    }
                   >
                     Message
                   </Button>

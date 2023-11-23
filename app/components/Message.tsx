@@ -16,7 +16,7 @@ import {
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, SmallCloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
-import { deleteMessage, updateMessage } from '../lib/actions';
+import { deleteMessage, setReadMessages, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
 
 type PopoverPlacement =
@@ -38,6 +38,7 @@ interface Props {
   messageId: number;
   receiverId: number;
   senderId: number;
+  messageStatus: boolean;
 }
 
 const Message = ({
@@ -49,10 +50,22 @@ const Message = ({
   messageId,
   receiverId,
   senderId,
+  messageStatus,
 }: Props) => {
   const initialState = { message: null, errors: {} };
   const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
+  console.log(senderId);
+  useEffect(() => {
+    try {
+      const getData = async () => {
+        const readMessages = await setReadMessages(senderId);
+      };
+      getData();
+    } catch (error) {
+      console.error(error);
+    }
+  }, [receiverId]);
 
   useEffect(() => {
     if (state !== null) setIsEdit(false);
@@ -66,9 +79,11 @@ const Message = ({
             <CardBody>
               <form action={formAction}>
                 {!isEdit ? (
-                  <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
-                    {content}
-                  </Text>
+                  <Box>
+                    <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
+                      {content} + {messageStatus.toString()}
+                    </Text>
+                  </Box>
                 ) : (
                   <>
                     <input type="hidden" name="receiverId" value={receiverId} />

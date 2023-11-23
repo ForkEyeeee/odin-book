@@ -56,19 +56,21 @@ export default function Chat({
         </Heading>
       </HStack>
       <VStack flex="1" overflowY="scroll">
-        {messages.map(message => (
-          <Message
-            key={message.id}
-            justifyContent={message.receiverId !== receiverId ? 'flex-start' : 'flex-end'}
-            backGround={message.receiverId === receiverId ? 'blue' : 'white'}
-            color={message.receiverId === receiverId ? 'white' : 'black'}
-            popOverPlacement={message.receiverId === receiverId ? 'left' : 'right'}
-            content={message.content}
-            messageId={message.id}
-            receiverId={message.receiverId}
-            senderId={message.senderId}
-          />
-        ))}
+        {messages !== undefined &&
+          messages.map(message => (
+            <Message
+              key={message.id}
+              justifyContent={message.receiverId !== receiverId ? 'flex-start' : 'flex-end'}
+              backGround={message.receiverId === receiverId ? 'blue' : 'white'}
+              color={message.receiverId === receiverId ? 'white' : 'black'}
+              popOverPlacement={message.receiverId === receiverId ? 'left' : 'right'}
+              content={message.content}
+              messageId={message.id}
+              receiverId={message.receiverId}
+              senderId={message.senderId}
+              messageStatus={message.read}
+            />
+          ))}
       </VStack>
       <form action={formAction}>
         <FormControl pt={5}>

@@ -98,29 +98,37 @@ export async function getFriends() {
 
   const userFriends = await prisma.friend.findMany({
     where: {
-      user1Id: userId,
+      OR: [{ user1Id: userId }, { user2Id: userId }],
     },
     orderBy: {
       status: 'asc',
     },
   });
 
-  const friendIds = userFriends.map(friend => friend.user2Id);
+  const friendIds = userFriends.flatMap(friend =>
+    friend.user1Id === userId ? [friend.user2Id] : [friend.user1Id]
+  );
+
+  const uniqueFriendIds = Array.from(new Set(friendIds));
 
   const friends = await prisma.user.findMany({
     where: {
       id: {
-        in: friendIds,
+        in: uniqueFriendIds,
       },
+    },
+    include: {
+      sentMessages: true,
+      receivedMessages: true,
     },
   });
 
-  const combinedFriendsData = userFriends.map(userFriend => {
-    const friendData = friends.find(friend => friend.id === userFriend.user2Id);
-    return {
-      ...userFriend,
-      ...friendData,
-    };
+  const combinedFriendsData = uniqueFriendIds.map(friendId => {
+    const friendData = friends.find(friend => friend.id === friendId);
+    const userFriend = userFriends.find(
+      friend => friend.user1Id === friendId || friend.user2Id === friendId
+    );
+    return friendData ? { ...userFriend, ...friendData } : userFriend;
   });
 
   return combinedFriendsData;
@@ -193,6 +201,7 @@ export async function addFriend(friendUserId: number) {
     if (existingFriend !== null) throw new Error('Friend Already Added');
 
     const updateFriends = await prisma.friend.create({ data: friendToCreate });
+    revalidatePath('/friends');
     return updateFriends;
   } catch (error) {
     return console.error(error);
@@ -215,7 +224,7 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
         ],
       },
     });
-
+    console.log(friend);
     if (!friend) {
       throw new Error('Friend relationship not found.');
     }
@@ -241,6 +250,21 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
             id: friend.id,
           },
         });
+        const deletedMessages = await prisma.message.deleteMany({
+          where: {
+            OR: [
+              {
+                senderId: userId,
+                receiverId: userFriendId,
+              },
+              {
+                senderId: userFriendId,
+                receiverId: userId,
+              },
+            ],
+          },
+        });
+
         revalidatePath('/friends');
         return changedFriend;
 
@@ -283,7 +307,6 @@ export async function createPost(prevState: any, formData: FormData) {
       createdAt: new Date(),
       imageUrl: formData.get('image-url'),
     };
-    console.log(form);
 
     const parsedForm = postSchema.parse(form);
 
@@ -707,7 +730,6 @@ export async function getUserPosts(page) {
         authorId: userId,
       },
     });
-    console.log(userPosts);
     return { userPosts, postsCount };
   } catch (error) {
     return { message: 'Unable to fetch user posts' };
@@ -719,12 +741,35 @@ export async function getUnreadMessagesCount() {
     const userId = await getUserId();
     const unreadMessageCount = await prisma.message.count({
       where: {
-        receiverId: userId,
+        AND: {
+          receiverId: userId,
+          read: false,
+        },
       },
     });
-    console.log(unreadMessageCount);
+    console.log('unread count ' + unreadMessageCount);
     return unreadMessageCount;
   } catch (error) {
     return { message: 'Unable to fetch unread message count' };
+  }
+}
+
+export async function setReadMessages(receiverId) {
+  try {
+    const userId = await getUserId();
+    const receivedMessages = await prisma.message.updateMany({
+      where: {
+        receiverId: userId,
+        senderId: receiverId,
+        read: false,
+      },
+      data: {
+        read: true,
+      },
+    });
+    console.log(receivedMessages);
+    return receivedMessages;
+  } catch (error) {
+    return { message: 'Unable to set messages as read' };
   }
 }
