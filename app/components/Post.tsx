@@ -10,6 +10,8 @@ import {
   FormControl,
   FormLabel,
   Button,
+  VStack,
+  HStack,
 } from '@chakra-ui/react';
 import { FaHeart, FaTrash } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
@@ -31,60 +33,85 @@ export function Post({ post, index, userId }: PostProps) {
       borderWidth="1px"
       borderRadius="md"
       padding="20px"
-      width="100%"
+      width={{ base: 300 }}
       boxShadow="md"
       mt={index > 0 ? 10 : 0}
+      className="test"
     >
       <Flex>
         <Link href={`/profile/${post.author.id}`}>
-          <Avatar size="md" name="John Doe" src={`${post.author.profilePicture}`} />
+          <Avatar
+            size={{ base: 'sm', sm: 'md' }}
+            name="John Doe"
+            src={`${post.author.profilePicture}`}
+          />
         </Link>
         <Box ml="4">
-          <Text fontWeight="bold">{post.author.name}</Text>
+          <HStack justifyContent={'space-between'}>
+            <Text fontWeight="bold">{post.author.name}</Text>
+            <IconButton
+              aria-label="trash icon"
+              icon={<FaTrash />}
+              onClick={() => deletePost(post.id)}
+            />
+          </HStack>
           <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: '200px', sm: '100%' }}>
             {post.author.email}
           </Text>
-          <Text mt="4">{post.content}</Text>
-          {post.imageUrl !== null && (
-            <Image
-              alt="post image"
-              src={`${post.imageUrl}`}
-              width={0}
-              height={0}
-              unoptimized={true}
-              loading="lazy"
-              style={{ width: '100%', height: 'auto' }} // optional
-            />
-          )}
           <Text color="gray.500">{post.createdAt.toDateString()}</Text>
+
+          <Text mt="4" mb={{ base: 3 }}>
+            {post.content}
+          </Text>
+          {post.imageUrl !== null && (
+            <HStack alignItems={'flex-start'} justifyContent={'space-between'}>
+              <div style={{ borderRadius: '5px', overflow: 'hidden' }}>
+                <Image
+                  alt="post image"
+                  src={`${post.imageUrl}`}
+                  width={0}
+                  height={0}
+                  unoptimized={true}
+                  loading="lazy"
+                  // layout="fill"
+                  objectFit="cover"
+                  style={{ width: '100%', height: 'auto' }} // optional
+                />
+              </div>
+            </HStack>
+          )}
         </Box>
-        <Spacer />
       </Flex>
-      <Flex justifyContent="space-between" mt={{ base: '10px' }}>
-        <IconButton
-          aria-label="Like"
-          icon={<FaHeart />}
-          onClick={() => likePost(post.id)}
-          color={isLiked ? 'pink' : 'initial'}
-        />
-        <Text>{post.likes.length}</Text>
-        <IconButton
-          aria-label="trash icon"
-          icon={<FaTrash />}
-          onClick={() => deletePost(post.id)}
-        />
+      <Flex justifyContent={'flex-end'} mt={{ base: '10px' }}>
+        <HStack spacing={0}>
+          <IconButton
+            aria-label="Like"
+            icon={<FaHeart color={isLiked ? '#f91880' : '#71767C'} />}
+            onClick={() => likePost(post.id)}
+            _hover={{
+              bg: 'pink.200',
+            }}
+            size="md"
+            isRound
+          />
+          <Text color={'#71767C'}>{post.likes.length}</Text>
+        </HStack>
       </Flex>
-      <Comment comments={post.comments} post={post} userId={userId} />
       <form action={formAction}>
-        <FormControl>
-          <FormLabel htmlFor="comment">Edit Mode</FormLabel>
-          <input type="hidden" name="postId" value={post.id} />
-          <Textarea name="comment" placeholder="Enter a new comment" />
-        </FormControl>
-        <Button type="submit" variant={'solid'}>
-          Submit
-        </Button>
+        <VStack alignItems={'flex-end'} spacing={5}>
+          <FormControl mt={5}>
+            <input type="hidden" name="postId" value={post.id} />
+            <Textarea name="comment" placeholder="Post your reply" />
+          </FormControl>
+          <Button type="submit" variant={'solid'}>
+            Submit
+          </Button>
+        </VStack>
       </form>
+      {post.comments !== undefined ||
+        (post.comments.length > 0 && (
+          <Comment comments={post.comments} post={post} userId={userId} />
+        ))}
     </Box>
   );
 }

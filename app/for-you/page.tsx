@@ -1,10 +1,9 @@
 import TimeLineTabs from '../components/TimeLineTabs';
-import PaginationContainer from '../components/PaginationContainer';
 import { getPosts } from '@/app/lib/actions';
 import { Suspense } from 'react';
 import { Box } from '@chakra-ui/react';
 import Loading from '../loading';
-
+import PaginationContainer from '../components/PaginationContainerr';
 export default async function Page({
   searchParams,
 }: {

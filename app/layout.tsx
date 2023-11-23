@@ -7,6 +7,7 @@ import Footer from './components/Footer';
 import { getUnreadMessagesCount } from './lib/actions';
 const inter = Inter({ subsets: ['latin'] });
 import { Suspense } from 'react';
+import { Box, Flex, HStack } from '@chakra-ui/react';
 import Loading from './loading';
 
 export const metadata: Metadata = {
@@ -22,7 +23,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {/* <Suspense fallback={<Loading />}> */}
           <NavBar />
           {/* </Suspense> */}
-          {children}
+          <Flex justifyContent={'center'}>{children}</Flex>
           <Footer />
         </Providers>
       </body>

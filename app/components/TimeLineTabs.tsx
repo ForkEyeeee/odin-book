@@ -2,15 +2,18 @@
 import { Box, Flex, Link } from '@chakra-ui/react';
 import { Post } from './Post';
 import { TimeLineTabsProps } from '../lib/definitions';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTabsProps) {
+  const pathname = usePathname();
   return (
     <>
-      <Flex justifyContent="space-around" p={4}>
+      <Flex justifyContent="space-around" p={4} mt={{ base: 10 }} mb={{ base: 3 }}>
         <Link
           href={'/for-you?page=1'}
           color="blue.600"
           _hover={{ textDecoration: 'underline', bg: 'gray.100' }}
+          fontWeight={pathname === '/for-you' ? 'bold' : 'initial'}
         >
           For You
         </Link>
@@ -18,6 +21,7 @@ export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTab
           href={'all-posts?page=1'}
           color="blue.600"
           _hover={{ textDecoration: 'underline', bg: 'gray.100' }}
+          fontWeight={pathname === '/all-posts' ? 'bold' : 'initial'}
         >
           All Posts
         </Link>

@@ -60,7 +60,7 @@ const NavBar = () => {
             src="https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png"
             onClick={() => router.push('/')}
           />
-          <Input maxW="26rem" placeholder="Search..." borderColor={'gray.300'} borderRadius="5px" />
+          {/* <Input maxW="26rem" placeholder="Search..." borderColor={'gray.300'} borderRadius="5px" /> */}
           <Spacer />
           <HStack spacing={3}>
             <IconButton aria-label="create post">

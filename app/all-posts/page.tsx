@@ -1,5 +1,5 @@
 import TimeLineTabs from '../components/TimeLineTabs';
-import PaginationContainer from '../components/PaginationContainer';
+import PaginationContainer from '../components/PaginationContainerr';
 import { getPosts } from '@/app/lib/actions';
 
 export default async function Page({

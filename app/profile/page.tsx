@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import Profile from '../components/Profile';
 import ProfilePost from '../components/ProfilePost';
-import PaginationContainer from '../components/PaginationContainer';
+import PaginationContainer from '../components/PaginationContainerr';
 
 export default async function Page({
   searchParams,

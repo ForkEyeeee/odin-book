@@ -7,9 +7,8 @@ import { DeleteIcon } from '@chakra-ui/icons';
 import { CommentProps } from '../lib/definitions';
 
 export default function Comment({ comments, post, userId }: CommentProps) {
-  console.log(post.author.profilePicture);
   return (
-    <VStack spacing={4} align="stretch" bg="#15202B" p={4} borderRadius={5} mt={5}>
+    <VStack spacing={4} align="stretch" p={4} borderRadius={5} mt={5}>
       {comments.map(comment => {
         const userLikedComment = comment.commentLikes.some(like => like.authorId === userId);
 
