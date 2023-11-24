@@ -1,6 +1,7 @@
 import { getUserId } from '../../lib/actions';
 import { searchUsers } from '../../lib/actions';
 import SearchBox from '@/app/components/SearchBox';
+import NoDataFound from '@/app/components/NoDataFound';
 
 export default async function Page({
   searchParams,
@@ -16,6 +17,6 @@ export default async function Page({
     const userId = await getUserId();
     return <SearchBox filteredUsers={filteredUsers} userId={userId} />;
   } catch (error) {
-    return { message: 'Unable to Search' };
+    return <NoDataFound />;
   }
 }

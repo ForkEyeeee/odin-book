@@ -1,6 +1,7 @@
 import TimeLineTabs from '../components/TimeLineTabs';
 import PaginationContainer from '../components/PaginationContainerr';
 import { getPosts } from '@/app/lib/actions';
+import NoDataFound from '../components/NoDataFound';
 
 export default async function Page({
   searchParams,
@@ -28,6 +29,6 @@ export default async function Page({
       </>
     );
   } catch (error) {
-    return <div>Failed to Fetch Posts.</div>;
+    return <NoDataFound />;
   }
 }

@@ -1,6 +1,6 @@
 import { getFriends } from '../lib/actions';
 import FriendsList from '../components/FriendsList';
-import Link from 'next/link';
+import NoDataFound from '../components/NoDataFound';
 
 export default async function Page() {
   try {
@@ -8,6 +8,6 @@ export default async function Page() {
     if (friendUsers === undefined) return;
     return <FriendsList friends={friendUsers} />;
   } catch (error) {
-    return { message: `Unable to fetch friends` };
+    return <NoDataFound />;
   }
 }

@@ -1,14 +1,8 @@
 import { Suspense } from 'react';
 import { getMessages } from '@/app/lib/actions';
 import Chat from '../components/Chat';
-import { getUserId } from '@/app/lib/actions';
 import Loading from '../loading';
-
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
+import NoDataFound from '../components/NoDataFound';
 
 export default async function Page({
   searchParams,
@@ -34,6 +28,6 @@ export default async function Page({
       </Suspense>
     );
   } catch (error) {
-    return <div>Failed to Fetch Messages.</div>;
+    return <NoDataFound />;
   }
 }

@@ -1,8 +1,8 @@
 import TimeLineTabs from '../components/TimeLineTabs';
 import { getPosts } from '@/app/lib/actions';
 import { Suspense } from 'react';
-import { Box } from '@chakra-ui/react';
 import Loading from '../loading';
+import NoDataFound from '../components/NoDataFound';
 import PaginationContainer from '../components/PaginationContainerr';
 export default async function Page({
   searchParams,
@@ -15,6 +15,9 @@ export default async function Page({
   try {
     const page = searchParams?.page || '';
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
+
+    if (timelinePosts.length <= 0) throw new Error();
+
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const take = 5;
@@ -30,12 +33,10 @@ export default async function Page({
           page={page}
           pageCountTimelinePosts={timelinePosts.length}
           timelinePostsCount={timelinePostsCount}
-          startIndex={startIndex}
-          endIndex={endIndex}
         />
       </Suspense>
     );
   } catch (error) {
-    return <div>Failed to Fetch Posts.</div>;
+    return <NoDataFound />;
   }
 }

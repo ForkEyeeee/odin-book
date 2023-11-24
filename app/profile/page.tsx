@@ -1,9 +1,7 @@
 import { getProfile, getUserId, getUserPosts } from '../lib/actions';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import Profile from '../components/Profile';
-import ProfilePost from '../components/ProfilePost';
 import PaginationContainer from '../components/PaginationContainerr';
+import NoDataFound from '../components/NoDataFound';
 
 export default async function Page({
   searchParams,
@@ -27,6 +25,6 @@ export default async function Page({
       </>
     );
   } catch (error) {
-    return { message: `Unable to fetch profile` };
+    return <NoDataFound />;
   }
 }
