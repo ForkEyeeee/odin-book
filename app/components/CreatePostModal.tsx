@@ -17,7 +17,7 @@ import {
 import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useFormState } from 'react-dom';
 import { createPost } from '../lib/actions';
-import { getFile } from '../lib/actions';
+import { AiOutlinePlus } from 'react-icons/ai';
 
 const initialState = { message: null, errors: {} };
 
@@ -27,47 +27,39 @@ const CreatePostModal = () => {
 
   return (
     <>
-      <PlusSquareIcon onClick={onOpen} data-testid="open-modal-button" />
+      <Button
+        onClick={onOpen}
+        leftIcon={<AiOutlinePlus />}
+        color="white"
+        colorScheme="teal"
+        fontWeight="bold"
+      >
+        Create Post
+      </Button>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create a Post</ModalHeader>
-          <ModalCloseButton data-testid="close-modal-button" />
+          <ModalCloseButton />
           <ModalBody>
             <form action={formAction}>
-              <FormControl display="flex" alignItems="center" mb={6}>
-                {/* <FormLabel htmlFor="post" mb="0">
-                  Edit Mode
-                </FormLabel> */}
-                <Textarea name="post" required />
+              <FormControl mb={4}>
+                <Textarea name="post" placeholder="What's on your mind?" required />
               </FormControl>
-              <FormControl display="flex" alignItems="center" mb={6}>
-                <FormLabel htmlFor="image-url" mb="0">
-                  Image Url{' '}
-                </FormLabel>
-                <Input name="image-url" />
+              <FormControl mb={4}>
+                <FormLabel htmlFor="image-url">Image URL</FormLabel>
+                <Input name="image-url" placeholder="http://example.com/image.jpg" />
               </FormControl>
-              <Button
-                variant="ghost"
-                type="submit"
-                onClick={onClose}
-                data-testid="submit-modal-button"
-              >
-                Submit
-              </Button>
-              <Button colorScheme="blue" mr={3} onClick={onClose}>
-                Cancel
-              </Button>
+              <ModalFooter pr={0}>
+                <Button type="submit" colorScheme="green" mr={3} variant={'ghost'}>
+                  Submit
+                </Button>
+                <Button variant="outline" onClick={onClose}>
+                  Cancel
+                </Button>
+              </ModalFooter>
             </form>
-            {/* <form action={getFile}>
-              <label htmlFor="file">Photo</label>
-              <input type="file" name="file" id="file" />
-              <button type="submit" id="upload">
-                Upload file
-              </button>
-            </form> */}
           </ModalBody>
-          <ModalFooter></ModalFooter>
         </ModalContent>
       </Modal>
     </>
