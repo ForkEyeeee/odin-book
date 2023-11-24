@@ -1,36 +1,44 @@
 'use client';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import {
-  Container,
   Box,
-  Avatar,
-  Button,
+  Flex,
   HStack,
-  VStack,
-  Image,
-  Input,
-  Spacer,
+  Button,
+  Text,
+  Link,
   Menu,
   MenuButton,
   MenuList,
   MenuItem,
-  Text,
-  MenuDivider,
-  useColorModeValue,
+  Stack,
+  Icon,
   IconButton,
+  useDisclosure,
+  useColorModeValue,
 } from '@chakra-ui/react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { AiOutlineClose } from 'react-icons/ai';
+import { BiChevronDown } from 'react-icons/bi';
+import { RiFlashlightFill } from 'react-icons/ri';
 import CreatePostModal from './CreatePostModal';
 import SideBar from './SideBar';
 import { getUnreadMessagesCount } from '../lib/actions';
-import { useEffect, useState } from 'react';
 
-const NavBar = () => {
+const navLinks = [
+  { name: 'Profile', action: 'profile' },
+  { name: 'Friends', action: 'friends' },
+  { name: 'Settings', action: 'settings' },
+  { name: 'Sign Out', action: 'signout' },
+];
+
+export default function NavBar() {
   const { data: session } = useSession();
   const router = useRouter();
-  const Links = ['Profile', 'Friends', 'Settings', 'Sign Out'];
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     const getData = async () => {
@@ -40,111 +48,87 @@ const NavBar = () => {
     getData();
   }, []);
 
+  const handleNavLinkClick = action => {
+    if (action === 'profile') {
+      router.push(`/profile?userid=${session.user.id}&page=1`);
+    } else if (action === 'signout') {
+      signOut({ redirect: false }).then(() => {
+        router.push('/');
+      });
+    } else {
+      router.push(`/${action}`);
+    }
+  };
+
   return (
-    <Box
-      py="2"
-      boxShadow="sm"
-      border="0 solid #e5e7eb"
-      position="relative"
-      top="0"
-      bg={'gray.700'}
-      width="100%"
-      zIndex="1"
-    >
-      <Container px={4} mx="auto">
-        <HStack spacing={4}>
-          <Image
-            alt="dev logo"
-            w={'auto'}
-            h={12}
-            src="https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png"
-            onClick={() => router.push('/')}
-          />
-          {/* <Input maxW="26rem" placeholder="Search..." borderColor={'gray.300'} borderRadius="5px" /> */}
-          <Spacer />
-          <HStack spacing={3}>
-            <IconButton aria-label="create post">
-              <CreatePostModal />
-            </IconButton>
-            <Box position="relative">
-              <IconButton aria-label="unread messages" icon={<SideBar />} />
-              {unreadMessageCount > 0 && (
-                <Box
-                  position="absolute"
-                  top="-1"
-                  right="-1"
-                  bg="red.500"
-                  borderRadius="full"
-                  width="auto"
-                  minWidth="1.5em"
-                  height="1.5em"
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  fontSize="0.8em"
-                  color="white"
-                >
-                  {unreadMessageCount}
-                </Box>
-              )}
-            </Box>
-            <Menu isLazy>
-              <MenuButton as={Button} size="sm" px={0} py={0} rounded="full">
-                <Avatar size="sm" src={session !== undefined ? session?.user.image : ''} />
-              </MenuButton>
-              <MenuList
-                zIndex={5}
-                border="2px solid"
-                borderColor={useColorModeValue('gray.700', 'gray.100')}
-                boxShadow="4px 4px 0"
-                bg={'gray.500'}
-              >
-                <MenuItem>
-                  <VStack justify="start" alignItems="left">
-                    <Text size="sm" fontWeight={'bold'} mt="0 !important">
-                      {session !== undefined ? session?.user.name : ''}
-                    </Text>
-                  </VStack>
-                </MenuItem>
-                <MenuDivider />
-                {session &&
-                  Links.map(link =>
-                    link === 'Profile' ? (
-                      <MenuItem
-                        key={link}
-                        onClick={() => {
-                          router.push(`/profile?userid=${session.user.id}&page=1`);
-                        }}
-                      >
-                        <Text fontWeight="500">{link}</Text>
-                      </MenuItem>
-                    ) : link === 'Sign Out' ? (
-                      <MenuItem
-                        key={link}
-                        onClick={() => {
-                          signOut({ redirect: false }).then(() => {
-                            router.push('/');
-                          });
-                        }}
-                      >
-                        <Text fontWeight="500">{link}</Text>
-                      </MenuItem>
-                    ) : (
-                      <MenuItem key={link}>
-                        <Link href={`/${link.toLowerCase()}`}>
-                          <Text fontWeight="500">{link}</Text>
-                        </Link>
-                      </MenuItem>
-                    )
-                  )}
-              </MenuList>
-            </Menu>
-            {!session && <Button onClick={() => signIn()}>Sign In</Button>}
+    <Box px={4} bg={useColorModeValue('gray.800', 'black')}>
+      <Flex h={16} alignItems="center" justifyContent="space-between" mx="auto">
+        <Icon as={RiFlashlightFill} h={8} w={8} onClick={() => router.push('/')} />
+
+        <HStack spacing={8} alignItems="center">
+          <HStack as="nav" spacing={6} display={{ base: 'none', md: 'flex' }} alignItems="center">
+            {navLinks.map(
+              (link, index) =>
+                session && (
+                  <Button key={index} onClick={() => handleNavLinkClick(link.action)}>
+                    {link.name}
+                  </Button>
+                )
+            )}
           </HStack>
         </HStack>
-      </Container>
+
+        {!session && <Button onClick={() => signIn()}>Sign In</Button>}
+
+        <IconButton
+          size="md"
+          icon={isOpen ? <AiOutlineClose /> : <GiHamburgerMenu />}
+          aria-label="Open Menu"
+          display={{ base: 'inherit', md: 'none' }}
+          onClick={isOpen ? onClose : onOpen}
+        />
+
+        {session && (
+          <Box position="relative">
+            <IconButton aria-label="unread messages" icon={<SideBar />} />
+            {unreadMessageCount > 0 && (
+              <Box
+                position="absolute"
+                top="-1"
+                right="-1"
+                bg="red.500"
+                borderRadius="full"
+                width="auto"
+                minWidth="1.5em"
+                height="1.5em"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                fontSize="0.8em"
+                color="white"
+              >
+                {unreadMessageCount}
+              </Box>
+            )}
+          </Box>
+        )}
+      </Flex>
+
+      {/* Mobile Screen Links */}
+      {isOpen && (
+        <Box pb={4} display={{ base: 'inherit', md: 'none' }}>
+          <Stack as="nav" spacing={2}>
+            {navLinks.map(
+              (link, index) =>
+                session && (
+                  <Button key={index} onClick={() => handleNavLinkClick(link.action)} w="full">
+                    {link.name}
+                  </Button>
+                )
+            )}
+          </Stack>
+        </Box>
+      )}
     </Box>
   );
-};
-
-export default NavBar;
+}

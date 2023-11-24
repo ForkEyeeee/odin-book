@@ -38,7 +38,7 @@ export default function FriendsList({ friends }: FriendsListProps) {
       </Flex>{' '}
       <form action={formAction}>
         <VStack align="stretch" spacing={4}>
-          <UnorderedList styleType="none" ml={0} padding="20px">
+          <UnorderedList styleType="none" ml={0}>
             {friends &&
               friends.map((friend, index) => (
                 <ListItem
