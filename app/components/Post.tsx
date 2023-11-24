@@ -36,14 +36,18 @@ export function Post({ post, index, userId }: PostProps) {
   }, [state]);
 
   const isLiked = post.likes.find(element => element.authorId === userId);
+  const isAuthor = post.authorId === userId;
+
   return (
     <Center>
       <Box
         borderWidth="1px"
         borderRadius="md"
         padding={{ base: '20px' }}
-        maxW={{ base: '100%', sm: '90%' }}
-        minW={{ sm: '90%' }}
+        // w={{ base: '800%' }}
+        // maxW={{ base: '100%', sm: '90%' }}
+        // minW={{ sm: '90%' }}
+        w={{ base: 300, sm: 430, md: 700, lg: 900, xl: 1200 }}
         boxShadow="md"
         mt={index > 0 ? 10 : 0}
         className="test"
@@ -61,7 +65,7 @@ export function Post({ post, index, userId }: PostProps) {
                 </Link>
                 <VStack alignItems={'flex-start'}>
                   <Text fontWeight="bold">{post.author.name}</Text>
-                  <Text noOfLines={{ base: 1 }} color="gray.500">
+                  <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: 150, sm: '100%' }}>
                     {post.author.email}
                   </Text>
                   <Text color="gray.500">{post.createdAt.toDateString()}</Text>
@@ -91,17 +95,18 @@ export function Post({ post, index, userId }: PostProps) {
             </Box>
           </Flex>
           <Flex alignItems={'flex-start'}>
-            <IconButton
-              aria-label="Delete post"
-              icon={<FaTrash />}
-              onClick={() => deletePost(post.id)}
-              size="sm"
-              _hover={{
-                bg: 'red',
-                color: 'black',
-              }}
-              ml="auto" // This applies margin-left auto to push the icon to the right
-            />
+            {isAuthor && (
+              <IconButton
+                aria-label="Delete post"
+                icon={<FaTrash />}
+                onClick={() => deletePost(post.id)}
+                size="sm"
+                _hover={{
+                  bg: 'red',
+                  color: 'black',
+                }}
+              />
+            )}
           </Flex>
         </HStack>
         <Flex justifyContent={'flex-end'} mt={{ base: '10px' }}>
