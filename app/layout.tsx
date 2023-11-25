@@ -9,6 +9,7 @@ const inter = Inter({ subsets: ['latin'] });
 import { Suspense } from 'react';
 import { Box, Flex, HStack } from '@chakra-ui/react';
 import Loading from './loading';
+import ScrollToTop from './components/ScrollToTop';
 
 export const metadata: Metadata = {
   title: 'Social Media App',
@@ -21,6 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={inter.className}>
         <Providers>
           <NavBar />
+          <ScrollToTop />
           {children}
           <Footer />
         </Providers>

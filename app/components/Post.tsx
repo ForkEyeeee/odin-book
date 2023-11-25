@@ -24,6 +24,7 @@ import { createComment } from '../lib/actions';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import ScrollToTop from './ScrollToTop';
 
 const initialState = { message: null, errors: {} };
 
@@ -34,7 +35,7 @@ export function Post({ post, index, userId }: PostProps) {
   useEffect(() => {
     if (state !== null) setInputText('');
   }, [state]);
-
+  console.log(index);
   const isLiked = post.likes.find(element => element.authorId === userId);
   const isAuthor = post.authorId === userId;
 
@@ -71,7 +72,6 @@ export function Post({ post, index, userId }: PostProps) {
                   <Text color="gray.500">{format(new Date(post.createdAt), 'PPpp')}</Text>
                 </VStack>
               </Flex>
-
               <Text mt="4" mb={{ base: 3 }} minW={{ base: '200px', sm: '330px' }}>
                 {post.content}
               </Text>

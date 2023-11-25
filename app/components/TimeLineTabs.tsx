@@ -31,7 +31,12 @@ export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTab
         {forYouPosts !== undefined &&
           forYouPosts.map((post, index) => (
             <Box key={post.id} mb={4}>
-              <Post post={post} index={index} userId={userId} />
+              <Post
+                post={post}
+                index={index}
+                userId={userId}
+                isLast={index === forYouPosts.length - 1}
+              />
             </Box>
           ))}
       </Box>
@@ -40,7 +45,12 @@ export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTab
         {discoverPosts !== undefined &&
           discoverPosts.map((post, index) => (
             <Box key={post.id} mb={4}>
-              <Post post={post} index={index} userId={userId} />
+              <Post
+                post={post}
+                index={index}
+                userId={userId}
+                isLast={index === discoverPosts.length - 1}
+              />
             </Box>
           ))}
       </Box>

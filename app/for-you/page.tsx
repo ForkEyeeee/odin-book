@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 import Loading from '../loading';
 import NoDataFound from '../components/NoDataFound';
 import PaginationContainer from '../components/PaginationContainerr';
-import { Flex } from '@chakra-ui/react';
+import ScrollToTop from '../components/ScrollToTop';
 
 export default async function Page({
   searchParams,
