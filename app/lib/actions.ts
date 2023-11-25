@@ -6,6 +6,7 @@ import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { FriendshipStatus } from '@prisma/client';
+import { useSearchParams } from 'next/navigation';
 
 export const getUserId = async () => {
   try {
@@ -585,16 +586,20 @@ export async function updateMessage(prevState: any, formData: FormData) {
       senderId: userId,
       receiverId: parsedForm.receiverId,
       createdAt: new Date(),
-      read: false,
+      read: true,
     };
+    console.log(messageData);
 
     const updatedMessage = await prisma.message.update({
       where: {
         id: parsedForm.messageId,
       },
-      data: messageData,
+      data: {
+        content: parsedForm.message,
+        read: true,
+      },
     });
-    revalidatePath(`/messages/${form.receiverId}`);
+    revalidatePath(`/messages?userId=${userId}&receiverId=${form.receiverId}`);
     return updatedMessage;
   } catch (error) {
     return { message: `Message unsuccessfully updated` };

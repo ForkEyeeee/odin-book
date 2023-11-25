@@ -7,34 +7,31 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  FormControl,
   HStack,
   Input,
   Button,
   IconButton,
   Box,
 } from '@chakra-ui/react';
-import { EditIcon, DeleteIcon, SmallCloseIcon } from '@chakra-ui/icons';
+import { EditIcon, DeleteIcon, CloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
 import { deleteMessage, setReadMessages, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
-
-type PopoverPlacement =
-  | 'top'
-  | 'bottom'
-  | 'left'
-  | 'right'
-  | 'top-start'
-  | 'top-end'
-  | 'bottom-start'
-  | 'bottom-end';
 
 interface Props {
   justifyContent: string;
   backGround: string;
   color: string;
   content: string;
-  popOverPlacement: PopoverPlacement;
+  popOverPlacement:
+    | 'top'
+    | 'bottom'
+    | 'left'
+    | 'right'
+    | 'top-start'
+    | 'top-end'
+    | 'bottom-start'
+    | 'bottom-end';
   messageId: number;
   receiverId: number;
   senderId: number;
@@ -59,7 +56,7 @@ const Message = ({
   useEffect(() => {
     try {
       const getData = async () => {
-        const readMessages = await setReadMessages(senderId);
+        await setReadMessages(senderId);
       };
       getData();
     } catch (error) {
@@ -75,30 +72,44 @@ const Message = ({
     <Popover placement={popOverPlacement}>
       <Flex justifyContent={justifyContent} w={'100%'}>
         <PopoverTrigger>
-          <Card maxW={'75%'} bg={backGround} role="message-card">
-            <CardBody>
+          <Card maxW={'75%'} bg={backGround} role="message-card" boxShadow="md" borderRadius="lg">
+            <CardBody
+              backgroundColor={isEdit ? 'gray.500' : 'initial'}
+              borderRadius={isEdit ? 'lg' : 'initial'}
+            >
               <form action={formAction}>
                 {!isEdit ? (
-                  <Box>
-                    <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
-                      {content}
-                    </Text>
-                  </Box>
+                  <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
+                    {content}
+                  </Text>
                 ) : (
-                  <>
-                    <input type="hidden" name="receiverId" value={receiverId} />
-                    <input type="hidden" name="messageId" value={messageId} />
-                    <input type="hidden" name="senderId" value={senderId} />
-
-                    <Input defaultValue={content} id="message" name="message" required />
-                  </>
-                )}
-                {isEdit && (
                   <Box>
-                    <IconButton aria-label="cancel button" onClick={() => setIsEdit(false)}>
-                      <SmallCloseIcon />
-                    </IconButton>
-                    <Button type="submit">Submit</Button>
+                    <Input
+                      defaultValue={content}
+                      id="message"
+                      name="message"
+                      required
+                      size="md"
+                      mb={4}
+                      bg={'white'}
+                      color={'black'}
+                    />
+                    <Flex justifyContent="flex-end">
+                      <Button
+                        type="button"
+                        aria-label="cancel button"
+                        onClick={() => setIsEdit(false)}
+                        leftIcon={<CloseIcon />}
+                        mr={3}
+                        colorScheme="red"
+                        variant={'solid'}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit" colorScheme="green" variant={'ghost'}>
+                        Save
+                      </Button>
+                    </Flex>
                   </Box>
                 )}
               </form>
@@ -107,22 +118,26 @@ const Message = ({
         </PopoverTrigger>
       </Flex>
 
-      <PopoverContent w={'fit-content'}>
-        <Flex justifyContent={popOverPlacement === 'left' ? 'flex-end' : 'flex-start'}>
-          <HStack spacing={5} p={1}>
-            {!isEdit && (
-              <>
-                <IconButton aria-label="edit-button" onClick={() => setIsEdit(true)}>
-                  <EditIcon />
-                </IconButton>
-              </>
-            )}
-            <IconButton aria-label="delete button">
-              <DeleteIcon color={'red'} onClick={() => deleteMessage(messageId, receiverId)} />
-            </IconButton>
-          </HStack>
-        </Flex>
-      </PopoverContent>
+      {!isEdit && (
+        <PopoverContent w={'fit-content'} boxShadow="md" borderRadius="lg">
+          <Flex justifyContent={popOverPlacement === 'left' ? 'flex-end' : 'flex-start'}>
+            <HStack spacing={5} p={1}>
+              <IconButton
+                aria-label="edit-button"
+                onClick={() => setIsEdit(true)}
+                icon={<EditIcon />}
+                variant="ghost"
+              />
+              <IconButton
+                aria-label="delete button"
+                icon={<DeleteIcon color={'red'} />}
+                variant="ghost"
+                onClick={() => deleteMessage(messageId, receiverId)}
+              />
+            </HStack>
+          </Flex>
+        </PopoverContent>
+      )}
     </Popover>
   );
 };

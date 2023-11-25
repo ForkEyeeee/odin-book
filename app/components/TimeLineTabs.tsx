@@ -8,7 +8,7 @@ export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTab
   const pathname = usePathname();
   return (
     <>
-      <Flex justifyContent="space-around" p={4} mt={{ base: 10, sm: 5, md: 0 }} mb={{ base: 3 }}>
+      <Flex justifyContent="center" gap={50} p={4} mt={{ base: 10, sm: 5, md: 0 }} mb={{ base: 3 }}>
         <Link
           href={'/for-you?page=1'}
           color="blue.600"

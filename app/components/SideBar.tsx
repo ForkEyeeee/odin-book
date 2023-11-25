@@ -14,12 +14,16 @@ import {
   VStack,
   Text,
   Badge,
+  Icon,
+  HStack,
 } from '@chakra-ui/react';
-import { ChatIcon } from '@chakra-ui/icons';
+import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getFriends } from '../lib/actions';
 import { useSession } from 'next-auth/react';
+import { RiMessageFill, RiMessageLine } from 'react-icons/ri';
+import { AiFillMessage } from 'react-icons/ai';
 
 const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -51,12 +55,22 @@ const SideBar = () => {
         variant="outline"
         aria-label="open menu"
         size="lg"
+        size={{ base: 'xs', sm: 'md' }}
       />
 
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="md">
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerHeader borderBottomWidth="1px">Friends</DrawerHeader>
+          <Flex justifyContent={'space-between'}>
+            <DrawerHeader borderBottomWidth="1px">Friends</DrawerHeader>
+            <IconButton
+              aria-label="close button"
+              color="white"
+              colorScheme="red"
+              icon={<CloseIcon />}
+              onClick={onClose}
+            />
+          </Flex>
           <DrawerBody>
             <VStack spacing={4} align="stretch">
               {friends.map(friend => {
@@ -68,24 +82,41 @@ const SideBar = () => {
                     justify="space-between"
                     p={3}
                     boxShadow="base"
+                    className="aaa"
+                    alignItems={'flex-start'}
+                    // flexDir={{ base: 'column' }}
                   >
                     <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
                     <Box flex="1">
-                      <Text fontWeight="bold">{friend.name}</Text>
-                      <Text fontSize="sm">{friend.email}</Text>
-                      <Badge colorScheme={isRead ? 'red' : 'green'}>
-                        {isRead ? `${isRead} Unread` : 'No New Messages'}
-                      </Badge>
+                      <Flex
+                        alignItems="stretch"
+                        flexDir={{ base: 'column' }}
+                        gap={5}
+                        className="test"
+                      >
+                        <Box>
+                          <Text fontWeight="bold">{friend.name}</Text>
+                          <Text fontSize="sm">{friend.email}</Text>
+                          <Badge colorScheme={isRead ? 'red' : 'green'}>
+                            {isRead ? `${isRead} Unread` : 'No New Messages'}
+                          </Badge>
+                        </Box>{' '}
+                        <Flex justifyContent={'flex-end'}>
+                          <Button
+                            colorScheme="facebook"
+                            color={'white'}
+                            onClick={() => {
+                              router.push(`/messages?userId=${userId}&receiverId=${friend.id}`);
+                              onClose();
+                            }}
+
+                            // display={{ base: 'none' }}
+                          >
+                            Message
+                          </Button>
+                        </Flex>
+                      </Flex>
                     </Box>
-                    <Button
-                      colorScheme="facebook"
-                      color={'white'}
-                      onClick={() =>
-                        router.push(`/messages?userId=${userId}&receiverId=${friend.id}`)
-                      }
-                    >
-                      Message
-                    </Button>
                   </Flex>
                 );
               })}

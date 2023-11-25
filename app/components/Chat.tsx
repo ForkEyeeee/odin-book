@@ -53,11 +53,11 @@ export default function Chat({
 
   return (
     <Box flex="1" display="flex" flexDirection="column" h="100vh" p={{ xl: 5 }}>
-      <HStack justifyContent={'space-between'} p={2}>
+      <HStack justifyContent={'flex-start'} p={2}>
         <Link href={`/profile/${receiverId}`}>
-          <Avatar size="md" name="John Doe" src={`${profilePicture}`} />
+          <Avatar size={{ base: 'sm', md: 'md' }} name="John Doe" src={`${profilePicture}`} />
         </Link>{' '}
-        <Heading color={'white'} noOfLines={1} pb={5}>
+        <Heading size={{ base: 'sm' }} color={'white'} noOfLines={1}>
           {recipient}
         </Heading>
       </HStack>

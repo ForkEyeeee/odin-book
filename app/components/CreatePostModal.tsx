@@ -33,6 +33,7 @@ const CreatePostModal = () => {
         color="white"
         colorScheme="teal"
         fontWeight="bold"
+        size={{ base: 'xs', sm: 'md' }}
       >
         Create Post
       </Button>
