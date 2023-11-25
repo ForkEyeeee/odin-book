@@ -1,6 +1,8 @@
 import { Post } from '@/app/components/Post';
 import prisma from '@/app/lib/prisma';
 import { getUserId } from '@/app/lib/actions';
+import NoDataFound from '@/app/components/NoDataFound';
+import { Box } from '@chakra-ui/react';
 
 export default async function Page({ params }: { params: { slug: string } }) {
   try {
@@ -24,8 +26,12 @@ export default async function Page({ params }: { params: { slug: string } }) {
       },
     });
     if (post === null) throw new Error('Unable to find Post');
-    return <Post post={post} userId={userId} index={1} />;
+    return (
+      <Box mb={10}>
+        <Post post={post} userId={userId} index={1} />
+      </Box>
+    );
   } catch (error) {
-    console.error(error);
+    <NoDataFound />;
   }
 }

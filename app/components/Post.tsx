@@ -21,7 +21,7 @@ import { deletePost, likePost } from '../lib/actions';
 import Comment from './Comment';
 import { useFormState } from 'react-dom';
 import { createComment } from '../lib/actions';
-import { getFile } from '../lib/actions';
+import { format } from 'date-fns';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 
@@ -65,10 +65,10 @@ export function Post({ post, index, userId }: PostProps) {
                 </Link>
                 <VStack alignItems={'flex-start'}>
                   <Text fontWeight="bold">{post.author.name}</Text>
-                  <Text noOfLines={{ base: 1 }} color="gray.500" maxW={{ base: 150, sm: '100%' }}>
+                  <Text color="gray.500" maxW={{ base: 150, sm: '100%' }}>
                     {post.author.email}
                   </Text>
-                  <Text color="gray.500">{post.createdAt.toDateString()}</Text>
+                  <Text color="gray.500">{format(new Date(post.createdAt), 'PPpp')}</Text>
                 </VStack>
               </Flex>
 
@@ -77,19 +77,23 @@ export function Post({ post, index, userId }: PostProps) {
               </Text>
               {post.imageUrl !== null && (
                 <HStack alignItems={'flex-start'} justifyContent={'space-between'}>
-                  <div style={{ borderRadius: '5px', overflow: 'hidden' }}>
+                  <Box
+                    borderRadius="md"
+                    overflow="hidden"
+                    position="relative"
+                    width="100%"
+                    height="auto"
+                  >
                     <Image
-                      alt="post image"
-                      src={`${post.imageUrl}`}
+                      src={post.imageUrl}
+                      alt={`Post image ${post.id}`}
+                      layout="responsive"
                       width={0}
                       height={0}
-                      unoptimized={true}
-                      loading="lazy"
-                      // layout="fill"
-                      objectFit="cover"
-                      style={{ width: '100%', height: 'auto' }} // optional
+                      objectFit="contain"
+                      unoptimized
                     />
-                  </div>
+                  </Box>
                 </HStack>
               )}
             </Box>
