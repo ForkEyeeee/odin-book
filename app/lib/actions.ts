@@ -284,7 +284,7 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
   }
 }
 
-export async function deletePost(postId) {
+export async function deletePost(postId: number) {
   try {
     const deletedPost = await prisma.post.delete({
       where: {
@@ -720,9 +720,9 @@ export async function getPosts(page = 1) {
   }
 }
 
-export async function getUserPosts(page, userId) {
+export async function getUserPosts(page: number, userId: number) {
   try {
-    const pageNumber = isNaN(page) || page < 1 ? 1 : parseInt(page, 10); // Default to page 1 if invalid
+    const pageNumber = isNaN(page) || page < 1 ? 1 : page; // Default to page 1 if invalid
     const take = 5;
 
     const skip = (pageNumber - 1) * take;
@@ -742,6 +742,13 @@ export async function getUserPosts(page, userId) {
         authorId: userId,
       },
     });
+
+    if (userPosts === undefined)
+      return {
+        userPosts: [],
+        postsCount: 0,
+      };
+
     return { userPosts, postsCount };
   } catch (error) {
     return { message: 'Unable to fetch user posts' };
@@ -765,7 +772,7 @@ export async function getUnreadMessagesCount() {
   }
 }
 
-export async function setReadMessages(receiverId) {
+export async function setReadMessages(receiverId: number) {
   try {
     const userId = await getUserId();
     const receivedMessages = await prisma.message.updateMany({

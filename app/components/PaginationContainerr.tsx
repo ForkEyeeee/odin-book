@@ -11,7 +11,13 @@ import {
 } from '@chakra-ui/react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-const PaginationContainer = ({ page, timelinePostsCount }) => {
+const PaginationContainer = ({
+  page,
+  timelinePostsCount,
+}: {
+  page: number;
+  timelinePostsCount: number;
+}) => {
   const postsPerPage = 5;
   const totalPageCount = Math.ceil(timelinePostsCount / postsPerPage);
   const startIndex = (page - 1) * postsPerPage + 1;
@@ -20,11 +26,7 @@ const PaginationContainer = ({ page, timelinePostsCount }) => {
     <Container p={{ base: 0, sm: 12 }} pt={{ base: 5 }} borderRadius="lg">
       <Flex flexDirection={{ base: 'column' }} alignItems={'center'}>
         <Box>
-          <Pagination
-            page={page}
-            timelinePostsCount={timelinePostsCount}
-            totalPageCount={totalPageCount}
-          />
+          <Pagination totalPageCount={totalPageCount} />
         </Box>
         <Text
           fontSize="lg"
@@ -35,13 +37,13 @@ const PaginationContainer = ({ page, timelinePostsCount }) => {
   );
 };
 // Ideally, only the Pagination component should be used. The PaginationContainer component is used to style the preview.
-const Pagination = ({ totalPageCount }) => {
+const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
 
-  const navigateToPage = newPage => {
+  const navigateToPage = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPageCount) {
       router.replace(`${pathname}?page=${newPage}`);
     }
@@ -96,8 +98,7 @@ interface PaginationButtonProps extends FlexProps {
   isActive?: boolean;
   isDisabled?: boolean;
 }
-
-const PaginationButton = ({ children, isDisabled, isActive, ...props }) => {
+const PaginationButton = ({ children, isDisabled, isActive, ...props }: PaginationButtonProps) => {
   const activeStyle = {
     bg: useColorModeValue('blue.500', 'blue.200'),
     color: useColorModeValue('white', 'gray.800'),
@@ -117,7 +118,7 @@ const PaginationButton = ({ children, isDisabled, isActive, ...props }) => {
       lineHeight={1}
       transition="all 0.2s"
       opacity={isDisabled ? 0.6 : 1}
-      _hover={!isDisabled && hoverStyle}
+      _hover={isDisabled ? undefined : hoverStyle}
       cursor={isDisabled ? 'not-allowed' : 'pointer'}
       border="1px solid"
       mr="-1px"

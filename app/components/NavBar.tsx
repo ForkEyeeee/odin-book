@@ -49,13 +49,7 @@ export default function NavBar() {
   return (
     <Box px={4} bg={useColorModeValue('gray.800', 'black')} h={{ base: 65 }} className="test">
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
-        <Icon
-          as={RiFlashlightFill}
-          h={8}
-          w={8}
-          // display={{ base: 'none', md: 'block' }}
-          onClick={() => router.push('/')}
-        />
+        <Icon as={RiFlashlightFill} h={8} w={8} onClick={() => router.push('/')} />
         <Center flex="1" display={{ base: 'none' }}>
           <Heading as="h3" size={{ base: 'xs', sm: 'lg' }}>
             Social Media App
@@ -88,7 +82,12 @@ export default function NavBar() {
                 )}
               </Box>
               <Menu>
-                <MenuButton as={Avatar} size="sm" src={session.user.image} cursor={'pointer'} />
+                <MenuButton
+                  as={Avatar}
+                  size="sm"
+                  src={session.user.image as string}
+                  cursor={'pointer'}
+                />
                 <MenuList>
                   <MenuItem
                     onClick={() => router.push(`/profile?userid=${session.user.id}&page=1`)}

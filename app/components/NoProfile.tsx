@@ -14,7 +14,7 @@ const NoProfile = () => {
         <Heading as="h2" size="xl">
           Profile Setup Incomplete
         </Heading>
-        <Text fontSize="lg">Oh no! This user hasn't set up their profile yet.</Text>
+        <Text fontSize="lg">Oh no! This user hasn&apos;t set up their profile yet.</Text>
         <Link href="/" color="blue.500">
           <Text textDecoration={'underline'} color="yellow.300">
             Go back to the homepage

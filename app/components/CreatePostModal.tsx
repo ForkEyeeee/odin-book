@@ -14,7 +14,6 @@ import {
   FormLabel,
   Input,
 } from '@chakra-ui/react';
-import { PlusSquareIcon } from '@chakra-ui/icons';
 import { useFormState } from 'react-dom';
 import { createPost } from '../lib/actions';
 import { AiOutlinePlus } from 'react-icons/ai';
@@ -45,7 +44,7 @@ const CreatePostModal = () => {
       isClosable: true,
     });
     onClose();
-  }, [state]);
+  }, [state, onClose, pathname, router, toast]);
 
   return (
     <>

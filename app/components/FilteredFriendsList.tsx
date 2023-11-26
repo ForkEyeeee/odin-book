@@ -17,8 +17,17 @@ import { useRouter } from 'next/navigation';
 import { addFriend } from '@/app/lib/actions';
 import Link from 'next/link';
 import { useToast } from '@chakra-ui/react';
+import { User } from '../lib/definitions';
 
-const FilteredFriendsList = ({ users, userId, isLoading }) => {
+const FilteredFriendsList = ({
+  users,
+  userId,
+  isLoading,
+}: {
+  users: User[];
+  userId: number;
+  isLoading: boolean;
+}) => {
   const router = useRouter();
   const toast = useToast();
 
@@ -31,6 +40,7 @@ const FilteredFriendsList = ({ users, userId, isLoading }) => {
           <List spacing={3}>
             {users !== undefined ? (
               users.map(user => {
+                if (user.friendsAsUser1 === undefined) return;
                 const isFriend = user.friendsAsUser1.find(friend => friend.user2Id === userId);
                 return (
                   <ListItem

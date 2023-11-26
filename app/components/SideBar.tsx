@@ -21,28 +21,32 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getFriends } from '../lib/actions';
 import { useSession } from 'next-auth/react';
+import { Friend } from '../lib/definitions';
 
 const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [friends, setFriends] = useState<Friend[]>([]);
   const router = useRouter();
-  const [friends, setFriends] = useState([]);
   const { data: session } = useSession();
   const userId = session?.user.id;
 
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const fetchedFriends = await getFriends();
+        const fetchedFriends = (await getFriends()) as Friend[];
         setFriends(fetchedFriends);
       } catch (error) {
-        console.error('Unable to fetch friends', error);
+        return { message: 'Unable to fetch friends' };
       }
     };
     fetchFriends();
   }, []);
 
-  const countUnreadMessages = friend => {
-    return friend.sentMessages.concat(friend.receivedMessages).filter(msg => !msg.read).length;
+  const countUnreadMessages = (friend: Friend) => {
+    const sentMessages = friend.sentMessages || [];
+    const receivedMessages = friend.receivedMessages || [];
+
+    return sentMessages.concat(receivedMessages).filter(msg => !msg.read).length;
   };
   return (
     <>
@@ -52,7 +56,6 @@ const SideBar = () => {
         variant="outline"
         aria-label="open menu"
         size="lg"
-        size={{ base: 'xs', sm: 'md' }}
       />
 
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="md">

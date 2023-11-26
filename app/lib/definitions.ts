@@ -10,6 +10,8 @@ export interface User {
   googleId: string;
   profileId: number | null;
   profilePicture: string | null;
+  friendsAsUser1?: Friend[] | undefined;
+  friendsAsUser2?: Friend[] | undefined;
 }
 
 export interface PostProps {
@@ -19,8 +21,8 @@ export interface PostProps {
 }
 
 export interface TimeLineTabsProps {
-  forYouPosts: PostWithAuthor[];
-  discoverPosts: PostWithAuthor[];
+  forYouPosts?: PostWithAuthor[];
+  discoverPosts?: PostWithAuthor[];
   userId: number;
 }
 
@@ -39,7 +41,7 @@ export interface Post {
   imageUrl: string | null;
   authorId: number | null;
   createdAt: Date;
-  author: Author;
+  author?: Author;
 }
 
 export interface PostWithAuthor {
@@ -83,6 +85,11 @@ export interface Friend {
   user1Id: number;
   user2Id: number;
   status: string;
+  sentMessages?: Message[];
+  receivedMessages?: Message[];
+  profilePicture?: string;
+  name?: string;
+  email?: string;
 }
 
 export interface Profile {
@@ -91,7 +98,7 @@ export interface Profile {
   dateOfBirth: Date | null;
   gender: string | null;
   userId: number | null;
-  user: User;
+  user: User | null;
 }
 
 export interface Message {

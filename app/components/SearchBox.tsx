@@ -6,8 +6,14 @@ import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import Link from 'next/link';
 import { ArrowBackIcon } from '@chakra-ui/icons';
+import { User } from '../lib/definitions';
 
-const SearchBox = ({ filteredUsers, userId }) => {
+interface SearchBoxProps {
+  filteredUsers: User[];
+  userId: number;
+}
+
+const SearchBox = ({ filteredUsers, userId }: SearchBoxProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const searchParams = useSearchParams();

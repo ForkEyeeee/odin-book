@@ -28,7 +28,7 @@ interface FriendsListProps {
 const initialState = { message: null, errors: {} };
 
 export default function FriendsList({ friends }: FriendsListProps) {
-  const [state, formAction] = useFormState(changeStatus, initialState);
+  const [state, formAction] = useFormState(changeStatus as any, initialState);
   const { data: session } = useSession();
   const userId = session?.user.id;
   const toast = useToast();

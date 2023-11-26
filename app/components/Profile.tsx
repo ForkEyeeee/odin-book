@@ -23,14 +23,12 @@ import {
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { Post as PostType, Profile } from '../lib/definitions';
-import { getSession } from 'next-auth/react';
 import ProfilePost from './ProfilePost';
-import { useSearchParams } from 'next/navigation';
 import { formatISO } from 'date-fns';
 
 interface FormProps {
   profile?: Profile;
-  posts: PostType[];
+  posts: PostType[] | undefined;
   isAuthor: boolean;
 }
 
@@ -59,7 +57,10 @@ export default function Profile({ profile, posts, isAuthor }: FormProps) {
             User Profile
           </Heading>
           <Text mb={{ base: 5 }} fontSize={{ base: 'md' }}>
-            {profile && profile?.user.name}
+            {profile !== undefined &&
+              profile.user !== undefined &&
+              profile.user !== null &&
+              profile?.user.name}
           </Text>
         </VStack>
         {profile !== null && isAuthor ? (

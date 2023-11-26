@@ -8,7 +8,7 @@ export default async function Page({
   searchParams,
 }: {
   searchParams?: {
-    query?: string;
+    receiverId?: string;
     page?: string;
   };
 }) {

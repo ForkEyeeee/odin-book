@@ -17,21 +17,14 @@ export default async function Page({
   try {
     const page = Number(searchParams?.page);
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
-
-    // if (timelinePosts.length <= 0) throw new Error();
+    if (userId === undefined) throw new Error();
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     return (
       <Suspense fallback={<Loading />}>
         <PaginationContainer page={page} timelinePostsCount={timelinePostsCount} />
-        <TimeLineTabs
-          forYouPosts={timelinePosts}
-          userId={userId}
-          page={page}
-          pageCountTimelinePosts={timelinePosts.length}
-          timelinePostsCount={timelinePostsCount}
-        />
+        <TimeLineTabs forYouPosts={timelinePosts} userId={userId} />
       </Suspense>
     );
   } catch (error) {

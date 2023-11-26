@@ -54,14 +54,14 @@ const Message = ({
   const [state, formAction] = useFormState(updateMessage, initialState);
 
   useEffect(() => {
-    try {
-      const getData = async () => {
+    const getData = async () => {
+      try {
         await setReadMessages(senderId);
-      };
-      getData();
-    } catch (error) {
-      return { message: 'Unable to set Read Messages' };
-    }
+      } catch (error) {
+        return { message: 'Unable to set Read Messages' };
+      }
+    };
+    getData();
   }, [senderId]);
 
   useEffect(() => {

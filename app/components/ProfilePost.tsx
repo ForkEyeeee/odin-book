@@ -4,7 +4,11 @@ import { Post, PostProps } from '../lib/definitions';
 import { format } from 'date-fns';
 import Link from 'next/link';
 
-export default function ProfilePosts({ posts }: Post) {
+interface ProfilePostsProps {
+  posts: Post[] | undefined;
+}
+
+export default function ProfilePosts({ posts }: ProfilePostsProps) {
   return (
     <Box>
       <Heading fontSize={{ base: 'lg' }} mb={4}>

@@ -1,4 +1,3 @@
-// components/ScrollToTopButton.js
 'use client';
 import { IconButton } from '@chakra-ui/react';
 import { FaArrowUp } from 'react-icons/fa';
