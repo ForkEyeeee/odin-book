@@ -36,13 +36,7 @@ const CreatePostModal = () => {
     if (state.success && !pathname.includes('/for-you')) {
       router.push('/');
     }
-    toast({
-      title: 'Created successfully.',
-      description: 'Post has been created successfully',
-      status: 'success',
-      duration: 9000,
-      isClosable: true,
-    });
+
     onClose();
   }, [state, onClose, pathname, router, toast]);
 
@@ -82,6 +76,13 @@ const CreatePostModal = () => {
                   variant={'ghost'}
                   onClick={() => {
                     onClose();
+                    toast({
+                      title: 'Created successfully.',
+                      description: 'Post has been created successfully',
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                    });
                   }}
                 >
                   Submit

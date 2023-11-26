@@ -160,7 +160,15 @@ export function Post({ post, index, userId }: PostProps) {
               variant={'solid'}
               _hover={{
                 bg: 'green',
-                // color: 'black',
+              }}
+              onClick={() => {
+                toast({
+                  title: 'Created successfully.',
+                  description: 'Comment has been created successfully',
+                  status: 'success',
+                  duration: 9000,
+                  isClosable: true,
+                });
               }}
             >
               Submit

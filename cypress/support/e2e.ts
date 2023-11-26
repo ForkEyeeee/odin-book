@@ -14,7 +14,15 @@
 // ***********************************************************
 
 // Import commands.js using ES2015 syntax:
-import './commands'
+import './commands';
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+before(() => {
+  cy.clearCookies();
+  cy.visit('/');
+  cy.contains('button', 'Sign in with Guest').click();
+});
+beforeEach(() => {
+  cy.wait(5000);
+});

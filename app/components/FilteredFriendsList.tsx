@@ -52,16 +52,16 @@ const FilteredFriendsList = ({
                     boxShadow="sm"
                     borderColor="gray.200"
                   >
-                    <HStack spacing={4}>
+                    <HStack spacing={2}>
                       <Link href={`/profile?userid=${user.id}&page=1`}>
-                        <Avatar name={user.name} />
+                        <Avatar src={user.profilePicture as string} name={user.name} />
                       </Link>
                       <VStack align="start">
                         <Tag size={{ base: 'md' }} variant="subtle" colorScheme="cyan">
                           <TagLabel>{user.name}</TagLabel>
                         </Tag>
-                        <Box maxW={{ base: 160 }} overflow={'hidden'}>
-                          <Text noOfLines={1}>{user.email}</Text>
+                        <Box maxW={{ base: 160, sm: '100%' }} overflow={'hidden'}>
+                          <Text>{user.email}</Text>
                         </Box>
                         {isFriend && <Badge colorScheme="green">Added</Badge>}
                       </VStack>
@@ -71,11 +71,10 @@ const FilteredFriendsList = ({
                           color={'green.300'}
                           aria-label="Add friend"
                           colorScheme="green"
-                          pr={5}
                           onClick={() => {
                             toast({
                               title: 'Added successfully.',
-                              description: 'Friend has been added successfully',
+                              description: 'Friend has been sent',
                               status: 'success',
                               duration: 9000,
                               isClosable: true,
@@ -83,7 +82,7 @@ const FilteredFriendsList = ({
                             addFriend(user.id);
                             router.push('/friends');
                           }}
-                        ></IconButton>
+                        />
                       </Box>
                     </HStack>
                   </ListItem>
