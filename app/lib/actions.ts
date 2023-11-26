@@ -7,6 +7,7 @@ import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { FriendshipStatus } from '@prisma/client';
 import { useSearchParams } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export const getUserId = async () => {
   try {
@@ -322,14 +323,14 @@ export async function createPost(prevState: any, formData: FormData) {
       content: parsedForm.content,
       authorId: userId,
       createdAt: parsedForm.createdAt,
-      imageUrl: parsedForm.imageUrl,
+      imageUrl: form.imageUrl === '' ? null : parsedForm.imageUrl,
     };
 
     const createdPost = await prisma.post.create({
       data: postData,
     });
-    revalidatePath('/for-you');
-    return createdPost;
+    revalidatePath('/');
+    return { ...createdPost, success: true };
   } catch (error) {
     return { message: `Unable to create Post` };
   }
@@ -454,16 +455,22 @@ export async function createComment(prevState: any, formData: FormData) {
 
 export async function deleteComment(commentId: number) {
   try {
-    const userId = await getUserId();
+    const result = await prisma.$transaction(async prisma => {
+      await prisma.commentLike.deleteMany({
+        where: {
+          commentId: commentId,
+        },
+      });
 
-    const deletedComment = await prisma.comment.delete({
-      where: {
-        id: commentId,
-      },
+      return await prisma.comment.delete({
+        where: {
+          id: commentId,
+        },
+      });
     });
 
     revalidatePath('/');
-    return deleteComment;
+    return result;
   } catch (error) {
     return { message: `Comment unsuccessfully deleted` };
   }
@@ -619,23 +626,24 @@ export async function getFile(formData: FormData) {
   console.log('File name:', file.name, 'size:', file.size);
 }
 
-export async function getPosts(page) {
+export async function getPosts(page = 1) {
   try {
     const userId = await getUserId();
     if (userId === undefined) throw new Error();
-
+    console.log(userId);
     const userFriends = await prisma.friend.findMany({
       where: {
-        user1Id: userId,
+        OR: [{ user1Id: userId }, { user2Id: userId }],
       },
     });
-
-    const pageNumber = isNaN(page) || page < 1 ? 1 : parseInt(page, 10); // Default to page 1 if invalid
+    console.log(userFriends);
+    const pageNumber = isNaN(page) || page < 1 ? 1 : page; // Default to page 1 if invalid
     const take = 5;
     const skip = (pageNumber - 1) * take;
 
-    const userfriendIds = userFriends.map(friend => friend.user2Id);
-
+    const userfriendIds = userFriends.map(friend =>
+      friend.user1Id === userId ? friend.user2Id : friend.user1Id
+    );
     // Fetch timeline posts with pagination
     const timelinePosts = await prisma.post.findMany({
       where: {
@@ -659,7 +667,6 @@ export async function getPosts(page) {
         },
       },
     });
-
     // Fetch other timeline posts with pagination
     const otherTimeLinePosts = await prisma.post.findMany({
       where: {
@@ -714,7 +721,7 @@ export async function getPosts(page) {
       userId,
     };
   } catch (error) {
-    console.error(error);
+    return { message: 'Unable to fetch posts' };
   }
 }
 

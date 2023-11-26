@@ -4,8 +4,11 @@ import { FaHeart, FaTrash } from 'react-icons/fa';
 import Link from 'next/link';
 import { likeComment, deleteComment } from '../lib/actions';
 import { CommentProps } from '../lib/definitions';
+import { useToast } from '@chakra-ui/react';
 
 export default function Comment({ comments, post, userId }: CommentProps) {
+  const toast = useToast();
+
   return (
     <VStack spacing={4} align="stretch" p={4} borderRadius={5}>
       {comments.map(comment => {
@@ -51,7 +54,16 @@ export default function Comment({ comments, post, userId }: CommentProps) {
                   <IconButton
                     aria-label="delete"
                     icon={<FaTrash />}
-                    onClick={() => deleteComment(comment.id)}
+                    onClick={() => {
+                      toast({
+                        title: 'Deleted successfully.',
+                        description: 'Comment has been deleted successfully',
+                        status: 'success',
+                        duration: 9000,
+                        isClosable: true,
+                      });
+                      deleteComment(comment.id);
+                    }}
                     size="sm"
                     color="red"
                   />

@@ -24,18 +24,20 @@ import { createComment } from '../lib/actions';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import ScrollToTop from './ScrollToTop';
+import { useToast } from '@chakra-ui/react';
 
 const initialState = { message: null, errors: {} };
 
 export function Post({ post, index, userId }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
   const [inputText, setInputText] = useState('');
+  const toast = useToast();
 
   useEffect(() => {
     if (state !== null) setInputText('');
   }, [state]);
   console.log(index);
+
   const isLiked = post.likes.find(element => element.authorId === userId);
   const isAuthor = post.authorId === userId;
 
@@ -75,7 +77,7 @@ export function Post({ post, index, userId }: PostProps) {
               <Text mt="4" mb={{ base: 3 }} minW={{ base: '200px', sm: '330px' }}>
                 {post.content}
               </Text>
-              {post.imageUrl !== null && (
+              {post.imageUrl !== null && post.imageUrl !== '' && (
                 <HStack alignItems={'flex-start'} justifyContent={'space-between'}>
                   <Box
                     borderRadius="md"
@@ -103,7 +105,16 @@ export function Post({ post, index, userId }: PostProps) {
               <IconButton
                 aria-label="Delete post"
                 icon={<FaTrash />}
-                onClick={() => deletePost(post.id)}
+                onClick={() => {
+                  toast({
+                    title: 'Deleted successfully.',
+                    description: 'Post has been deleted successfully',
+                    status: 'success',
+                    duration: 9000,
+                    isClosable: true,
+                  });
+                  deletePost(post.id);
+                }}
                 size="sm"
                 _hover={{
                   bg: 'red',
