@@ -24,7 +24,8 @@ import {
 import { useState, useEffect } from 'react';
 import { Post as PostType, Profile } from '../lib/definitions';
 import ProfilePost from './ProfilePost';
-import { formatISO } from 'date-fns';
+import { useToast } from '@chakra-ui/react';
+import parseAndFormatDate from './util/parseAndFormatDate';
 
 interface FormProps {
   profile?: Profile;
@@ -37,6 +38,7 @@ const initialState = { message: null, errors: {} };
 export default function Profile({ profile, posts, isAuthor }: FormProps) {
   const [state, formAction] = useFormState(updateProfile, initialState);
   const [isEdit, setIsEdit] = useState(false);
+  const toast = useToast();
   const bgColor = useColorModeValue('gray.200', 'gray.700');
   const borderColor = useColorModeValue('gray.300', 'gray.600');
   const textColor = useColorModeValue('gray.600', 'gray.100');
@@ -46,9 +48,10 @@ export default function Profile({ profile, posts, isAuthor }: FormProps) {
   }, [state]);
 
   const newProfile = profile === undefined || profile === null;
-  const formattedDate = profile?.dateOfBirth
-    ? formatISO(profile.dateOfBirth, { representation: 'date' })
-    : '';
+  const { inputFormattedDate, formattedDate } = parseAndFormatDate(
+    profile!.dateOfBirth!.toISOString()
+  );
+
   return (
     <Container maxW="container.md" mt={10}>
       <Box display={'flex'}>
@@ -104,7 +107,7 @@ export default function Profile({ profile, posts, isAuthor }: FormProps) {
                 <Text>
                   {profile === undefined || profile.dateOfBirth === null
                     ? 'Not provided'
-                    : profile.dateOfBirth.toDateString()}
+                    : formattedDate}
                 </Text>
               </Box>
               <Box>
@@ -133,7 +136,7 @@ export default function Profile({ profile, posts, isAuthor }: FormProps) {
                     id="dateOfBirth"
                     name="dateOfBirth"
                     type="date"
-                    defaultValue={newProfile ? '' : formattedDate}
+                    defaultValue={newProfile ? '' : inputFormattedDate}
                   />
                 </FormControl>
                 <FormControl id="gender" mb={6}>
@@ -155,7 +158,21 @@ export default function Profile({ profile, posts, isAuthor }: FormProps) {
                   </RadioGroup>
                 </FormControl>
                 <Flex justifyContent={'flex-end'}>
-                  <Button variant={'outline'} colorScheme="green" type="submit">
+                  <Button
+                    variant={'outline'}
+                    colorScheme="green"
+                    type="submit"
+                    id="profile-submit-btn"
+                    onClick={() => {
+                      toast({
+                        title: 'Updated successfully.',
+                        description: 'Profile has been updated successfully',
+                        status: 'success',
+                        duration: 9000,
+                        isClosable: true,
+                      });
+                    }}
+                  >
                     Update Profile
                   </Button>
                 </Flex>

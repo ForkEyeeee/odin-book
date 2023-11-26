@@ -87,9 +87,11 @@ export default function NavBar() {
                   size="sm"
                   src={session.user.image as string}
                   cursor={'pointer'}
+                  role="profile-button"
                 />
                 <MenuList>
                   <MenuItem
+                    id="profile-link"
                     onClick={() => router.push(`/profile?userid=${session.user.id}&page=1`)}
                   >
                     Profile

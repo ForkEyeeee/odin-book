@@ -25,7 +25,7 @@ export async function updateProfile(prevState: any, formData: FormData) {
   try {
     const ProfileSchema = z.object({
       bio: z.string().optional(),
-      gender: z.string().optional(),
+      gender: z.string().optional().nullish(),
       dateOfBirth: z.string().optional(),
     });
 
@@ -40,13 +40,16 @@ export async function updateProfile(prevState: any, formData: FormData) {
     };
 
     const parsedForm = ProfileSchema.parse(form);
-    const parsedDateOfBirth = new Date(parsedForm.dateOfBirth ?? '');
-    const isoDateString = parsedDateOfBirth.toISOString();
+    console.log(parsedForm);
+
+    const parsedDateOfBirth =
+      parsedForm.dateOfBirth !== '' ? new Date(parsedForm.dateOfBirth ?? '') : '';
+    const isoDateString = parsedDateOfBirth !== '' ? parsedDateOfBirth.toISOString() : '';
 
     const userProfile = {
       bio: parsedForm.bio,
       gender: parsedForm.gender,
-      dateOfBirth: isoDateString,
+      dateOfBirth: isoDateString === '' ? null : isoDateString,
       userId: userId,
     };
 
@@ -78,10 +81,11 @@ export async function updateProfile(prevState: any, formData: FormData) {
       });
       profile = updateProfile;
     }
-    revalidatePath('/profile');
+    revalidatePath('/');
 
     return { message: `Profile updated`, profile: profile };
   } catch (e) {
+    console.error(e);
     return { message: `Unable to update profile` };
   }
 }
