@@ -2,6 +2,7 @@ import { getProfile, getUserId, getUserPosts } from '../lib/actions';
 import Profile from '../components/Profile';
 import PaginationContainer from '../components/PaginationContainerr';
 import NoDataFound from '../components/NoDataFound';
+import NoProfile from '../components/NoProfile';
 
 export default async function Page({
   searchParams,
@@ -17,7 +18,7 @@ export default async function Page({
   try {
     if (userId === undefined) return;
     const profile = await getProfile(userId);
-    // if (profile === null) return;
+    if (profile === null) return <NoProfile />;
     const { userPosts, postsCount } = await getUserPosts(page, userId);
     const isAuthor = currentUserId === profile.userId;
 

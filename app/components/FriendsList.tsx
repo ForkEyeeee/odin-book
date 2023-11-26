@@ -19,6 +19,7 @@ import { Friend } from '../lib/definitions';
 import { useFormState } from 'react-dom';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import { useToast } from '@chakra-ui/react';
 
 interface FriendsListProps {
   friends?: Friend[];
@@ -30,10 +31,11 @@ export default function FriendsList({ friends }: FriendsListProps) {
   const [state, formAction] = useFormState(changeStatus, initialState);
   const { data: session } = useSession();
   const userId = session?.user.id;
+  const toast = useToast();
 
   return (
     <Center mt={0} h={'100vh'} alignItems={'flex-start'}>
-      <Flex flexDir={{ base: 'column', md: 'row' }} alignItems={'flex-end'}>
+      <Flex flexDir={{ base: 'column' }} alignItems={'flex-end'}>
         <Flex justifyContent="flex-end" mt={4} mb={3}>
           <Link href={'/friends/addfriend'}>
             <Button
@@ -83,7 +85,16 @@ export default function FriendsList({ friends }: FriendsListProps) {
                             color={'white'}
                             size={{ base: 'xs', sm: 'sm' }}
                             aria-label="Accept friend"
-                            onClick={() => changeStatus(friend.id, 'accept')}
+                            onClick={() => {
+                              toast({
+                                title: 'Accepted successfully.',
+                                description: 'Friend has been accepted successfully',
+                                status: 'success',
+                                duration: 9000,
+                                isClosable: true,
+                              });
+                              changeStatus(friend.id, 'accept');
+                            }}
                           />
                           <IconButton
                             icon={<CloseIcon />}
@@ -91,7 +102,16 @@ export default function FriendsList({ friends }: FriendsListProps) {
                             color={'white'}
                             size={{ base: 'xs', sm: 'sm' }}
                             aria-label="Deny friend"
-                            onClick={() => changeStatus(friend.id, 'remove')}
+                            onClick={() => {
+                              toast({
+                                title: 'Denied successfully.',
+                                description: 'Friend has been denied successfully',
+                                status: 'success',
+                                duration: 9000,
+                                isClosable: true,
+                              });
+                              changeStatus(friend.id, 'remove');
+                            }}
                           />
                         </HStack>
                       )}
@@ -103,6 +123,13 @@ export default function FriendsList({ friends }: FriendsListProps) {
                           aria-label="Remove friend"
                           size="sm"
                           onClick={() => {
+                            toast({
+                              title: 'Deleted successfully.',
+                              description: 'Friend has been deleted successfully',
+                              status: 'success',
+                              duration: 9000,
+                              isClosable: true,
+                            });
                             changeStatus(friend.id, 'remove');
                           }}
                         />

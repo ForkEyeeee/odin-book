@@ -16,13 +16,15 @@ import { AddIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/navigation';
 import { addFriend } from '@/app/lib/actions';
 import Link from 'next/link';
+import { useToast } from '@chakra-ui/react';
 
 const FilteredFriendsList = ({ users, userId, isLoading }) => {
   const router = useRouter();
+  const toast = useToast();
 
   return (
-    <Box h={isLoading ? '100vh' : 'fit-content'}>
-      <Box p={5}>
+    <Box className="teees" display={'flex'} justifyContent={'center'}>
+      <Box p={5} minW={{ base: '100%', sm: 450, md: 600, lg: 800, xl: 1000 }}>
         {isLoading ? (
           <Spinner />
         ) : (
@@ -53,7 +55,7 @@ const FilteredFriendsList = ({ users, userId, isLoading }) => {
                         </Box>
                         {isFriend && <Badge colorScheme="green">Added</Badge>}
                       </VStack>
-                      <Box w={'100%'}>
+                      <Box w={'100%'} display={'flex'} justifyContent={'flex-end'}>
                         <IconButton
                           icon={<AddIcon />}
                           color={'green.300'}
@@ -61,6 +63,13 @@ const FilteredFriendsList = ({ users, userId, isLoading }) => {
                           colorScheme="green"
                           pr={5}
                           onClick={() => {
+                            toast({
+                              title: 'Added successfully.',
+                              description: 'Friend has been added successfully',
+                              status: 'success',
+                              duration: 9000,
+                              isClosable: true,
+                            });
                             addFriend(user.id);
                             router.push('/friends');
                           }}

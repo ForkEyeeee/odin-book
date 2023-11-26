@@ -8,7 +8,7 @@ export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTab
   const pathname = usePathname();
   return (
     <>
-      <Flex justifyContent="center" gap={50} p={4} mt={{ base: 10, sm: 5, md: 0 }} mb={{ base: 3 }}>
+      <Flex justifyContent="center" gap={50} p={4} mt={{ base: 3, sm: 5, md: 0 }} mb={{ base: 3 }}>
         <Link
           href={'/for-you?page=1'}
           color="blue.600"
@@ -31,12 +31,7 @@ export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTab
         {forYouPosts !== undefined &&
           forYouPosts.map((post, index) => (
             <Box key={post.id} mb={4}>
-              <Post
-                post={post}
-                index={index}
-                userId={userId}
-                isLast={index === forYouPosts.length - 1}
-              />
+              <Post post={post} index={index} userId={userId} />
             </Box>
           ))}
       </Box>
@@ -45,12 +40,7 @@ export function TimeLineTabs({ forYouPosts, discoverPosts, userId }: TimeLineTab
         {discoverPosts !== undefined &&
           discoverPosts.map((post, index) => (
             <Box key={post.id} mb={4}>
-              <Post
-                post={post}
-                index={index}
-                userId={userId}
-                isLast={index === discoverPosts.length - 1}
-              />
+              <Post post={post} index={index} userId={userId} />
             </Box>
           ))}
       </Box>

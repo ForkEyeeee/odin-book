@@ -39,23 +39,31 @@ const SearchBox = ({ filteredUsers, userId }) => {
           </Button>
         </Link>
       </Flex>
-      <FormControl id="search-friends" mb={5} mt={5} px={3}>
-        <FormLabel htmlFor="search-friends" fontWeight={'medium'}>
-          Search for Friends
-        </FormLabel>
-        <Input
+      <Flex justifyContent={'center'}>
+        <FormControl
           id="search-friends"
-          name="search-friends"
-          type="search"
-          placeholder="Enter Name"
-          defaultValue={searchParams.get('query')?.toString()}
-          onChange={e => {
-            handleSearch(e.target.value);
-            setIsLoading(true);
-          }}
-        />
-        <FormHelperText>Then you can add them</FormHelperText>
-      </FormControl>
+          mb={5}
+          mt={5}
+          px={3}
+          maxW={{ sm: 500, md: 600, lg: 800, xl: 1000 }}
+        >
+          <FormLabel htmlFor="search-friends" fontWeight={'medium'}>
+            Search for Friends
+          </FormLabel>
+          <Input
+            id="search-friends"
+            name="search-friends"
+            type="search"
+            placeholder="Enter Name"
+            defaultValue={searchParams.get('query')?.toString()}
+            onChange={e => {
+              handleSearch(e.target.value);
+              setIsLoading(true);
+            }}
+          />
+          <FormHelperText>Then you can add them</FormHelperText>
+        </FormControl>
+      </Flex>
       <FilteredFriendsList users={filteredUsers} userId={userId} isLoading={isLoading} />
     </>
   );

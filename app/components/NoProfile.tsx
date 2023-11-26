@@ -14,13 +14,11 @@ const NoProfile = () => {
         <Heading as="h2" size="xl">
           Profile Setup Incomplete
         </Heading>
-        <Text fontSize="lg">
-          Your profile isn't fully set up yet. Please complete your profile to get started.
-        </Text>
-        <Link href="/profile-setup" passHref>
-          <Button mt={4} colorScheme="blue">
-            Set Up Profile
-          </Button>
+        <Text fontSize="lg">Oh no! This user hasn't set up their profile yet.</Text>
+        <Link href="/" color="blue.500">
+          <Text textDecoration={'underline'} color="yellow.300">
+            Go back to the homepage
+          </Text>
         </Link>
       </Flex>
     </Center>
