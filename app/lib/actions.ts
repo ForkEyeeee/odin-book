@@ -253,7 +253,6 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
         return changedFriend;
 
       case 'remove':
-        console.log(friend.id);
         changedFriend = await prisma.friend.delete({
           where: {
             id: friend.id,
@@ -445,7 +444,6 @@ export async function createComment(prevState: any, formData: FormData) {
     const createdComment = await prisma.comment.create({
       data: commentData,
     });
-    console.log(createdComment);
     revalidatePath('/');
     return createdComment;
   } catch (error) {
@@ -602,7 +600,6 @@ export async function updateMessage(prevState: any, formData: FormData) {
       createdAt: new Date(),
       read: true,
     };
-    console.log(messageData);
 
     const updatedMessage = await prisma.message.update({
       where: {
@@ -630,13 +627,11 @@ export async function getPosts(page = 1) {
   try {
     const userId = await getUserId();
     if (userId === undefined) throw new Error();
-    console.log(userId);
     const userFriends = await prisma.friend.findMany({
       where: {
         OR: [{ user1Id: userId }, { user2Id: userId }],
       },
     });
-    console.log(userFriends);
     const pageNumber = isNaN(page) || page < 1 ? 1 : page; // Default to page 1 if invalid
     const take = 5;
     const skip = (pageNumber - 1) * take;

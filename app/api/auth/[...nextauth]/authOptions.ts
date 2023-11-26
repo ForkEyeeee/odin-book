@@ -1,5 +1,6 @@
 import prisma from 'app/lib/prisma';
 import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import type { AuthOptions } from 'next-auth';
 import type { Session } from 'next-auth';
 
@@ -21,6 +22,16 @@ export const authOptions: AuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID ?? '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+    }),
+    CredentialsProvider({
+      name: 'Guest',
+      credentials: {},
+      async authorize(credentials, req) {
+        const user = {
+          id: '112158723423422332704',
+        };
+        return user;
+      },
     }),
   ],
   callbacks: {
@@ -66,7 +77,6 @@ export const authOptions: AuthOptions = {
       return session;
     },
     async redirect({ url, baseUrl }) {
-      // Redirect to the home page
       return baseUrl;
     },
   },
