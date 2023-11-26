@@ -36,7 +36,6 @@ export function Post({ post, index, userId }: PostProps) {
   useEffect(() => {
     if (state !== null) setInputText('');
   }, [state]);
-  console.log(index);
 
   const isLiked = post.likes.find(element => element.authorId === userId);
   const isAuthor = post.authorId === userId;

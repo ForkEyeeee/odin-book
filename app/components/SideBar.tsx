@@ -14,8 +14,6 @@ import {
   VStack,
   Text,
   Badge,
-  Icon,
-  HStack,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
@@ -23,8 +21,6 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getFriends } from '../lib/actions';
 import { useSession } from 'next-auth/react';
-import { RiMessageFill, RiMessageLine } from 'react-icons/ri';
-import { AiFillMessage } from 'react-icons/ai';
 
 const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -81,39 +77,38 @@ const SideBar = () => {
                     key={friend.id}
                     align="center"
                     justify="space-between"
-                    p={3}
-                    boxShadow="base"
                     className="aaa"
                     alignItems={'flex-start'}
-                    // flexDir={{ base: 'column' }}
+                    borderWidth="1px"
+                    borderRadius="lg"
+                    boxShadow="sm"
+                    borderColor="gray.200"
+                    mb={5}
+                    p={3}
                   >
                     <Link href={`/profile?userid=${friend.id}&page=1`}>
                       <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
                     </Link>
                     <Box flex="1">
-                      <Flex
-                        alignItems="stretch"
-                        flexDir={{ base: 'column' }}
-                        gap={5}
-                        className="test"
-                      >
+                      <Flex alignItems="stretch" flexDir={{ base: 'column' }} gap={5}>
                         <Box>
-                          <Text fontWeight="bold">{friend.name}</Text>
-                          <Text fontSize="sm">{friend.email}</Text>
+                          <Text fontSize={{ base: 'initial', lg: 'xl' }} fontWeight="bold">
+                            {friend.name}
+                          </Text>
+                          <Text fontSize={{ base: 'sm', lg: 'xl' }}>{friend.email}</Text>
                           <Badge colorScheme={isRead ? 'red' : 'green'}>
                             {isRead ? `${isRead} Unread` : 'No New Messages'}
                           </Badge>
-                        </Box>{' '}
+                        </Box>
                         <Flex justifyContent={'flex-end'}>
                           <Button
-                            colorScheme="facebook"
                             color={'white'}
+                            colorScheme="whatsapp"
+                            variant={'solid'}
                             onClick={() => {
                               router.push(`/messages?userId=${userId}&receiverId=${friend.id}`);
                               onClose();
                             }}
-
-                            // display={{ base: 'none' }}
                           >
                             Message
                           </Button>

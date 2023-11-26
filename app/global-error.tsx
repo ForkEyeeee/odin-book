@@ -21,7 +21,7 @@ export default function Error404({
             <div className="text-9xl font-bold text-gray-800">404</div>
             <h1 className="text-6xl font-bold text-gray-800">Oops!</h1>
             <p className="mt-2 text-lg text-gray-600">
-              We can't seem to find the page you're looking for.
+              We can&apos;t seem to find the page you're looking for.
             </p>
             <a
               className="mt-6 inline-block rounded-md bg-blue-500 px-6 py-3 text-sm font-medium text-white transition duration-200 ease-in-out hover:bg-blue-600"
