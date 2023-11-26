@@ -4,8 +4,12 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 - [Next.js](https://nextjs.org/)
 - [Prisma](https://www.prisma.io/)
-- [ChakraUI](https://chakra-ui.com/)
+- [Chakra UI](https://chakra-ui.com/)
 - [Cypress](https://www.cypress.io/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [date-fns](https://date-fns.org/)
+- [use-debounce](https://www.npmjs.com/package/use-debounce)
+- [zod](https://github.com/colinhacks/zod)
 
 ## Getting Started
 

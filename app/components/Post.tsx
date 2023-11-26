@@ -104,6 +104,7 @@ export function Post({ post, index, userId }: PostProps) {
               <IconButton
                 aria-label="Delete post"
                 icon={<FaTrash />}
+                id="delete-post-btn"
                 onClick={() => {
                   toast({
                     title: 'Deleted successfully.',
@@ -127,6 +128,7 @@ export function Post({ post, index, userId }: PostProps) {
           <HStack spacing={0}>
             <IconButton
               aria-label="Like"
+              id="post-like-btn"
               icon={<FaHeart color={isLiked ? '#f91880' : '#71767C'} />}
               onClick={() => likePost(post.id)}
               _hover={{
@@ -135,7 +137,9 @@ export function Post({ post, index, userId }: PostProps) {
               size="md"
               isRound
             />
-            <Text color={'#71767C'}>{post.likes.length}</Text>
+            <Text color={'#71767C'} id="post-likes">
+              {post.likes.length}
+            </Text>
           </HStack>
         </Flex>
         <form action={formAction}>
@@ -144,6 +148,7 @@ export function Post({ post, index, userId }: PostProps) {
               <input type="hidden" name="postId" value={post.id} />
               <Textarea
                 name="comment"
+                id="comment-area"
                 placeholder="Post your reply"
                 onChange={e => setInputText(e.currentTarget.value)}
                 value={inputText}
@@ -151,6 +156,7 @@ export function Post({ post, index, userId }: PostProps) {
             </FormControl>
             <Button
               type="submit"
+              id="comment-submit-btn"
               variant={'solid'}
               _hover={{
                 bg: 'green',

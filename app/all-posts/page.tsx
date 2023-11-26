@@ -12,20 +12,14 @@ export default async function Page({
   };
 }) {
   try {
-    const page = searchParams?.page || '';
+    const page = Number(searchParams?.page) || 1;
 
     const { otherTimeLinePosts, userId, otherTimelinePostsCount } = await getPosts(page);
-
+    if (userId === undefined) return;
     return (
       <>
         <PaginationContainer page={page} timelinePostsCount={otherTimelinePostsCount} />
-        <TimeLineTabs
-          discoverPosts={otherTimeLinePosts}
-          userId={userId}
-          page={page}
-          pageCountOtherTimelinePosts={otherTimeLinePosts.length} //total amount of records for current page
-          otherTimelinePostsCount={otherTimelinePostsCount} //total amount of records
-        />
+        <TimeLineTabs discoverPosts={otherTimeLinePosts} userId={userId} />
       </>
     );
   } catch (error) {

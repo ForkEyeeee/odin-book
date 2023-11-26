@@ -39,6 +39,7 @@ export default function Comment({ comments, post, userId }: CommentProps) {
                 <Flex alignItems={'center'}>
                   <IconButton
                     aria-label="Like"
+                    id="comment-like-btn"
                     icon={<FaHeart color={userLikedComment ? '#f91880' : '#71767C'} />}
                     onClick={() => likeComment(comment.id, post.id)}
                     size="sm"
@@ -47,13 +48,16 @@ export default function Comment({ comments, post, userId }: CommentProps) {
                     }}
                     isRound
                   />
-                  <Text color={'#71767C'}>{comment.commentLikes.length}</Text>
+                  <Text color={'#71767C'} id="comment-likes">
+                    {comment.commentLikes.length}
+                  </Text>
                 </Flex>
                 <Spacer />
                 {isAuthor && (
                   <IconButton
                     aria-label="delete"
                     icon={<FaTrash />}
+                    id="comment-delete-btn"
                     onClick={() => {
                       toast({
                         title: 'Deleted successfully.',

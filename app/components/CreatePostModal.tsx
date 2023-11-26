@@ -55,6 +55,7 @@ const CreatePostModal = () => {
         colorScheme="teal"
         fontWeight="bold"
         size={{ base: 'xs', sm: 'md' }}
+        role="create-post-button"
       >
         Create Post
       </Button>
@@ -66,15 +67,16 @@ const CreatePostModal = () => {
           <ModalBody>
             <form action={formAction}>
               <FormControl mb={4}>
-                <Textarea name="post" placeholder="What's on your mind?" required />
+                <Textarea id="post" name="post" placeholder="What's on your mind?" required />
               </FormControl>
               <FormControl mb={4}>
                 <FormLabel htmlFor="image-url">Image URL</FormLabel>
-                <Input name="image-url" placeholder="http://example.com/image.jpg" />
+                <Input id="img-url" name="image-url" placeholder="http://example.com/image.jpg" />
               </FormControl>
               <ModalFooter pr={0}>
                 <Button
                   type="submit"
+                  id="submit-post-btn"
                   colorScheme="green"
                   mr={3}
                   variant={'ghost'}
