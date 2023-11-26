@@ -17,6 +17,7 @@ import {
   Icon,
   HStack,
 } from '@chakra-ui/react';
+import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -86,7 +87,9 @@ const SideBar = () => {
                     alignItems={'flex-start'}
                     // flexDir={{ base: 'column' }}
                   >
-                    <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
+                    <Link href={`/profile?userid=${friend.id}&page=1`}>
+                      <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
+                    </Link>
                     <Box flex="1">
                       <Flex
                         alignItems="stretch"

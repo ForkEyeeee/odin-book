@@ -18,13 +18,12 @@ export default async function Page({
     const page = searchParams?.page || '';
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
 
-    if (timelinePosts.length <= 0) throw new Error();
+    // if (timelinePosts.length <= 0) throw new Error();
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     const take = 5;
     const startIndex = (page - 1) * take + 1;
-    const endIndex = Math.min(startIndex + take - 1, timelinePostsCount);
 
     return (
       <Suspense fallback={<Loading />}>

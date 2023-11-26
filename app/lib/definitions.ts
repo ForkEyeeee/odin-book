@@ -91,6 +91,7 @@ export interface Profile {
   dateOfBirth: Date | null;
   gender: string | null;
   userId: number | null;
+  user: User;
 }
 
 export interface Message {

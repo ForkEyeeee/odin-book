@@ -1,4 +1,3 @@
-import { addFriend } from '@/app/lib/actions';
 import {
   List,
   ListItem,
@@ -15,10 +14,14 @@ import {
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/navigation';
+import { addFriend } from '@/app/lib/actions';
+import Link from 'next/link';
+
 const FilteredFriendsList = ({ users, userId, isLoading }) => {
   const router = useRouter();
+
   return (
-    <Box>
+    <Box h={isLoading ? '100vh' : 'fit-content'}>
       <Box p={5}>
         {isLoading ? (
           <Spinner />
@@ -28,27 +31,40 @@ const FilteredFriendsList = ({ users, userId, isLoading }) => {
               users.map(user => {
                 const isFriend = user.friendsAsUser1.find(friend => friend.user2Id === userId);
                 return (
-                  <ListItem key={user.id}>
+                  <ListItem
+                    key={user.id}
+                    mb={5}
+                    p={3}
+                    borderWidth="1px"
+                    borderRadius="lg"
+                    boxShadow="sm"
+                    borderColor="gray.200"
+                  >
                     <HStack spacing={4}>
-                      <Avatar name={user.name} />
+                      <Link href={`/profile?userid=${user.id}&page=1`}>
+                        <Avatar name={user.name} />
+                      </Link>
                       <VStack align="start">
-                        <Tag size="lg" variant="subtle" colorScheme="cyan">
+                        <Tag size={{ base: 'md' }} variant="subtle" colorScheme="cyan">
                           <TagLabel>{user.name}</TagLabel>
                         </Tag>
-                        <Text>{user.email}</Text>
+                        <Box maxW={{ base: 160 }} overflow={'hidden'}>
+                          <Text noOfLines={1}>{user.email}</Text>
+                        </Box>
+                        {isFriend && <Badge colorScheme="green">Added</Badge>}
                       </VStack>
                       <Box w={'100%'}>
                         <IconButton
                           icon={<AddIcon />}
-                          color={'white'}
+                          color={'green.300'}
                           aria-label="Add friend"
                           colorScheme="green"
+                          pr={5}
                           onClick={() => {
                             addFriend(user.id);
                             router.push('/friends');
                           }}
                         ></IconButton>
-                        {isFriend && <Badge colorScheme="green">Added</Badge>}
                       </Box>
                     </HStack>
                   </ListItem>

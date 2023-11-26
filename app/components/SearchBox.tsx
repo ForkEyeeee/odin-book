@@ -1,9 +1,11 @@
 'use client';
-import { FormControl, Input, FormHelperText, FormLabel, Heading } from '@chakra-ui/react';
+import { FormControl, Input, FormHelperText, FormLabel, Button, Flex } from '@chakra-ui/react';
 import FilteredFriendsList from './FilteredFriendsList';
 import { useState } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
+import Link from 'next/link';
+import { ArrowBackIcon } from '@chakra-ui/icons';
 
 const SearchBox = ({ filteredUsers, userId }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,13 +26,28 @@ const SearchBox = ({ filteredUsers, userId }) => {
 
   return (
     <>
-      <FormControl id="search-friends" mb={5}>
-        <FormLabel htmlFor="search-friends">Search for Friends</FormLabel>
+      <Flex justifyContent={'flex-end'} mt={2}>
+        <Link href={'/friends'}>
+          <Button
+            leftIcon={<ArrowBackIcon color={'red.300'} />}
+            colorScheme="red"
+            variant="solid"
+            color={'white'}
+            size={'md'}
+          >
+            Back to Friends List
+          </Button>
+        </Link>
+      </Flex>
+      <FormControl id="search-friends" mb={5} mt={5} px={3}>
+        <FormLabel htmlFor="search-friends" fontWeight={'medium'}>
+          Search for Friends
+        </FormLabel>
         <Input
           id="search-friends"
           name="search-friends"
           type="search"
-          placeholder="Enter Search"
+          placeholder="Enter Name"
           defaultValue={searchParams.get('query')?.toString()}
           onChange={e => {
             handleSearch(e.target.value);

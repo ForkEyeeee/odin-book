@@ -86,12 +86,19 @@ export async function updateProfile(prevState: any, formData: FormData) {
 }
 
 export async function getProfile(userId: number) {
-  const userProfile = prisma.profile.findUnique({
-    where: {
-      userId: userId,
-    },
-  });
-  return userProfile;
+  try {
+    const userProfile = await prisma.profile.findUnique({
+      where: {
+        userId: userId,
+      },
+      include: {
+        user: true,
+      },
+    });
+    return userProfile;
+  } catch (error) {
+    return { message: `Unable to find profile` };
+  }
 }
 
 export async function getFriends() {
@@ -225,7 +232,6 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
         ],
       },
     });
-    console.log(friend);
     if (!friend) {
       throw new Error('Friend relationship not found.');
     }
@@ -246,6 +252,7 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
         return changedFriend;
 
       case 'remove':
+        console.log(friend.id);
         changedFriend = await prisma.friend.delete({
           where: {
             id: friend.id,
@@ -711,10 +718,8 @@ export async function getPosts(page) {
   }
 }
 
-export async function getUserPosts(page) {
+export async function getUserPosts(page, userId) {
   try {
-    const userId = await getUserId();
-
     const pageNumber = isNaN(page) || page < 1 ? 1 : parseInt(page, 10); // Default to page 1 if invalid
     const take = 5;
 

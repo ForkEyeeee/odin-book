@@ -47,7 +47,7 @@ export default function NavBar() {
   };
 
   return (
-    <Box px={4} bg={useColorModeValue('gray.800', 'black')} h={{ base: 65 }}>
+    <Box px={4} bg={useColorModeValue('gray.800', 'black')} h={{ base: 65 }} className="test">
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
         <Icon
           as={RiFlashlightFill}

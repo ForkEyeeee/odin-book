@@ -54,10 +54,10 @@ export function Post({ post, index, userId }: PostProps) {
         className="test"
       >
         <HStack alignItems={'flex-start'} justifyContent={'space-between'}>
-          <Flex className="tt" justifyContent={'space-between'}>
+          <Flex justifyContent={'space-between'}>
             <Box ml={2}>
               <Flex width="100%" gap={10} alignItems={'flex-start'}>
-                <Link href={`/profile/${post.author.id}`}>
+                <Link href={`/profile?userid=${post.authorId}&page=1`}>
                   <Avatar
                     size={{ base: 'sm', sm: 'md' }}
                     name="John Doe"

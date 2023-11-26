@@ -11,16 +11,19 @@ export default async function Page({
     page?: string;
   };
 }) {
-  const userId = await getUserId();
-  const page = searchParams?.page || '';
+  const currentUserId = await getUserId();
+  const userId = Number(searchParams?.userid);
+  const page = searchParams?.page || 1;
   try {
     if (userId === undefined) return;
     const profile = await getProfile(userId);
-    if (profile === null) return;
-    const { userPosts, postsCount } = await getUserPosts(page);
+    // if (profile === null) return;
+    const { userPosts, postsCount } = await getUserPosts(page, userId);
+    const isAuthor = currentUserId === profile.userId;
+
     return (
       <>
-        <Profile profile={profile} posts={userPosts} />
+        <Profile profile={profile} posts={userPosts} isAuthor={isAuthor} />
         <PaginationContainer page={page} timelinePostsCount={postsCount} />
       </>
     );

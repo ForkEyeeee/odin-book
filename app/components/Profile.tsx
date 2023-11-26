@@ -31,38 +31,26 @@ import { formatISO } from 'date-fns';
 interface FormProps {
   profile?: Profile;
   posts: PostType[];
+  isAuthor: boolean;
 }
 
 const initialState = { message: null, errors: {} };
 
-export default function Profile({ profile, posts }: FormProps) {
+export default function Profile({ profile, posts, isAuthor }: FormProps) {
   const [state, formAction] = useFormState(updateProfile, initialState);
   const [isEdit, setIsEdit] = useState(false);
-  const [isUser, setIsUser] = useState(false);
-  const [session, setSession] = useState('');
-  const searchParams = useSearchParams();
   const bgColor = useColorModeValue('gray.200', 'gray.700');
   const borderColor = useColorModeValue('gray.300', 'gray.600');
   const textColor = useColorModeValue('gray.600', 'gray.100');
+
   useEffect(() => {
     if (state !== null) setIsEdit(false);
   }, [state]);
 
-  useEffect(() => {
-    const getData = async () => {
-      const session = await getSession();
-      if (session.user.id === profile?.userId) setIsUser(true);
-      setSession(session?.user.name);
-    };
-    getData();
-  }, [profile]);
-
   const newProfile = profile === undefined || profile === null;
-  const dateTimeString = profile?.dateOfBirth;
   const formattedDate = profile?.dateOfBirth
     ? formatISO(profile.dateOfBirth, { representation: 'date' })
     : '';
-  console.log(posts);
   return (
     <Container maxW="container.md" mt={10}>
       <Box display={'flex'}>
@@ -71,10 +59,10 @@ export default function Profile({ profile, posts }: FormProps) {
             User Profile
           </Heading>
           <Text mb={{ base: 5 }} fontSize={{ base: 'md' }}>
-            {session}
+            {profile && profile?.user.name}
           </Text>
         </VStack>
-        {profile !== null && isUser ? (
+        {profile !== null && isAuthor ? (
           <FormControl display="flex" justifyContent={'flex-end'} mb={6}>
             <FormLabel htmlFor="email-alerts" mb="0" fontSize={{ base: 'large', md: 'xl' }}>
               Edit
