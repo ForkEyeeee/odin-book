@@ -32,18 +32,18 @@ export default function FriendsList({ friends }: FriendsListProps) {
   const { data: session } = useSession();
   const userId = session?.user.id;
   const toast = useToast();
-
   return (
     <Center mt={0} h={'100vh'} alignItems={'flex-start'}>
       <Flex flexDir={{ base: 'column' }} alignItems={'flex-end'}>
         <Flex justifyContent="flex-end" mt={4} mb={3}>
-          <Link href={'/friends/addfriend'}>
+          <Link href={'/addfriend'}>
             <Button
               leftIcon={<AddIcon color={'green.300'} />}
               colorScheme="green"
               variant="solid"
               color={'white'}
               size={'md'}
+              id="add-friends-btn"
             >
               Add Friend
             </Button>

@@ -1,5 +1,5 @@
-import { getUserId } from '../../lib/actions';
-import { searchUsers } from '../../lib/actions';
+import { getUserId } from '../lib/actions';
+import { searchUsers } from '../lib/actions';
 import SearchBox from '@/app/components/SearchBox';
 import NoDataFound from '@/app/components/NoDataFound';
 import { User } from '@/app/lib/definitions';

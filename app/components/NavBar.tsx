@@ -96,11 +96,8 @@ export default function NavBar() {
                   >
                     Profile
                   </MenuItem>
-                  <MenuItem
-                    onClick={() => router.push(`/friends?userid=${session.user.id}&page=1`)}
-                  >
-                    Friends
-                  </MenuItem>
+                  <MenuItem onClick={() => router.push(`/friends`)}>Friends List</MenuItem>
+                  <MenuItem onClick={() => router.push(`/addfriends`)}>Add Friends</MenuItem>
                   <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
                 </MenuList>
               </Menu>

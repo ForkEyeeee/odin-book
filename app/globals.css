@@ -2,7 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
+.name-tag {
+  text-wrap: nowrap;
+  display: block;
+}
+
+@media screen and (max-width: 480px) {
+  .name-tag {
+    text-wrap: wrap;
+    display: initial;
+  }
+}
+
+:root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -18,10 +30,6 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
+  background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
     rgb(var(--background-start-rgb));
-} */
+}

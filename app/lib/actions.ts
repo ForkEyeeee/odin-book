@@ -6,8 +6,6 @@ import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { FriendshipStatus } from '@prisma/client';
-import { useSearchParams } from 'next/navigation';
-import { redirect } from 'next/navigation';
 
 export const getUserId = async () => {
   try {
@@ -40,7 +38,6 @@ export async function updateProfile(prevState: any, formData: FormData) {
     };
 
     const parsedForm = ProfileSchema.parse(form);
-    console.log(parsedForm);
 
     const parsedDateOfBirth =
       parsedForm.dateOfBirth !== '' ? new Date(parsedForm.dateOfBirth ?? '') : '';
@@ -185,6 +182,10 @@ export async function searchUsers(query: string) {
       },
       include: {
         friendsAsUser1: true,
+        friendsAsUser2: true,
+      },
+      orderBy: {
+        name: 'desc',
       },
     });
     return users;
@@ -210,14 +211,15 @@ export async function addFriend(friendUserId: number) {
         status: FriendshipStatus.PENDING,
       },
     });
-
-    if (existingFriend !== null) throw new Error('Friend Already Added');
+    console.log(existingFriend);
+    if (existingFriend !== null) return true;
 
     const updateFriends = await prisma.friend.create({ data: friendToCreate });
+
     revalidatePath('/friends');
-    return updateFriends;
+    return false;
   } catch (error) {
-    return console.error(error);
+    return { message: 'Unable to add friend' };
   }
 }
 
@@ -666,6 +668,7 @@ export async function getPosts(page = 1) {
         },
       },
     });
+    console.log(timelinePosts);
     // Fetch other timeline posts with pagination
     const otherTimeLinePosts = await prisma.post.findMany({
       where: {

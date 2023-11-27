@@ -10,7 +10,9 @@ import {
   VStack,
   Spinner,
   Badge,
+  TagLeftIcon,
   IconButton,
+  Flex,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/navigation';
@@ -18,6 +20,8 @@ import { addFriend } from '@/app/lib/actions';
 import Link from 'next/link';
 import { useToast } from '@chakra-ui/react';
 import { User } from '../lib/definitions';
+import { BsAirplaneFill, BsSendExclamation } from 'react-icons/bs';
+import { FaPaperPlane } from 'react-icons/fa';
 
 const FilteredFriendsList = ({
   users,
@@ -30,6 +34,30 @@ const FilteredFriendsList = ({
 }) => {
   const router = useRouter();
   const toast = useToast();
+  console.log(users);
+
+  const handleClick = async (userId: number) => {
+    const isExistingFriend = await addFriend(userId);
+
+    if (isExistingFriend) {
+      toast({
+        title: 'Friend request unsuccesfully sent.',
+        description: 'You have already sent a friend request to this user',
+        status: 'error',
+        duration: 9000,
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: 'Added successfully.',
+        description: 'Friend has been sent',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      });
+      router.push('/friends');
+    }
+  };
 
   return (
     <Box className="teees" display={'flex'} justifyContent={'center'}>
@@ -40,8 +68,15 @@ const FilteredFriendsList = ({
           <List spacing={3}>
             {users !== undefined ? (
               users.map(user => {
-                if (user.friendsAsUser1 === undefined) return;
-                const isFriend = user.friendsAsUser1.find(friend => friend.user2Id === userId);
+                if (user.friendsAsUser2 === undefined) return;
+                // const isFriend = user.friendsAsUser1.find(friend => friend.user2Id === userId);
+                const isSent = user.friendsAsUser2.find(
+                  friend => friend.user1Id === userId && friend.status === 'PENDING'
+                );
+                console.log(isSent);
+                const isFriend = user.friendsAsUser2.find(
+                  friend => friend.user1Id === userId && friend.status === 'ACCEPTED'
+                );
                 return (
                   <ListItem
                     key={user.id}
@@ -52,25 +87,53 @@ const FilteredFriendsList = ({
                     boxShadow="sm"
                     borderColor="gray.200"
                   >
-                    <HStack spacing={2}>
+                    <HStack spacing={{ base: 1, sm: 4 }}>
                       <Link href={`/profile?userid=${user.id}&page=1`}>
                         <Avatar src={user.profilePicture as string} name={user.name} />
                       </Link>
                       <VStack align="start">
-                        <Tag size={{ base: 'md' }} variant="subtle" colorScheme="cyan">
-                          <TagLabel>{user.name}</TagLabel>
+                        <Tag size="lg" variant="subtle" colorScheme="cyan">
+                          <TagLabel className="name-tag">{user.name}</TagLabel>
                         </Tag>
                         <Box maxW={{ base: 160, sm: '100%' }} overflow={'hidden'}>
                           <Text>{user.email}</Text>
                         </Box>
-                        {isFriend && <Badge colorScheme="green">Added</Badge>}
+                        {isSent !== undefined ? (
+                          <Badge colorScheme={'yellow'}>Pending Friend Request</Badge>
+                        ) : isFriend !== undefined ? (
+                          <Badge colorScheme={'green'}>Already Friends</Badge>
+                        ) : null}
                       </VStack>
                       <Box w={'100%'} display={'flex'} justifyContent={'flex-end'}>
-                        <IconButton
+                        <Tag
+                          size={{ base: 'md', sm: 'lg' }}
+                          variant="subtle"
+                          colorScheme="green"
+                          aria-label="Add friend"
+                          id="add-friend-btn"
+                          justifyContent={'center'}
+                          cursor={'pointer'}
+                          _hover={{
+                            bgColor: 'green.800',
+                          }}
+                          px={{ base: 0, md: 3 }}
+                          pl={1.7}
+                          onClick={() => {
+                            handleClick(user.id);
+                          }}
+                        >
+                          <TagLeftIcon boxSize="12px" as={FaPaperPlane} />
+                          <TagLabel>
+                            <Text display={{ base: 'none', md: 'initial' }}>
+                              Send Friend Request
+                            </Text>
+                          </TagLabel>
+                        </Tag>
+                        {/* <IconButton
                           icon={<AddIcon />}
                           color={'green.300'}
-                          aria-label="Add friend"
                           colorScheme="green"
+                          id="add-friend-btn"
                           onClick={() => {
                             toast({
                               title: 'Added successfully.',
@@ -82,7 +145,7 @@ const FilteredFriendsList = ({
                             addFriend(user.id);
                             router.push('/friends');
                           }}
-                        />
+                        /> */}
                       </Box>
                     </HStack>
                   </ListItem>
