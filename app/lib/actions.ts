@@ -6,6 +6,9 @@ import { authOptions } from '../api/auth/[...nextauth]/authOptions';
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { FriendshipStatus } from '@prisma/client';
+import axios from 'axios';
+import crypto from 'crypto';
+import { extractPublicId } from 'cloudinary-build-url';
 
 export const getUserId = async () => {
   try {
@@ -290,16 +293,41 @@ export async function changeStatus(userFriendId: number, action: 'accept' | 'rem
   }
 }
 
-export async function deletePost(postId: number) {
+const generateSHA1 = (data: string) => {
+  const hash = crypto.createHash('sha1');
+  hash.update(data);
+  return hash.digest('hex');
+};
+
+const generateSignature = (publicId: string, apiSecret: string) => {
+  const timestamp = new Date().getTime();
+  return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
+};
+
+export async function deletePost(postId: number, imgUrl: string) {
   try {
     const deletedPost = await prisma.post.delete({
       where: {
         id: postId,
       },
     });
+    const publicId = extractPublicId(imgUrl);
 
-    revalidatePath('/for-you?page=1');
-    return deletedPost;
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
+    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    const signature = generateSHA1(generateSignature(publicId, apiSecret!!));
+    const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
+
+    const formData = new FormData();
+    formData.append('public_id', publicId);
+    formData.append('signature', signature);
+    formData.append('api_key', apiKey as string);
+
+    const response = await axios.post(url, formData);
+
+    revalidatePath('/');
+    return { deletedPost, response };
   } catch (error) {
     return { message: `Post unsuccessfully deleted` };
   }

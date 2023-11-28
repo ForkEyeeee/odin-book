@@ -4,15 +4,14 @@ import {
   Text,
   Flex,
   Avatar,
-  Spacer,
   IconButton,
   Textarea,
   FormControl,
-  FormLabel,
   Button,
   VStack,
   HStack,
   Center,
+  useToast,
 } from '@chakra-ui/react';
 import { FaHeart, FaTrash } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
@@ -21,10 +20,9 @@ import { deletePost, likePost } from '../lib/actions';
 import Comment from './Comment';
 import { useFormState } from 'react-dom';
 import { createComment } from '../lib/actions';
-import { format } from 'date-fns';
+import { format, formatDistanceToNowStrict } from 'date-fns';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { useToast } from '@chakra-ui/react';
 
 const initialState = { message: null, errors: {} };
 
@@ -41,15 +39,22 @@ export function Post({ post, index, userId }: PostProps) {
   const isLiked = post.likes.find(element => element.authorId === userId);
   const isAuthor = post.authorId === userId;
 
+  const postDate = new Date(post.createdAt);
+  const now = new Date();
+  const oneDayInMs = 24 * 60 * 60 * 1000;
+  const timeDifference = now.getTime() - postDate.getTime();
+
+  const displayDate =
+    timeDifference > oneDayInMs
+      ? format(postDate, "MMM d, yyyy, h:mm:ss a 'UTC'")
+      : formatDistanceToNowStrict(postDate, { addSuffix: true });
+
   return (
     <Center>
       <Box
         borderWidth="1px"
         borderRadius="md"
         padding={{ base: '20px' }}
-        // w={{ base: '800%' }}
-        // maxW={{ base: '100%', sm: '90%' }}
-        // minW={{ sm: '90%' }}
         w={{ base: 300, sm: 430, md: 700, lg: 900, xl: 1200 }}
         boxShadow="md"
         mt={index > 0 ? 10 : 0}
@@ -71,7 +76,7 @@ export function Post({ post, index, userId }: PostProps) {
                   <Text color="gray.500" maxW={{ base: 150, sm: '100%' }}>
                     {post.author.email}
                   </Text>
-                  <Text color="gray.500">{format(new Date(post.createdAt), 'PPpp')}</Text>
+                  <Text color="gray.500">{displayDate}</Text>
                 </VStack>
               </Flex>
               <Text mt="4" mb={{ base: 3 }} minW={{ base: '200px', sm: '330px' }}>
@@ -109,7 +114,7 @@ export function Post({ post, index, userId }: PostProps) {
                     duration: 9000,
                     isClosable: true,
                   });
-                  deletePost(post.id);
+                  deletePost(post.id, post.imageUrl!!);
                 }}
                 size="sm"
                 _hover={{

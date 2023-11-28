@@ -4,11 +4,7 @@ import './globals.css';
 import Providers from './components/Providers';
 import NavBar from './components/NavBar';
 import Footer from './components/Footer';
-import { getUnreadMessagesCount } from './lib/actions';
 const inter = Inter({ subsets: ['latin'] });
-import { Suspense } from 'react';
-import { Box, Flex, HStack } from '@chakra-ui/react';
-import Loading from './loading';
 import ScrollToTop from './components/ScrollToTop';
 
 export const metadata: Metadata = {
@@ -20,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={inter.className}>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <Providers>
           <NavBar />
           <ScrollToTop />

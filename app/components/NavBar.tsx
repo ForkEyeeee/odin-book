@@ -47,7 +47,14 @@ export default function NavBar() {
   };
 
   return (
-    <Box px={4} bg={useColorModeValue('gray.800', 'black')} h={{ base: 65 }} className="test">
+    <Box
+      px={4}
+      bg={useColorModeValue('gray.800', 'black')}
+      h={{ base: 65 }}
+      position="sticky"
+      top={0}
+      zIndex={1}
+    >
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
         <Icon as={RiFlashlightFill} h={8} w={8} onClick={() => router.push('/')} />
         <Center flex="1" display={{ base: 'none' }}>

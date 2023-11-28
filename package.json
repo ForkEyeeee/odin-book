@@ -46,6 +46,8 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.16",
+    "axios": "^1.6.2",
+    "cloudinary-build-url": "^0.2.4",
     "cypress": "^13.6.0",
     "eslint": "^8",
     "eslint-config-next": "14.0.0",

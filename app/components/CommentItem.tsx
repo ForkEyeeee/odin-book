@@ -4,8 +4,15 @@ import { FaHeart, FaTrash } from 'react-icons/fa';
 import Link from 'next/link';
 import { likeComment, deleteComment } from '../lib/actions';
 import { useToast } from '@chakra-ui/react';
+import { Comment, CommentProps, Post } from '../lib/definitions';
 
-export default function CommentItem({ comment, post, userId }) {
+interface CommentItemProps {
+  comment: Comment;
+  post: Post;
+  userId: number;
+}
+
+export default function CommentItem({ comment, post, userId }: CommentItemProps) {
   const toast = useToast();
   const [isHovering, setIsHovering] = useState(false);
   const userLikedComment = comment.commentLikes.some(like => like.authorId === userId);

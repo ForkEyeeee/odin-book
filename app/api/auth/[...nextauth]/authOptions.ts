@@ -34,6 +34,9 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
+  pages: {
+    signIn: '/signin',
+  },
   callbacks: {
     async signIn({ user, account, profile }) {
       try {
