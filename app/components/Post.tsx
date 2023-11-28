@@ -87,7 +87,6 @@ export function Post({ post, index, userId }: PostProps) {
                       alt={`Post image ${post.id}`}
                       quality={100}
                       placeholder="empty"
-                      loading="lazy"
                       priority
                     />
                   </Box>
