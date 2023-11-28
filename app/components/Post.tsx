@@ -78,22 +78,17 @@ export function Post({ post, index, userId }: PostProps) {
                 {post.content}
               </Text>
               {post.imageUrl !== null && post.imageUrl !== '' && (
-                <HStack alignItems={'flex-start'} justifyContent={'space-between'}>
-                  <Box
-                    borderRadius="md"
-                    overflow="hidden"
-                    position="relative"
-                    width="100%"
-                    height="auto"
-                  >
+                <HStack alignItems={'flex-start'} key={post.id} justifyContent={'space-between'}>
+                  <Box position={'relative'} borderRadius="md" overflow="hidden">
                     <Image
-                      src={post.imageUrl}
+                      src={`${post.imageUrl}`}
+                      width={500}
+                      height={500}
                       alt={`Post image ${post.id}`}
-                      layout="responsive"
-                      width={0}
-                      height={0}
-                      objectFit="contain"
                       unoptimized
+                      quality={100}
+                      priority
+                      placeholder="empty"
                     />
                   </Box>
                 </HStack>

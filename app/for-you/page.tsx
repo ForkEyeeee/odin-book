@@ -4,7 +4,8 @@ import { Suspense } from 'react';
 import Loading from '../loading';
 import NoDataFound from '../components/NoDataFound';
 import PaginationContainer from '../components/PaginationContainerr';
-import ScrollToTop from '../components/ScrollToTop';
+import NoTimeLine from '../components/NoTimeLine';
+import PostList from '../components/PostList';
 
 export default async function Page({
   searchParams,
@@ -15,16 +16,21 @@ export default async function Page({
   };
 }) {
   try {
-    const page = Number(searchParams?.page);
+    const page = Number(searchParams?.page) || 1;
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
     if (userId === undefined) throw new Error();
 
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
     return (
       <Suspense fallback={<Loading />}>
-        <PaginationContainer page={page} timelinePostsCount={timelinePostsCount} />
-        <TimeLineTabs forYouPosts={timelinePosts} userId={userId} />
+        <TimeLineTabs />
+        {timelinePostsCount > 0 ? (
+          <>
+            <PaginationContainer page={page} timelinePostsCount={timelinePostsCount} />
+            <PostList forYouPosts={timelinePosts} userId={userId} />
+          </>
+        ) : (
+          <NoTimeLine />
+        )}
       </Suspense>
     );
   } catch (error) {
