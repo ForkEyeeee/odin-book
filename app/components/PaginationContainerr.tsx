@@ -55,7 +55,7 @@ const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
   const pageNumbers = [];
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(
-      <Box className="hey">
+      <Box>
         <PaginationButton key={i} isActive={currentPage === i} onClick={() => navigateToPage(i)}>
           {i}
         </PaginationButton>

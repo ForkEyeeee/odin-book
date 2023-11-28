@@ -8,37 +8,59 @@ import {
   ModalBody,
   ModalCloseButton,
   Button,
-  useDisclosure,
-  Textarea,
   FormControl,
   FormLabel,
-  Input,
+  Textarea,
+  useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
-import { useFormState } from 'react-dom';
-import { createPost } from '../lib/actions';
-import { AiOutlinePlus } from 'react-icons/ai';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useToast } from '@chakra-ui/react';
-import { usePathname } from 'next/navigation';
-import { useEffect } from 'react';
-
-const initialState = { message: null, errors: {} };
+import { AiOutlinePlus } from 'react-icons/ai';
+import { Post } from '../lib/definitions';
+import { handleCreatePost } from './util/handleCreatePost';
 
 const CreatePostModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [state, formAction] = useFormState(createPost, initialState);
-  const pathname = usePathname();
+  const [postText, setPostText] = useState('');
+  const [file, setFile] = useState(null);
+  const [post, setPost] = useState<Post>();
   const router = useRouter();
   const toast = useToast();
 
   useEffect(() => {
-    if (state === initialState) return;
-    if (state.success && !pathname.includes('/for-you')) {
+    if (post && post.success) {
       router.push('/');
     }
-
     onClose();
-  }, [state, onClose, pathname, router, toast]);
+  }, [post, onClose, router]);
+
+  const handlePostTextChange = (event: any) => {
+    setPostText(event.target.value);
+  };
+
+  const handleFileChange = (event: any) => {
+    setFile(event.target.files[0]);
+  };
+
+  const onSubmit = async (event: any) => {
+    event.preventDefault();
+
+    try {
+      const result = await handleCreatePost(postText, file);
+      setPost(result);
+      onClose();
+      toast({
+        title: 'Created successfully.',
+        description: 'Post has been created successfully',
+        status: 'success',
+        duration: 9000,
+        isClosable: true,
+      });
+    } catch (error) {
+      return { message: 'Post creation failed' };
+    }
+  };
 
   return (
     <>
@@ -59,13 +81,25 @@ const CreatePostModal = () => {
           <ModalHeader>Create a Post</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <form action={formAction}>
+            <form onSubmit={onSubmit}>
               <FormControl mb={4}>
-                <Textarea id="post" name="post" placeholder="What's on your mind?" required />
+                <Textarea
+                  value={postText}
+                  onChange={handlePostTextChange}
+                  id="post"
+                  placeholder="What's on your mind?"
+                  required
+                />
               </FormControl>
               <FormControl mb={4}>
-                <FormLabel htmlFor="image-url">Image URL</FormLabel>
-                <Input id="img-url" name="image-url" placeholder="http://example.com/image.jpg" />
+                <FormLabel htmlFor="file_input">Upload Image</FormLabel>
+                <input
+                  onChange={handleFileChange}
+                  className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+                  id="file_input"
+                  type="file"
+                  required
+                />
               </FormControl>
               <ModalFooter pr={0}>
                 <Button
@@ -74,16 +108,6 @@ const CreatePostModal = () => {
                   colorScheme="green"
                   mr={3}
                   variant={'ghost'}
-                  onClick={() => {
-                    onClose();
-                    toast({
-                      title: 'Created successfully.',
-                      description: 'Post has been created successfully',
-                      status: 'success',
-                      duration: 9000,
-                      isClosable: true,
-                    });
-                  }}
                 >
                   Submit
                 </Button>

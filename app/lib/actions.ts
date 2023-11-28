@@ -668,7 +668,6 @@ export async function getPosts(page = 1) {
         },
       },
     });
-    console.log(timelinePosts);
     // Fetch other timeline posts with pagination
     const otherTimeLinePosts = await prisma.post.findMany({
       where: {

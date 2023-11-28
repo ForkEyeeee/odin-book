@@ -85,10 +85,10 @@ export function Post({ post, index, userId }: PostProps) {
                       width={500}
                       height={500}
                       alt={`Post image ${post.id}`}
-                      unoptimized
                       quality={100}
-                      priority
                       placeholder="empty"
+                      loading="lazy"
+                      priority
                     />
                   </Box>
                 </HStack>

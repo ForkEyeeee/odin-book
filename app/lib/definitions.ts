@@ -42,6 +42,7 @@ export interface Post {
   authorId: number | null;
   createdAt: Date;
   author?: Author;
+  success?: boolean;
 }
 
 export interface PostWithAuthor {
