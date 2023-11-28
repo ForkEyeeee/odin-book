@@ -31,6 +31,7 @@ const initialState = { message: null, errors: {} };
 export function Post({ post, index, userId }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
   const [inputText, setInputText] = useState('');
+  const [isHovering, setIsHovering] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
@@ -105,6 +106,7 @@ export function Post({ post, index, userId }: PostProps) {
                 aria-label="Delete post"
                 icon={<FaTrash />}
                 id="delete-post-btn"
+                color={'red'}
                 onClick={() => {
                   toast({
                     title: 'Deleted successfully.',
@@ -129,15 +131,24 @@ export function Post({ post, index, userId }: PostProps) {
             <IconButton
               aria-label="Like"
               id="post-like-btn"
-              icon={<FaHeart color={isLiked ? '#f91880' : '#71767C'} />}
+              icon={<FaHeart color={isLiked || isHovering ? '#f91880' : 'currentColor'} />}
               onClick={() => likePost(post.id)}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+              size={{ base: 'sm', xl: 'md' }}
+              variant="ghost"
               _hover={{
-                bg: 'pink.200',
+                transform: 'scale(1.25)',
               }}
-              size="md"
               isRound
+              transition="transform 0.2s ease-in-out"
             />
-            <Text color={'#71767C'} id="post-likes">
+            <Text
+              fontSize={{ base: 'sm', xl: 'md' }}
+              id="post-likes"
+              color={isHovering ? '#f91880' : 'currentColor'}
+              transition="color 0.2s ease-in-out"
+            >
               {post.likes.length}
             </Text>
           </HStack>
