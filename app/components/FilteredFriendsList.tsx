@@ -11,17 +11,13 @@ import {
   Spinner,
   Badge,
   TagLeftIcon,
-  IconButton,
-  Flex,
   Center,
 } from '@chakra-ui/react';
-import { AddIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/navigation';
 import { addFriend } from '@/app/lib/actions';
 import Link from 'next/link';
 import { useToast } from '@chakra-ui/react';
 import { User } from '../lib/definitions';
-import { BsAirplaneFill, BsSendExclamation } from 'react-icons/bs';
 import { FaPaperPlane } from 'react-icons/fa';
 
 const FilteredFriendsList = ({
@@ -71,7 +67,6 @@ const FilteredFriendsList = ({
             {users !== undefined ? (
               users.map(user => {
                 if (user.friendsAsUser2 === undefined) return;
-                // const isFriend = user.friendsAsUser1.find(friend => friend.user2Id === userId);
                 const isSent = user.friendsAsUser2.find(
                   friend => friend.user1Id === userId && friend.status === 'PENDING'
                 );

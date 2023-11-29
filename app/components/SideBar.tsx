@@ -18,7 +18,7 @@ import {
 import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { getFriends } from '../lib/actions';
 import { useSession } from 'next-auth/react';
 import { Friend } from '../lib/definitions';
@@ -29,6 +29,7 @@ const SideBar = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user.id;
+  const location = usePathname();
 
   const countUnreadMessages = (friend: Friend) => {
     const sentMessages = friend.sentMessages || [];
@@ -40,7 +41,6 @@ const SideBar = () => {
     const fetchFriends = async () => {
       try {
         let fetchedFriends = (await getFriends()) as Friend[];
-        // Sort the friends by unread messages count
         fetchedFriends = fetchedFriends.sort(
           (a, b) => countUnreadMessages(b) - countUnreadMessages(a)
         );
@@ -50,7 +50,7 @@ const SideBar = () => {
       }
     };
     fetchFriends();
-  }, []);
+  }, [location]);
 
   return (
     <>

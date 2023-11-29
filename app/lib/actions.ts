@@ -785,27 +785,39 @@ export async function getUserPosts(page: number, userId: number) {
   }
 }
 
-export async function getUnreadMessagesCount() {
+export async function getUnreadMessagesCount(receiverId: number | null) {
   try {
     const userId = await getUserId();
-    const unreadMessageCount = await prisma.message.count({
-      where: {
-        AND: {
+    let unReadMessages = null;
+
+    if (receiverId !== null) {
+      unReadMessages = await prisma.message.findMany({
+        where: {
           receiverId: userId,
+          senderId: receiverId,
           read: false,
         },
+      });
+    }
+
+    const unreadMessageCount = await prisma.message.count({
+      where: {
+        receiverId: userId,
+        read: false,
       },
     });
-    return unreadMessageCount;
+    revalidatePath('/', 'layout');
+    return { unreadMessageCount, unReadMessages };
   } catch (error) {
+    console.error(error);
     return { message: 'Unable to fetch unread message count' };
   }
 }
-
 export async function setReadMessages(receiverId: number) {
   try {
     const userId = await getUserId();
-    const receivedMessages = await prisma.message.updateMany({
+
+    await prisma.message.updateMany({
       where: {
         receiverId: userId,
         senderId: receiverId,
@@ -815,8 +827,6 @@ export async function setReadMessages(receiverId: number) {
         read: true,
       },
     });
-    revalidatePath('/for-you');
-    return receivedMessages;
   } catch (error) {
     return { message: 'Unable to set messages as read' };
   }

@@ -45,7 +45,7 @@ const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
 
   const navigateToPage = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPageCount) {
-      router.replace(`${pathname}?page=${newPage}`);
+      router.replace(`${pathname}?page=${newPage}`, { scroll: false });
     }
   };
 

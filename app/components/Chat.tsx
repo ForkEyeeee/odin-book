@@ -17,8 +17,11 @@ import { BsSendFill } from 'react-icons/bs';
 import { createMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
 import { useEffect, useState } from 'react';
+import { setReadMessages } from '../lib/actions';
+import { getUnreadMessagesCount } from '../lib/actions';
+import { Message as MessageType } from '../lib/definitions';
 
-interface Message {
+interface MessageProps {
   id: number;
   content: string;
   senderId: number;
@@ -28,11 +31,12 @@ interface Message {
 }
 
 interface ChatProps {
-  messages: Message[];
+  messages: MessageProps[];
   recipient: string;
   sender: string;
   receiverId: number;
   profilePicture: string;
+  unReadMessages: MessageType[];
 }
 
 export default function Chat({
@@ -41,6 +45,7 @@ export default function Chat({
   sender,
   receiverId,
   profilePicture,
+  unReadMessages,
 }: ChatProps) {
   const initialState = { message: null, errors: {} };
   const [state, formAction] = useFormState(createMessage, initialState);
@@ -51,16 +56,18 @@ export default function Chat({
   }, [state]);
 
   return (
-    <Box flex="1" display="flex" flexDirection="column" h="100vh" p={{ xl: 5 }}>
-      <HStack justifyContent={'flex-start'} p={2}>
-        <Link href={`/profile/${receiverId}`}>
-          <Avatar size={{ base: 'sm', md: 'md' }} name="John Doe" src={`${profilePicture}`} />
-        </Link>
-        <Heading size={{ base: 'sm' }} color={'white'} noOfLines={1}>
-          {recipient}
-        </Heading>
-      </HStack>
-      <VStack flex="1" overflowY="auto" py={2} px={{ base: 2, md: 5 }}>
+    <Box flex="1" display="flex" flexDirection="column" h="100vh" overflowY={'scroll'}>
+      <Box p={{ xl: 5 }} bg="inherit">
+        <HStack justifyContent={'flex-start'} p={2}>
+          <Link href={`/profile/${receiverId}`}>
+            <Avatar size={{ base: 'sm', md: 'md' }} name="John Doe" src={profilePicture} />
+          </Link>
+          <Heading size={{ base: 'sm' }} color={'white'} noOfLines={1}>
+            {recipient}
+          </Heading>
+        </HStack>
+      </Box>
+      <VStack flex="1" py={2} px={{ base: 2, md: 5 }}>
         {messages !== undefined &&
           messages.map(message => (
             <Message
@@ -74,16 +81,17 @@ export default function Chat({
               receiverId={message.receiverId}
               senderId={message.senderId}
               messageStatus={message.read}
+              unReadMessages={unReadMessages}
             />
           ))}
       </VStack>
-      <Box position="sticky" bottom="0" p={2} bg="inherit">
+      <Box position="sticky" bottom="0" p={2} pb={0}>
         <form action={formAction}>
           <FormControl>
             <InputGroup>
               <InputRightElement>
-                <IconButton aria-label="send-message" type="submit" mt={{ base: 0, sm: 2 }}>
-                  <BsSendFill color="white" />
+                <IconButton aria-label="send-message" type="submit">
+                  <BsSendFill color="black" />
                 </IconButton>
               </InputRightElement>
               <Input
@@ -91,11 +99,13 @@ export default function Chat({
                 type="text"
                 name="message"
                 placeholder={`Message ${recipient}`}
-                textOverflow={'ellipsis'}
                 maxLength={200}
-                size={{ sm: 'lg' }}
                 onChange={e => setInputText(e.currentTarget.value)}
                 value={inputText}
+                required
+                bg={'whitesmoke'}
+                color={'black'}
+                size={'md'}
               />
               <input type="hidden" name="receiverId" value={receiverId} />
             </InputGroup>

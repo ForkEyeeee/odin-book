@@ -12,12 +12,14 @@ import {
   Button,
   IconButton,
   Box,
+  background,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, CloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
-import { deleteMessage, setReadMessages, updateMessage } from '../lib/actions';
+import { deleteMessage, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
 import { useSearchParams } from 'next/navigation';
+import { Message as MessageProps } from '../lib/definitions';
 
 interface Props {
   justifyContent: string;
@@ -37,6 +39,7 @@ interface Props {
   receiverId: number;
   senderId: number;
   messageStatus: boolean;
+  unReadMessages: MessageProps[];
 }
 
 const Message = ({
@@ -49,23 +52,18 @@ const Message = ({
   receiverId,
   senderId,
   messageStatus,
+  unReadMessages,
 }: Props) => {
   const initialState = { message: null, errors: {} };
   const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
   const searchParams = useSearchParams();
   const isAuthor = Number(searchParams.get('userId')) !== receiverId;
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        await setReadMessages(senderId);
-      } catch (error) {
-        return { message: 'Unable to set Read Messages' };
-      }
-    };
-    getData();
-  }, [senderId]);
+  const isColor =
+    unReadMessages !== undefined &&
+    unReadMessages.find(message => message.id === messageId) !== undefined
+      ? 'red.300'
+      : backGround;
 
   useEffect(() => {
     if (state !== null) setIsEdit(false);
@@ -75,7 +73,14 @@ const Message = ({
     <Popover placement={popOverPlacement}>
       <Flex justifyContent={justifyContent} w={'100%'}>
         <PopoverTrigger>
-          <Card maxW={'75%'} bg={backGround} role="message-card" boxShadow="md" borderRadius="lg">
+          <Card
+            maxW={'75%'}
+            bg={isColor}
+            role="message-card"
+            boxShadow="md"
+            borderRadius="lg"
+            overflow={'hidden'}
+          >
             <CardBody
               backgroundColor={isEdit ? 'gray.500' : 'initial'}
               borderRadius={isEdit ? 'lg' : 'initial'}

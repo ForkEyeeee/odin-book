@@ -1,6 +1,6 @@
 'use client';
 import { signIn, signOut, useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import {
   Box,
@@ -24,28 +24,33 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { RiFlashlightFill } from 'react-icons/ri';
 import CreatePostModal from './CreatePostModal';
 import SideBar from './SideBar';
-import { getUnreadMessagesCount } from '../lib/actions';
+import { getUnreadMessagesCount, setReadMessages } from '../lib/actions';
 
 export default function NavBar() {
   const { data: session } = useSession();
   const router = useRouter();
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
+    const receiverId = pathname.includes('/messages')
+      ? Number(searchParams.get('receiverId'))
+      : null;
+
     const fetchData = async () => {
-      const count = await getUnreadMessagesCount();
-      setUnreadMessageCount(Number(count));
+      const { unreadMessageCount } = await getUnreadMessagesCount(receiverId);
+      setUnreadMessageCount(Number(unreadMessageCount));
     };
     fetchData();
-  }, []);
+  }, [pathname, searchParams]);
 
   const handleSignOut = () => {
     signOut({ redirect: false }).then(() => {
       router.push('/');
     });
   };
-
   return (
     <Box
       px={4}
