@@ -9,13 +9,12 @@ import {
   Heading,
   HStack,
   IconButton,
+  Avatar,
 } from '@chakra-ui/react';
 import Link from 'next/link';
-import { Avatar } from '@chakra-ui/react';
 import Message from './Message';
 import { BsSendFill } from 'react-icons/bs';
 import { createMessage } from '../lib/actions';
-
 import { useFormState } from 'react-dom';
 import { useEffect, useState } from 'react';
 
@@ -56,12 +55,12 @@ export default function Chat({
       <HStack justifyContent={'flex-start'} p={2}>
         <Link href={`/profile/${receiverId}`}>
           <Avatar size={{ base: 'sm', md: 'md' }} name="John Doe" src={`${profilePicture}`} />
-        </Link>{' '}
+        </Link>
         <Heading size={{ base: 'sm' }} color={'white'} noOfLines={1}>
           {recipient}
         </Heading>
       </HStack>
-      <VStack flex="1" overflowY="scroll">
+      <VStack flex="1" overflowY="auto" py={2} px={{ base: 2, md: 5 }}>
         {messages !== undefined &&
           messages.map(message => (
             <Message
@@ -78,28 +77,31 @@ export default function Chat({
             />
           ))}
       </VStack>
-      <form action={formAction}>
-        <FormControl pt={5}>
-          <InputGroup>
-            <InputRightElement>
-              <IconButton aria-label="send-message" type="submit">
-                <BsSendFill color="white" />
-              </IconButton>
-            </InputRightElement>
-            <Input
-              role="chat-input"
-              type="text"
-              name="message"
-              placeholder={`Message ${recipient}`}
-              maxLength={200}
-              size={{ sm: 'lg' }}
-              onChange={e => setInputText(e.currentTarget.value)}
-              value={inputText}
-            />
-            <input type="hidden" name="receiverId" value={receiverId} />
-          </InputGroup>
-        </FormControl>
-      </form>
+      <Box position="sticky" bottom="0" p={2} bg="inherit">
+        <form action={formAction}>
+          <FormControl>
+            <InputGroup>
+              <InputRightElement>
+                <IconButton aria-label="send-message" type="submit" mt={{ base: 0, sm: 2 }}>
+                  <BsSendFill color="white" />
+                </IconButton>
+              </InputRightElement>
+              <Input
+                role="chat-input"
+                type="text"
+                name="message"
+                placeholder={`Message ${recipient}`}
+                textOverflow={'ellipsis'}
+                maxLength={200}
+                size={{ sm: 'lg' }}
+                onChange={e => setInputText(e.currentTarget.value)}
+                value={inputText}
+              />
+              <input type="hidden" name="receiverId" value={receiverId} />
+            </InputGroup>
+          </FormControl>
+        </form>
+      </Box>
     </Box>
   );
 }

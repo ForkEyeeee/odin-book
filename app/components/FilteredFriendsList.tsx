@@ -13,6 +13,7 @@ import {
   TagLeftIcon,
   IconButton,
   Flex,
+  Center,
 } from '@chakra-ui/react';
 import { AddIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/navigation';
@@ -34,7 +35,6 @@ const FilteredFriendsList = ({
 }) => {
   const router = useRouter();
   const toast = useToast();
-  console.log(users);
 
   const handleClick = async (userId: number) => {
     const isExistingFriend = await addFriend(userId);
@@ -60,10 +60,12 @@ const FilteredFriendsList = ({
   };
 
   return (
-    <Box className="teees" display={'flex'} justifyContent={'center'}>
+    <Box minH={'100vh'} display={'flex'} justifyContent={'center'}>
       <Box p={5} minW={{ base: '100%', sm: 450, md: 600, lg: 800, xl: 1000 }}>
         {isLoading ? (
-          <Spinner />
+          <Center>
+            <Spinner />
+          </Center>
         ) : (
           <List spacing={3}>
             {users !== undefined ? (
@@ -73,7 +75,6 @@ const FilteredFriendsList = ({
                 const isSent = user.friendsAsUser2.find(
                   friend => friend.user1Id === userId && friend.status === 'PENDING'
                 );
-                console.log(isSent);
                 const isFriend = user.friendsAsUser2.find(
                   friend => friend.user1Id === userId && friend.status === 'ACCEPTED'
                 );
@@ -87,22 +88,28 @@ const FilteredFriendsList = ({
                     boxShadow="sm"
                     borderColor="gray.200"
                   >
-                    <HStack spacing={{ base: 1, sm: 4 }}>
+                    <HStack spacing={{ base: 2, sm: 4 }}>
                       <Link href={`/profile?userid=${user.id}&page=1`}>
-                        <Avatar src={user.profilePicture as string} name={user.name} />
+                        <Avatar
+                          size={{ base: 'md' }}
+                          src={user.profilePicture as string}
+                          name={user.name}
+                        />
                       </Link>
                       <VStack align="start">
                         <Tag size="lg" variant="subtle" colorScheme="cyan">
                           <TagLabel className="name-tag">{user.name}</TagLabel>
                         </Tag>
                         <Box maxW={{ base: 160, sm: '100%' }} overflow={'hidden'}>
-                          <Text>{user.email}</Text>
+                          <Text fontSize={{ md: 'lg' }}>{user.email}</Text>
                         </Box>
                         {isSent !== undefined ? (
                           <Badge colorScheme={'yellow'}>Pending Friend Request</Badge>
                         ) : isFriend !== undefined ? (
                           <Badge colorScheme={'green'}>Already Friends</Badge>
-                        ) : null}
+                        ) : (
+                          <Badge colorScheme={'red'}>Not Added</Badge>
+                        )}
                       </VStack>
                       <Box w={'100%'} display={'flex'} justifyContent={'flex-end'}>
                         <Tag

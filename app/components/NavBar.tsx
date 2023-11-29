@@ -56,7 +56,13 @@ export default function NavBar() {
       zIndex={1}
     >
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
-        <Icon as={RiFlashlightFill} h={8} w={8} onClick={() => router.push('/')} />
+        <Icon
+          as={RiFlashlightFill}
+          cursor={'pointer'}
+          h={8}
+          w={8}
+          onClick={() => router.push('/')}
+        />
         <Center flex="1" display={{ base: 'none' }}>
           <Heading as="h3" size={{ base: 'xs', sm: 'lg' }}>
             Social Media App
@@ -83,6 +89,8 @@ export default function NavBar() {
                     justifyContent="center"
                     fontSize="0.8em"
                     color="white"
+                    pl={1}
+                    pb={1}
                   >
                     {unreadMessageCount}
                   </Box>
@@ -104,7 +112,7 @@ export default function NavBar() {
                     Profile
                   </MenuItem>
                   <MenuItem onClick={() => router.push(`/friends`)}>Friends List</MenuItem>
-                  <MenuItem onClick={() => router.push(`/addfriends`)}>Add Friends</MenuItem>
+                  <MenuItem onClick={() => router.push(`/addfriend`)}>Add Friends</MenuItem>
                   <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
                 </MenuList>
               </Menu>

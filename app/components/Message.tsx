@@ -17,6 +17,7 @@ import { EditIcon, DeleteIcon, CloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
 import { deleteMessage, setReadMessages, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
+import { useSearchParams } from 'next/navigation';
 
 interface Props {
   justifyContent: string;
@@ -52,6 +53,8 @@ const Message = ({
   const initialState = { message: null, errors: {} };
   const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
+  const searchParams = useSearchParams();
+  const isAuthor = Number(searchParams.get('userId')) !== receiverId;
 
   useEffect(() => {
     const getData = async () => {
@@ -106,6 +109,8 @@ const Message = ({
                       >
                         Cancel
                       </Button>
+                      <input type="hidden" name="receiverId" value={receiverId} />
+                      <input type="hidden" name="messageId" value={messageId} />
                       <Button type="submit" colorScheme="green" variant={'ghost'}>
                         Save
                       </Button>
@@ -117,8 +122,7 @@ const Message = ({
           </Card>
         </PopoverTrigger>
       </Flex>
-
-      {!isEdit && (
+      {!isEdit && isAuthor && (
         <PopoverContent w={'fit-content'} boxShadow="md" borderRadius="lg">
           <Flex justifyContent={popOverPlacement === 'left' ? 'flex-end' : 'flex-start'}>
             <HStack spacing={5} p={1}>

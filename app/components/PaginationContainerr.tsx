@@ -23,7 +23,7 @@ const PaginationContainer = ({
   const startIndex = (page - 1) * postsPerPage + 1;
   const endIndex = Math.min(startIndex + postsPerPage - 1, timelinePostsCount);
   return (
-    <Container p={{ base: 0, sm: 12 }} pt={{ base: 5 }} borderRadius="lg">
+    <Container p={{ base: 5, sm: 8 }} pt={{ base: 3 }} borderRadius="lg">
       <Flex flexDirection={{ base: 'column' }} alignItems={'center'}>
         <Box>
           <Pagination totalPageCount={totalPageCount} />

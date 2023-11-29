@@ -1,8 +1,6 @@
-import { Box, Flex, Link } from '@chakra-ui/react';
+import { Box } from '@chakra-ui/react';
 import { Post } from './Post';
 import { TimeLineTabsProps } from '../lib/definitions';
-import { usePathname, useSearchParams } from 'next/navigation';
-import NoTimeLine from './NoTimeLine';
 
 export default function PostList({ forYouPosts, discoverPosts, userId }: TimeLineTabsProps) {
   return (

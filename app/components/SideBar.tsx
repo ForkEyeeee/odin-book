@@ -30,24 +30,28 @@ const SideBar = () => {
   const { data: session } = useSession();
   const userId = session?.user.id;
 
+  const countUnreadMessages = (friend: Friend) => {
+    const sentMessages = friend.sentMessages || [];
+    const receivedMessages = friend.receivedMessages || [];
+    return sentMessages.concat(receivedMessages).filter(msg => !msg.read).length;
+  };
+
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        const fetchedFriends = (await getFriends()) as Friend[];
+        let fetchedFriends = (await getFriends()) as Friend[];
+        // Sort the friends by unread messages count
+        fetchedFriends = fetchedFriends.sort(
+          (a, b) => countUnreadMessages(b) - countUnreadMessages(a)
+        );
         setFriends(fetchedFriends);
       } catch (error) {
-        return { message: 'Unable to fetch friends' };
+        console.error('Unable to fetch friends', error);
       }
     };
     fetchFriends();
   }, []);
 
-  const countUnreadMessages = (friend: Friend) => {
-    const sentMessages = friend.sentMessages || [];
-    const receivedMessages = friend.receivedMessages || [];
-
-    return sentMessages.concat(receivedMessages).filter(msg => !msg.read).length;
-  };
   return (
     <>
       <IconButton
@@ -72,15 +76,14 @@ const SideBar = () => {
             />
           </Flex>
           <DrawerBody>
-            <VStack spacing={4} align="stretch">
+            <VStack spacing={4} mt={5} align="stretch">
               {friends.map(friend => {
-                const isRead = countUnreadMessages(friend);
+                const unreadCount = countUnreadMessages(friend);
                 return (
                   <Flex
                     key={friend.id}
                     align="center"
                     justify="space-between"
-                    className="aaa"
                     alignItems={'flex-start'}
                     borderWidth="1px"
                     borderRadius="lg"
@@ -95,12 +98,21 @@ const SideBar = () => {
                     <Box flex="1">
                       <Flex alignItems="stretch" flexDir={{ base: 'column' }} gap={5}>
                         <Box>
-                          <Text fontSize={{ base: 'initial', lg: 'xl' }} fontWeight="bold">
+                          <Text
+                            fontSize={{ base: 'initial', lg: 'lg' }}
+                            maxW={{ base: 180, sm: 350 }}
+                            fontWeight="bold"
+                          >
                             {friend.name}
                           </Text>
-                          <Text fontSize={{ base: 'sm', lg: 'xl' }}>{friend.email}</Text>
-                          <Badge colorScheme={isRead ? 'red' : 'green'}>
-                            {isRead ? `${isRead} Unread` : 'No New Messages'}
+                          <Text
+                            fontSize={{ base: 'sm', lg: 'md' }}
+                            maxW={{ base: 180, sm: 300, lg: 350 }}
+                          >
+                            {friend.email}
+                          </Text>
+                          <Badge colorScheme={unreadCount > 0 ? 'red' : 'green'}>
+                            {unreadCount > 0 ? `${unreadCount} Unread` : 'No New Messages'}
                           </Badge>
                         </Box>
                         <Flex justifyContent={'flex-end'}>

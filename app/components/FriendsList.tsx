@@ -33,7 +33,7 @@ export default function FriendsList({ friends }: FriendsListProps) {
   const userId = session?.user.id;
   const toast = useToast();
   return (
-    <Center mt={0} h={'100vh'} alignItems={'flex-start'}>
+    <Center mt={0} mb={10} alignItems={'flex-start'}>
       <Flex flexDir={{ base: 'column' }} alignItems={'flex-end'}>
         <Flex justifyContent="flex-end" mt={4} mb={3}>
           <Link href={'/addfriend'}>
@@ -61,18 +61,25 @@ export default function FriendsList({ friends }: FriendsListProps) {
                     borderRadius="lg"
                     boxShadow="sm"
                     mt={index > 0 ? '15px' : 0}
-                    minW={{ base: '100%', sm: 380, md: 600, lg: 800, xl: 1000 }}
+                    minW={{ sm: 380, md: 600, lg: 800, xl: 1000 }}
+                    maxW={{ base: 300, sm: 'initial' }}
                   >
                     <HStack justifyContent="space-between" alignItems="center">
                       <Link href={`/profile?userid=${friend.id}&page=1`}>
                         <Avatar
                           name={friend.name}
+                          size={{ base: 'md', md: 'lg' }}
                           src={friend.profilePicture !== null ? friend.profilePicture : ''}
                         />{' '}
                       </Link>
                       <Box flex="1" ml={3}>
                         <Text fontWeight="bold">{friend.name}</Text>
-                        <Text fontSize="sm">{friend.email}</Text>
+                        <Text
+                          fontSize={{ base: 'xs', sm: 'sm' }}
+                          maxW={{ base: 150, sm: 300, md: 450, lg: 'initial' }}
+                        >
+                          {friend.email}
+                        </Text>
                         {friend.status === 'PENDING' && (
                           <Badge colorScheme="yellow">{friend.status}</Badge>
                         )}
@@ -121,7 +128,11 @@ export default function FriendsList({ friends }: FriendsListProps) {
                           colorScheme="red"
                           color={'red'}
                           aria-label="Remove friend"
-                          size="sm"
+                          size={{ base: 'xs', sm: 'sm' }}
+                          _hover={{
+                            bg: 'red',
+                            color: 'black',
+                          }}
                           onClick={() => {
                             toast({
                               title: 'Deleted successfully.',

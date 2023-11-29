@@ -114,10 +114,9 @@ export async function getFriends() {
       OR: [{ user1Id: userId }, { user2Id: userId }],
     },
     orderBy: {
-      status: 'asc',
+      status: 'desc',
     },
   });
-
   const friendIds = userFriends.flatMap(friend =>
     friend.user1Id === userId ? [friend.user2Id] : [friend.user1Id]
   );
@@ -143,7 +142,6 @@ export async function getFriends() {
     );
     return friendData ? { ...userFriend, ...friendData } : userFriend;
   });
-
   return combinedFriendsData;
 }
 
@@ -188,7 +186,7 @@ export async function searchUsers(query: string) {
         friendsAsUser2: true,
       },
       orderBy: {
-        name: 'desc',
+        name: 'asc',
       },
     });
     return users;
@@ -214,7 +212,6 @@ export async function addFriend(friendUserId: number) {
         status: FriendshipStatus.PENDING,
       },
     });
-    console.log(existingFriend);
     if (existingFriend !== null) return true;
 
     const updateFriends = await prisma.friend.create({ data: friendToCreate });
@@ -630,7 +627,6 @@ export async function updateMessage(prevState: any, formData: FormData) {
       receiverId: formData.get('receiverId'),
       messageId: formData.get('messageId'),
     };
-
     const parsedForm = messageSchema.parse(form);
 
     const messageData = {
@@ -641,7 +637,6 @@ export async function updateMessage(prevState: any, formData: FormData) {
       createdAt: new Date(),
       read: true,
     };
-
     const updatedMessage = await prisma.message.update({
       where: {
         id: parsedForm.messageId,
@@ -651,17 +646,11 @@ export async function updateMessage(prevState: any, formData: FormData) {
         read: true,
       },
     });
-    revalidatePath(`/messages?userId=${userId}&receiverId=${form.receiverId}`);
+    revalidatePath(`/`);
     return updatedMessage;
   } catch (error) {
     return { message: `Message unsuccessfully updated` };
   }
-}
-
-export async function getFile(formData: FormData) {
-  'use server';
-  const file = formData.get('file') as File;
-  console.log('File name:', file.name, 'size:', file.size);
 }
 
 export async function getPosts(page = 1) {
