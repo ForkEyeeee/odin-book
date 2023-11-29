@@ -13,6 +13,8 @@ import {
   Textarea,
   useDisclosure,
   useToast,
+  FormErrorMessage,
+  Text,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -25,6 +27,7 @@ const CreatePostModal = () => {
   const [postText, setPostText] = useState('');
   const [file, setFile] = useState(null);
   const [post, setPost] = useState<Post>();
+  const [error, setError] = useState('');
   const router = useRouter();
   const toast = useToast();
 
@@ -48,6 +51,10 @@ const CreatePostModal = () => {
 
     try {
       const result = await handleCreatePost(postText, file);
+      if (!result.success) {
+        setError(result.message);
+        return;
+      }
       setPost(result);
       onClose();
       toast({
@@ -57,11 +64,12 @@ const CreatePostModal = () => {
         duration: 9000,
         isClosable: true,
       });
+      setError('');
+      setPostText('');
     } catch (error) {
       return { message: 'Post creation failed' };
     }
   };
-
   return (
     <>
       <Button
@@ -99,6 +107,7 @@ const CreatePostModal = () => {
                   id="file_input"
                   type="file"
                 />{' '}
+                <Text color={'red'}>{error !== '' && error}</Text>
                 <p className="mt-1 text-sm text-gray-500 dark:text-gray-300" id="file_input_help">
                   SVG, PNG, JPG or GIF (MAX. 800x400px).
                 </p>

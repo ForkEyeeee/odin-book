@@ -304,13 +304,8 @@ const generateSignature = (publicId: string, apiSecret: string) => {
   return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
 };
 
-export async function deletePost(postId: number, imgUrl: string) {
+const uploadPost = async (imgUrl: string) => {
   try {
-    const deletedPost = await prisma.post.delete({
-      where: {
-        id: postId,
-      },
-    });
     const publicId = extractPublicId(imgUrl);
 
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
@@ -325,9 +320,21 @@ export async function deletePost(postId: number, imgUrl: string) {
     formData.append('api_key', apiKey as string);
 
     const response = await axios.post(url, formData);
+  } catch (error) {
+    return { message: `Post unsuccessfully deleted` };
+  }
+};
 
+export async function deletePost(postId: number, imgUrl: string) {
+  try {
+    const deletedPost = await prisma.post.delete({
+      where: {
+        id: postId,
+      },
+    });
+    const response = await uploadPost(imgUrl);
     revalidatePath('/');
-    return { deletedPost, response };
+    return response;
   } catch (error) {
     return { message: `Post unsuccessfully deleted` };
   }
