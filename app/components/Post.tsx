@@ -34,8 +34,7 @@ export function Post({ post, index, userId }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
   const [inputText, setInputText] = useState('');
   const [isHovering, setIsHovering] = useState(false);
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
+  const [time, setTime] = useState('');
   const toast = useToast();
 
   useEffect(() => {
@@ -45,15 +44,17 @@ export function Post({ post, index, userId }: PostProps) {
   const isLiked = post.likes.find(element => element.authorId === userId);
   const isAuthor = post.authorId === userId;
 
-  const postDate = new Date(post.createdAt);
-  const now = new Date();
-  const oneDayInMs = 24 * 60 * 60 * 1000;
-  const timeDifference = now.getTime() - postDate.getTime();
-
-  const displayDate =
-    timeDifference > oneDayInMs
-      ? format(postDate, "MMM d, yyyy, h:mm:ss a 'UTC'")
-      : formatDistanceToNowStrict(postDate, { addSuffix: true });
+  useEffect(() => {
+    const postDate = new Date(post.createdAt);
+    const now = new Date();
+    const oneDayInMs = 24 * 60 * 60 * 1000;
+    const timeDifference = now.getTime() - postDate.getTime();
+    const displayDate =
+      timeDifference > oneDayInMs
+        ? format(postDate, "MMM d, yyyy, h:mm:ss a 'UTC'")
+        : formatDistanceToNowStrict(postDate, { addSuffix: true });
+    setTime(displayDate);
+  }, []);
 
   const enterVariants = {
     offscreen: {
@@ -101,10 +102,15 @@ export function Post({ post, index, userId }: PostProps) {
                       <Text color="gray.500" maxW={{ base: 150, sm: '100%' }}>
                         {post.author.email}
                       </Text>
-                      <Text color="gray.500">{displayDate}</Text>
+                      <Text color="gray.500">{time}</Text>
                     </VStack>
                   </Flex>
-                  <Text mt="4" mb={{ base: 3 }} minW={{ base: '200px', sm: '330px' }}>
+                  <Text
+                    mt="4"
+                    mb={{ base: 3 }}
+                    minW={{ base: '200px', sm: '330px' }}
+                    overflowWrap={'anywhere'}
+                  >
                     {post.content}
                   </Text>
                   {post.imageUrl !== null && post.imageUrl !== '' && (
@@ -118,7 +124,8 @@ export function Post({ post, index, userId }: PostProps) {
                           src={`${post.imageUrl}`}
                           alt={`Post image ${post.id}`}
                           quality={100}
-                          placeholder="empty"
+                          placeholder={post.blurURL !== null ? 'blur' : 'empty'}
+                          blurDataURL={post.blurURL !== null ? post.blurURL : ''}
                           priority
                           width="0"
                           height="0"

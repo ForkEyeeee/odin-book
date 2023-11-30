@@ -5,8 +5,7 @@ export const handleCreatePost = async (postText: string, file: File | null): Pro
     const formData = new FormData();
     formData.append('post', postText);
 
-    const allowedTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/gif'];
-    console.log('test');
+    const allowedTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/gif', 'image/webp'];
     if (file) {
       if (allowedTypes.includes(file.type)) {
         const imageFormData = new FormData();

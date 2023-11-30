@@ -49,6 +49,7 @@ export interface PostWithAuthor {
   id: number;
   content: string;
   imageUrl: string | null;
+  blurURL: string | null;
   authorId: number;
   createdAt: Date;
   author: Author;

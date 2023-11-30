@@ -14,6 +14,8 @@ import {
   useDisclosure,
   useToast,
   Text,
+  Spinner,
+  HStack,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -27,6 +29,7 @@ const CreatePostModal = () => {
   const [file, setFile] = useState(null);
   const [post, setPost] = useState<Post>();
   const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const toast = useToast();
 
@@ -45,7 +48,16 @@ const CreatePostModal = () => {
     setFile(event.target.files[0]);
   };
 
+  const resetForm = () => {
+    setError('');
+    setPostText('');
+    setIsLoading(false);
+    setFile(null);
+    onClose();
+  };
+
   const onSubmit = async (event: any) => {
+    setIsLoading(true);
     event.preventDefault();
 
     try {
@@ -63,9 +75,9 @@ const CreatePostModal = () => {
         duration: 9000,
         isClosable: true,
       });
-      setError('');
-      setPostText('');
+      resetForm();
     } catch (error) {
+      console.error(error);
       return { message: 'Post creation failed' };
     }
   };
@@ -82,7 +94,7 @@ const CreatePostModal = () => {
       >
         Create Post
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
+      <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom" size={{ xl: '5xl' }}>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Create a Post</ModalHeader>
@@ -94,6 +106,7 @@ const CreatePostModal = () => {
                   value={postText}
                   onChange={handlePostTextChange}
                   id="post"
+                  maxLength={200}
                   placeholder="What's on your mind?"
                   required
                 />
@@ -112,26 +125,24 @@ const CreatePostModal = () => {
                 </p>
               </FormControl>
               <ModalFooter pr={0}>
-                <Button
-                  type="submit"
-                  id="submit-post-btn"
-                  colorScheme="green"
-                  mr={3}
-                  variant={'ghost'}
-                >
-                  Submit
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setPostText('');
-                    setFile(null);
-                    setError('');
-                    onClose();
-                  }}
-                >
-                  Cancel
-                </Button>
+                <HStack spacing={isLoading ? 10 : 0}>
+                  {isLoading ? (
+                    <Spinner />
+                  ) : (
+                    <Button
+                      type="submit"
+                      id="submit-post-btn"
+                      colorScheme="green"
+                      mr={3}
+                      variant={'ghost'}
+                    >
+                      Submit
+                    </Button>
+                  )}
+                  <Button variant="outline" onClick={resetForm}>
+                    Cancel
+                  </Button>
+                </HStack>
               </ModalFooter>
             </form>
           </ModalBody>

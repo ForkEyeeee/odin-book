@@ -9,6 +9,7 @@ import { FriendshipStatus } from '@prisma/client';
 import axios from 'axios';
 import crypto from 'crypto';
 import { extractPublicId } from 'cloudinary-build-url';
+import { getPlaiceholder } from 'plaiceholder';
 
 export const getUserId = async () => {
   try {
@@ -340,8 +341,30 @@ export async function deletePost(postId: number, imgUrl: string) {
   }
 }
 
+async function getBase64(imageUrl: string) {
+  try {
+    const res = await fetch(imageUrl);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch image: ${res.status} ${res.statusText}`);
+    }
+
+    const buffer = await res.arrayBuffer();
+
+    const { base64 } = await getPlaiceholder(Buffer.from(buffer));
+
+    console.log(`base64: ${base64}`);
+
+    return base64;
+  } catch (e) {
+    if (e instanceof Error) console.log(e.stack);
+  }
+}
+
 export async function createPost(prevState: any, formData: FormData) {
   try {
+    console.log('here');
+
     const userId = await getUserId();
 
     const postSchema = z.object({
@@ -369,6 +392,18 @@ export async function createPost(prevState: any, formData: FormData) {
     const createdPost = await prisma.post.create({
       data: postData,
     });
+    if (parsedForm.imageUrl !== undefined) {
+      const blur = await getBase64(parsedForm.imageUrl);
+      const savedBlur = prisma.post.update({
+        where: {
+          id: createdPost.id,
+        },
+        data: {
+          blurURL: blur,
+        },
+      });
+    }
+
     revalidatePath('/');
     return { ...createdPost, success: true };
   } catch (error) {
@@ -810,7 +845,6 @@ export async function getUnreadMessagesCount(receiverId: number | null) {
         read: false,
       },
     });
-    console.log(unreadMessageCount);
     return { unreadMessageCount, unReadMessages };
   } catch (error) {
     console.error(error);

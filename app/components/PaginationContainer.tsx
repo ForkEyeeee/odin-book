@@ -50,13 +50,14 @@ const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
   const pageNumbers = [];
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(
-      <Box>
-        <PaginationButton key={i} isActive={currentPage === i} onClick={() => navigateToPage(i)}>
+      <Box key={i}>
+        <PaginationButton isActive={currentPage === i} onClick={() => navigateToPage(i)}>
           {i}
         </PaginationButton>
       </Box>
     );
   }
+
   return (
     <Flex
       as="nav"

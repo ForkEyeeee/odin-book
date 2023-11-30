@@ -1,9 +1,10 @@
 import TimeLineTabs from '../components/TimeLineTabs';
-import { getPosts, getUnreadMessagesCount } from '@/app/lib/actions';
+import { getPosts } from '@/app/lib/actions';
 import NoDataFound from '../components/NoDataFound';
 import PaginationContainer from '../components/PaginationContainer';
 import NoTimeLine from '../components/NoTimeLine';
 import PostList from '../components/PostList';
+import { Box } from '@chakra-ui/react';
 
 export default async function Page({
   searchParams,
@@ -18,7 +19,7 @@ export default async function Page({
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
     if (userId === undefined) throw new Error();
     return (
-      <>
+      <Box>
         <TimeLineTabs />
         {timelinePostsCount > 0 ? (
           <>
@@ -29,7 +30,7 @@ export default async function Page({
         ) : (
           <NoTimeLine />
         )}
-      </>
+      </Box>
     );
   } catch (error) {
     return <NoDataFound />;

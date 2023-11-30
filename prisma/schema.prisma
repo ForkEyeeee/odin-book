@@ -49,6 +49,7 @@ model Post {
   id           Int           @id @default(autoincrement())
   content      String
   imageUrl     String?
+  blurURL      String?        
   author       User          @relation(fields: [authorId], references: [id])
   authorId     Int
   comments     Comment[]

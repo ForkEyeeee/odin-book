@@ -15,7 +15,7 @@ export default async function Page({
   try {
     const receiverId = Number(searchParams?.receiverId) || 0;
     const { messages, recipient, sender, profilePicture } = (await getMessages(receiverId)) as any;
-    const { unReadMessages, unreadMessageCount } = await getUnreadMessagesCount(receiverId);
+    const { unReadMessages } = await getUnreadMessagesCount(receiverId);
     if (unReadMessages === undefined || unReadMessages === null) return <NoDataFound />;
 
     await setReadMessages(receiverId);
