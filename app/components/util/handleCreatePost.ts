@@ -28,7 +28,6 @@ export const handleCreatePost = async (postText: string, file: File | null): Pro
 
     return await createPost(postText, formData);
   } catch (error) {
-    console.error('Image upload failed:', error);
     throw new Error('Post upload failed');
   }
 };

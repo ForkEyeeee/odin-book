@@ -1,5 +1,5 @@
 import TimeLineTabs from '../components/TimeLineTabs';
-import PaginationContainer from '../components/PaginationContainerr';
+import PaginationContainer from '../components/PaginationContainer';
 import { getPosts } from '@/app/lib/actions';
 import NoDataFound from '../components/NoDataFound';
 import PostList from '../components/PostList';

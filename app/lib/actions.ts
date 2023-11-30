@@ -212,11 +212,12 @@ export async function addFriend(friendUserId: number) {
         status: FriendshipStatus.PENDING,
       },
     });
+
     if (existingFriend !== null) return true;
 
     const updateFriends = await prisma.friend.create({ data: friendToCreate });
 
-    revalidatePath('/friends');
+    revalidatePath('/');
     return false;
   } catch (error) {
     return { message: 'Unable to add friend' };

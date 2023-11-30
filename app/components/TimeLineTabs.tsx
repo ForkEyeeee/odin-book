@@ -1,6 +1,7 @@
 'use client';
 import { Box, Flex, Link } from '@chakra-ui/react';
 import { usePathname } from 'next/navigation';
+import { Suspense } from 'react';
 
 export function TimeLineTabs() {
   const pathname = usePathname();
@@ -23,28 +24,30 @@ export function TimeLineTabs() {
 
   return (
     <>
-      <Flex
-        justifyContent="center"
-        gap={{ base: 6, md: 15, xl: 20 }}
-        p={4}
-        mt={{ base: 3, sm: 5, md: 0 }}
-        mb={{ base: 0 }}
-      >
-        <Link
-          href={'/for-you?page=1'}
-          fontSize={{ base: 'sm:', md: 'xl' }}
-          sx={pathname === '/for-you' ? activeTabStyle : tabStyle}
+      <Suspense fallback={<p>TEST</p>}>
+        <Flex
+          justifyContent="center"
+          gap={{ base: 6, md: 15, xl: 20 }}
+          p={4}
+          mt={{ base: 3, sm: 5, md: 0 }}
+          mb={{ base: 0 }}
         >
-          For You
-        </Link>
-        <Link
-          href={'/discover?page=1'}
-          fontSize={{ base: 'sm:', md: 'xl' }}
-          sx={pathname === '/discover' ? activeTabStyle : tabStyle}
-        >
-          Discover
-        </Link>
-      </Flex>
+          <Link
+            href={'/for-you?page=1'}
+            fontSize={{ base: 'sm:', md: 'xl' }}
+            sx={pathname === '/for-you' ? activeTabStyle : tabStyle}
+          >
+            For You
+          </Link>
+          <Link
+            href={'/discover?page=1'}
+            fontSize={{ base: 'sm:', md: 'xl' }}
+            sx={pathname === '/discover' ? activeTabStyle : tabStyle}
+          >
+            Discover
+          </Link>
+        </Flex>
+      </Suspense>
     </>
   );
 }

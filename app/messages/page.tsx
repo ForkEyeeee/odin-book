@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { getMessages, getUnreadMessagesCount, setReadMessages } from '@/app/lib/actions';
 import Chat from '../components/Chat';
-import Loading from '../loading';
+import Loading from '../for-you/loading';
 import NoDataFound from '../components/NoDataFound';
 
 export default async function Page({

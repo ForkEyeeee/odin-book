@@ -121,7 +121,15 @@ const CreatePostModal = () => {
                 >
                   Submit
                 </Button>
-                <Button variant="outline" onClick={onClose}>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setPostText('');
+                    setFile(null);
+                    setError('');
+                    onClose();
+                  }}
+                >
                   Cancel
                 </Button>
               </ModalFooter>

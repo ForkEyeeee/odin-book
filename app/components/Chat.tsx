@@ -17,8 +17,6 @@ import { BsSendFill } from 'react-icons/bs';
 import { createMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
 import { useEffect, useState } from 'react';
-import { setReadMessages } from '../lib/actions';
-import { getUnreadMessagesCount } from '../lib/actions';
 import { Message as MessageType } from '../lib/definitions';
 
 interface MessageProps {
@@ -56,10 +54,15 @@ export default function Chat({
   }, [state]);
 
   return (
-    <Box flex="1" display="flex" flexDirection="column" h="100vh" overflowY={'scroll'}>
+    <Box
+      display="flex"
+      flexDirection="column"
+      h={{ base: '92.5vh', xl: '93.5vh' }}
+      overflowY={'scroll'}
+    >
       <Box p={{ xl: 5 }} bg="inherit">
         <HStack justifyContent={'flex-start'} p={2}>
-          <Link href={`/profile/${receiverId}`}>
+          <Link href={`/profile?userid=${receiverId}&page=1`}>
             <Avatar size={{ base: 'sm', md: 'md' }} name="John Doe" src={profilePicture} />
           </Link>
           <Heading size={{ base: 'sm' }} color={'white'} noOfLines={1}>

@@ -1,6 +1,6 @@
 import { getProfile, getUserId, getUserPosts } from '../lib/actions';
 import Profile from '../components/Profile';
-import PaginationContainer from '../components/PaginationContainerr';
+import PaginationContainer from '../components/PaginationContainer';
 import NoDataFound from '../components/NoDataFound';
 import NoProfile from '../components/NoProfile';
 import { Profile as UserProfile } from '../lib/definitions';

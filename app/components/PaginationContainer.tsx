@@ -1,14 +1,6 @@
 'use client';
 import React, { ReactNode } from 'react';
-import {
-  Container,
-  Flex,
-  FlexProps,
-  useColorMode,
-  useColorModeValue,
-  Text,
-  Box,
-} from '@chakra-ui/react';
+import { Container, Flex, FlexProps, useColorModeValue, Text, Box } from '@chakra-ui/react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 const PaginationContainer = ({
@@ -36,16 +28,19 @@ const PaginationContainer = ({
     </Container>
   );
 };
-// Ideally, only the Pagination component should be used. The PaginationContainer component is used to style the preview.
+
 const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(searchParams.get('page')) || 1;
+  const userId = Number(searchParams.get('userid'));
 
   const navigateToPage = (newPage: number) => {
-    if (newPage >= 1 && newPage <= totalPageCount) {
+    if (newPage >= 1 && newPage <= totalPageCount && !pathname.includes('/profile')) {
       router.replace(`${pathname}?page=${newPage}`, { scroll: false });
+    } else if (newPage >= 1 && newPage <= totalPageCount) {
+      router.replace(`${pathname}?userid=${userId}&page=${newPage}`, { scroll: false });
     }
   };
 

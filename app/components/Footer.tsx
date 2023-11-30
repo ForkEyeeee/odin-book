@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import { FaGithub } from 'react-icons/fa';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const Logo = (props: any) => {
   return (
@@ -28,8 +29,11 @@ const Logo = (props: any) => {
 };
 
 export default function SmallWithLogoLeft() {
+  const pathname = usePathname();
+  const isMessageRoute = pathname.includes('/messages');
   return (
     <Box
+      display={isMessageRoute ? 'none' : ''}
       bg={useColorModeValue('gray.50', 'gray.900')}
       color={useColorModeValue('gray.700', 'gray.200')}
     >

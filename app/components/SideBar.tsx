@@ -54,14 +54,7 @@ const SideBar = () => {
 
   return (
     <>
-      <IconButton
-        icon={<ChatIcon />}
-        onClick={onOpen}
-        variant="outline"
-        aria-label="open menu"
-        size="lg"
-      />
-
+      <ChatIcon onClick={onOpen} aria-label="open menu" />
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="md">
         <DrawerOverlay />
         <DrawerContent>

@@ -19,12 +19,10 @@ import {
   HStack,
   Heading,
 } from '@chakra-ui/react';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import { AiOutlineClose } from 'react-icons/ai';
 import { RiFlashlightFill } from 'react-icons/ri';
 import CreatePostModal from './CreatePostModal';
 import SideBar from './SideBar';
-import { getUnreadMessagesCount, setReadMessages } from '../lib/actions';
+import { getUnreadMessagesCount } from '../lib/actions';
 
 export default function NavBar() {
   const { data: session } = useSession();
@@ -78,7 +76,9 @@ export default function NavBar() {
             <>
               <Box position="relative">
                 <CreatePostModal />
-                <IconButton aria-label="Unread messages" icon={<SideBar />} variant="ghost" />
+                <IconButton aria-label="Unread messages" variant="ghost">
+                  <SideBar />
+                </IconButton>
                 {unreadMessageCount > 0 && (
                   <Box
                     position="absolute"

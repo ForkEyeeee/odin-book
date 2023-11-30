@@ -4,7 +4,7 @@ import { FaHeart, FaTrash } from 'react-icons/fa';
 import Link from 'next/link';
 import { likeComment, deleteComment } from '../lib/actions';
 import { useToast } from '@chakra-ui/react';
-import { Comment, CommentProps, Post } from '../lib/definitions';
+import { Comment, Post } from '../lib/definitions';
 
 interface CommentItemProps {
   comment: Comment;

@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Text, Button, AbsoluteCenter, Center } from '@chakra-ui/react';
+import { Flex, Heading, Text, Center } from '@chakra-ui/react';
 import Link from 'next/link';
 
 const NoDataFound = () => {

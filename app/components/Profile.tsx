@@ -17,7 +17,6 @@ import {
   Container,
   Heading,
   Divider,
-  HStack,
   Flex,
   useColorModeValue,
 } from '@chakra-ui/react';

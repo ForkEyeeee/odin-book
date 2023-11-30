@@ -20,6 +20,7 @@ import { deleteMessage, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
 import { useSearchParams } from 'next/navigation';
 import { Message as MessageProps } from '../lib/definitions';
+import { motion } from 'framer-motion';
 
 interface Props {
   justifyContent: string;
@@ -69,6 +70,12 @@ const Message = ({
     if (state !== null) setIsEdit(false);
   }, [state]);
 
+  const variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
+  };
+
   return (
     <Popover placement={popOverPlacement}>
       <Flex justifyContent={justifyContent} w={'100%'}>
@@ -81,6 +88,7 @@ const Message = ({
             borderRadius="lg"
             overflow={'hidden'}
           >
+            {' '}
             <CardBody
               backgroundColor={isEdit ? 'gray.500' : 'initial'}
               borderRadius={isEdit ? 'lg' : 'initial'}

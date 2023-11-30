@@ -20,6 +20,10 @@ body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(to bottom, transparent, rgb(var(--background-end-rgb)))
     rgb(var(--background-start-rgb));
+
+  width: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .name-tag {

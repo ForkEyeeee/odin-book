@@ -31,21 +31,16 @@ export default function ProfilePosts({ posts }: ProfilePostsProps) {
               cursor="pointer"
             >
               {post.imageUrl && (
-                <Box
-                  borderRadius="md"
-                  overflow="hidden"
-                  position="relative"
-                  width="100%"
-                  height="auto"
-                >
+                <Box position={'relative'} borderRadius="md" overflow="hidden">
                   <Image
                     src={post.imageUrl}
                     alt={`Post image ${post.id}`}
                     layout="responsive"
                     width={0}
+                    quality={100}
                     height={0}
-                    objectFit="contain"
-                    unoptimized
+                    placeholder="empty"
+                    priority
                   />
                 </Box>
               )}
