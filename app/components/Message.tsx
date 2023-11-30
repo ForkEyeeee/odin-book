@@ -12,7 +12,6 @@ import {
   Button,
   IconButton,
   Box,
-  background,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, CloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
@@ -20,7 +19,6 @@ import { deleteMessage, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
 import { useSearchParams } from 'next/navigation';
 import { Message as MessageProps } from '../lib/definitions';
-import { motion } from 'framer-motion';
 
 interface Props {
   justifyContent: string;
@@ -41,6 +39,7 @@ interface Props {
   senderId: number;
   messageStatus: boolean;
   unReadMessages: MessageProps[];
+  isColor: string;
 }
 
 const Message = ({
@@ -54,17 +53,13 @@ const Message = ({
   senderId,
   messageStatus,
   unReadMessages,
+  isColor,
 }: Props) => {
   const initialState = { message: null, errors: {} };
   const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
   const searchParams = useSearchParams();
   const isAuthor = Number(searchParams.get('userId')) !== receiverId;
-  const isColor =
-    unReadMessages !== undefined &&
-    unReadMessages.find(message => message.id === messageId) !== undefined
-      ? 'red.300'
-      : backGround;
 
   useEffect(() => {
     if (state !== null) setIsEdit(false);
@@ -75,6 +70,9 @@ const Message = ({
     visible: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -20 },
   };
+  if (isColor === 'red.300') {
+    console.log(isColor);
+  }
 
   return (
     <Popover placement={popOverPlacement}>
@@ -82,7 +80,7 @@ const Message = ({
         <PopoverTrigger>
           <Card
             maxW={'75%'}
-            bg={isColor}
+            backgroundColor={isColor}
             role="message-card"
             boxShadow="md"
             borderRadius="lg"
@@ -90,7 +88,7 @@ const Message = ({
           >
             {' '}
             <CardBody
-              backgroundColor={isEdit ? 'gray.500' : 'initial'}
+              backgroundColor={isEdit ? 'gray.500' : isColor}
               borderRadius={isEdit ? 'lg' : 'initial'}
             >
               <form action={formAction}>

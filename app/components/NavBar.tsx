@@ -49,6 +49,7 @@ export default function NavBar() {
       router.push('/');
     });
   };
+
   return (
     <Box
       px={4}
@@ -115,6 +116,7 @@ export default function NavBar() {
                     onClick={() => router.push(`/profile?userid=${session.user.id}&page=1`)}
                     _hover={{
                       bg: 'gray',
+                      transition: '.5s',
                     }}
                   >
                     Profile
@@ -123,6 +125,7 @@ export default function NavBar() {
                     onClick={() => router.push(`/friends`)}
                     _hover={{
                       bg: 'gray',
+                      transition: '.5s',
                     }}
                   >
                     Friends List
@@ -131,6 +134,7 @@ export default function NavBar() {
                     onClick={() => router.push(`/addfriend`)}
                     _hover={{
                       bg: 'gray',
+                      transition: '.5s',
                     }}
                   >
                     Add Friends
@@ -139,6 +143,7 @@ export default function NavBar() {
                     onClick={handleSignOut}
                     _hover={{
                       bg: '#ff0038 ',
+                      transition: '.5s',
                     }}
                   >
                     Sign Out

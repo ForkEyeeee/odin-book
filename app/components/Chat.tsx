@@ -16,7 +16,7 @@ import Message from './Message';
 import { BsSendFill } from 'react-icons/bs';
 import { createMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Message as MessageType } from '../lib/definitions';
 
 interface MessageProps {
@@ -48,10 +48,23 @@ export default function Chat({
   const initialState = { message: null, errors: {} };
   const [state, formAction] = useFormState(createMessage, initialState);
   const [inputText, setInputText] = useState('');
+  const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   useEffect(() => {
-    if (state !== null) setInputText('');
+    if (state !== null) {
+      setInputText('');
+    }
   }, [state]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const scrollToBottom = () => {
+    const message = messagesEndRef.current;
+    if (message === null) return;
+    message.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <Box
@@ -72,21 +85,33 @@ export default function Chat({
       </Box>
       <VStack flex="1" py={2} px={{ base: 2, md: 5 }}>
         {messages !== undefined &&
-          messages.map(message => (
-            <Message
-              key={message.id}
-              justifyContent={message.receiverId !== receiverId ? 'flex-start' : 'flex-end'}
-              backGround={message.receiverId === receiverId ? 'blue' : 'white'}
-              color={message.receiverId === receiverId ? 'white' : 'black'}
-              popOverPlacement={message.receiverId === receiverId ? 'left' : 'right'}
-              content={message.content}
-              messageId={message.id}
-              receiverId={message.receiverId}
-              senderId={message.senderId}
-              messageStatus={message.read}
-              unReadMessages={unReadMessages}
-            />
-          ))}
+          messages.map(message => {
+            const backGround = message.receiverId === receiverId ? 'blue' : 'white';
+            const isColor =
+              unReadMessages &&
+              unReadMessages.find(unReadMessage => unReadMessage.id === message.id) !== undefined
+                ? 'red.300'
+                : backGround;
+            return (
+              <>
+                <Message
+                  key={message.id}
+                  justifyContent={message.receiverId !== receiverId ? 'flex-start' : 'flex-end'}
+                  backGround={backGround}
+                  color={message.receiverId === receiverId ? 'white' : 'black'}
+                  popOverPlacement={message.receiverId === receiverId ? 'left' : 'right'}
+                  content={message.content}
+                  messageId={message.id}
+                  receiverId={message.receiverId}
+                  senderId={message.senderId}
+                  messageStatus={message.read}
+                  unReadMessages={unReadMessages}
+                  isColor={isColor}
+                />
+                <Box ref={messagesEndRef} />
+              </>
+            );
+          })}
       </VStack>
       <Box position="sticky" bottom="0" p={2} pb={0}>
         <form action={formAction}>

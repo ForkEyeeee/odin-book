@@ -78,7 +78,7 @@ const SearchBox = ({ filteredUsers, userId }: SearchBoxProps) => {
               setIsLoading(true);
             }}
           />
-          <FormHelperText>Then you can add them</FormHelperText>
+          <FormHelperText>Names are case-insensitive</FormHelperText>
         </FormControl>
       </Flex>
       {filteredUsers !== undefined && query !== null ? (

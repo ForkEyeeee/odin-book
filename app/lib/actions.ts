@@ -140,6 +140,7 @@ export async function getFriends() {
     const userFriend = userFriends.find(
       friend => friend.user1Id === friendId || friend.user2Id === friendId
     );
+    revalidatePath('/for-you');
     return friendData ? { ...userFriend, ...friendData } : userFriend;
   });
   return combinedFriendsData;
@@ -807,7 +808,7 @@ export async function getUnreadMessagesCount(receiverId: number | null) {
         read: false,
       },
     });
-    revalidatePath('/', 'layout');
+    console.log(unreadMessageCount);
     return { unreadMessageCount, unReadMessages };
   } catch (error) {
     console.error(error);

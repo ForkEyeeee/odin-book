@@ -1,5 +1,5 @@
 import TimeLineTabs from '../components/TimeLineTabs';
-import { getPosts } from '@/app/lib/actions';
+import { getPosts, getUnreadMessagesCount } from '@/app/lib/actions';
 import NoDataFound from '../components/NoDataFound';
 import PaginationContainer from '../components/PaginationContainer';
 import NoTimeLine from '../components/NoTimeLine';
@@ -17,7 +17,6 @@ export default async function Page({
     const page = Number(searchParams?.page) || 1;
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
     if (userId === undefined) throw new Error();
-
     return (
       <>
         <TimeLineTabs />

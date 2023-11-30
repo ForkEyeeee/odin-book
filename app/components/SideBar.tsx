@@ -50,7 +50,7 @@ const SideBar = () => {
       }
     };
     fetchFriends();
-  }, [location]);
+  }, [onOpen]);
 
   return (
     <>

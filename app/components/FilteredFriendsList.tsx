@@ -35,7 +35,6 @@ const FilteredFriendsList = ({
 
   const handleClick = async (userId: number) => {
     const isExistingFriend = await addFriend(userId);
-    console.log(isExistingFriend);
     if (isExistingFriend) {
       toast({
         title: 'Friend request unsuccesfully sent.',
