@@ -112,6 +112,7 @@ export async function getFriends() {
   const userFriends = await prisma.friend.findMany({
     where: {
       OR: [{ user1Id: userId }, { user2Id: userId }],
+      AND: [{ status: 'ACCEPTED' }],
     },
     orderBy: {
       status: 'desc',
@@ -662,6 +663,7 @@ export async function getPosts(page = 1) {
     const userFriends = await prisma.friend.findMany({
       where: {
         OR: [{ user1Id: userId }, { user2Id: userId }],
+        AND: [{ status: 'ACCEPTED' }],
       },
     });
     const pageNumber = isNaN(page) || page < 1 ? 1 : page; // Default to page 1 if invalid
