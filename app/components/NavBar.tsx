@@ -113,12 +113,36 @@ export default function NavBar() {
                   <MenuItem
                     id="profile-link"
                     onClick={() => router.push(`/profile?userid=${session.user.id}&page=1`)}
+                    _hover={{
+                      bg: 'gray',
+                    }}
                   >
                     Profile
                   </MenuItem>
-                  <MenuItem onClick={() => router.push(`/friends`)}>Friends List</MenuItem>
-                  <MenuItem onClick={() => router.push(`/addfriend`)}>Add Friends</MenuItem>
-                  <MenuItem onClick={handleSignOut}>Sign Out</MenuItem>
+                  <MenuItem
+                    onClick={() => router.push(`/friends`)}
+                    _hover={{
+                      bg: 'gray',
+                    }}
+                  >
+                    Friends List
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => router.push(`/addfriend`)}
+                    _hover={{
+                      bg: 'gray',
+                    }}
+                  >
+                    Add Friends
+                  </MenuItem>
+                  <MenuItem
+                    onClick={handleSignOut}
+                    _hover={{
+                      bg: '#ff0038 ',
+                    }}
+                  >
+                    Sign Out
+                  </MenuItem>
                 </MenuList>
               </Menu>
             </>

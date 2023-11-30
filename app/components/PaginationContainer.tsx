@@ -40,7 +40,7 @@ const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
     if (newPage >= 1 && newPage <= totalPageCount && !pathname.includes('/profile')) {
       router.replace(`${pathname}?page=${newPage}`, { scroll: false });
     } else if (newPage >= 1 && newPage <= totalPageCount) {
-      router.replace(`${pathname}?userid=${userId}&page=${newPage}`, { scroll: false });
+      router.replace(`${pathname}?userid=${userId}&page=${newPage}`);
     }
   };
 
@@ -57,7 +57,6 @@ const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
       </Box>
     );
   }
-
   return (
     <Flex
       as="nav"

@@ -12,15 +12,11 @@ const SearchBoxAndFriendsListSkeleton = () => {
           boxShadow="sm"
           minW={{ sm: 380, md: 600, lg: 800, xl: 1000 }}
           maxW={{ base: 300, sm: 'initial' }}
+          mb={10}
+          mt={5}
         >
           <HStack justifyContent="space-between" alignItems="center">
-            <Skeleton
-              startColor="gray.100"
-              endColor="gray.200"
-              height="20px"
-              width="75%"
-              borderRadius="md"
-            />
+            <Skeleton height="20px" width="75%" borderRadius="md" />
           </HStack>
         </Box>
 
@@ -39,38 +35,14 @@ const SearchBoxAndFriendsListSkeleton = () => {
                 maxW={{ base: 300, sm: 'initial' }}
               >
                 <HStack justifyContent="space-between" alignItems="center">
-                  <Skeleton
-                    startColor="gray.100"
-                    endColor="gray.200"
-                    height="50px"
-                    width="50px"
-                    borderRadius="full"
-                  />
+                  <Skeleton height="50px" width="50px" borderRadius="full" />
                   <Box flex="1" ml={3}>
-                    <Skeleton startColor="gray.100" endColor="gray.200" height="20px" width="75%" />
-                    <Skeleton
-                      startColor="gray.100"
-                      endColor="gray.200"
-                      height="15px"
-                      width="50%"
-                      mt={2}
-                    />
+                    <Skeleton height="20px" width="75%" />
+                    <Skeleton height="15px" width="50%" mt={2} />
                   </Box>
                   <HStack spacing={4}>
-                    <Skeleton
-                      startColor="gray.100"
-                      endColor="gray.200"
-                      height="20px"
-                      width="20px"
-                      borderRadius="md"
-                    />
-                    <Skeleton
-                      startColor="gray.100"
-                      endColor="gray.200"
-                      height="20px"
-                      width="20px"
-                      borderRadius="md"
-                    />
+                    <Skeleton height="20px" width="20px" borderRadius="md" />
+                    <Skeleton height="20px" width="20px" borderRadius="md" />
                   </HStack>
                 </HStack>
               </ListItem>

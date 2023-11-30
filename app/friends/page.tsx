@@ -7,6 +7,7 @@ export default async function Page() {
   try {
     const friendUsers = (await getFriends()) as Friend[];
     if (friendUsers === undefined) return;
+
     return <FriendsList friends={friendUsers} />;
   } catch (error) {
     return <NoDataFound />;

@@ -116,12 +116,14 @@ export function Post({ post, index, userId }: PostProps) {
                       <Box position={'relative'} borderRadius="md" overflow="hidden">
                         <Image
                           src={`${post.imageUrl}`}
-                          width={700}
-                          height={0}
                           alt={`Post image ${post.id}`}
                           quality={100}
                           placeholder="empty"
                           priority
+                          width="0"
+                          height="0"
+                          sizes="100vw"
+                          style={{ width: '700px', height: 'auto' }}
                         />
                       </Box>
                     </HStack>

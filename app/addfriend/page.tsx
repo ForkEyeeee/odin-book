@@ -16,6 +16,8 @@ export default async function Page({
     const query = searchParams?.query || '';
     const filteredUsers = (await searchUsers(query)) as User[];
     const userId = await getUserId();
+    // await new Promise(resolve => setTimeout(resolve, 20000));
+
     return <SearchBox filteredUsers={filteredUsers} userId={userId} />;
   } catch (error) {
     return <NoDataFound />;

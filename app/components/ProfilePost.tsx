@@ -35,10 +35,11 @@ export default function ProfilePosts({ posts }: ProfilePostsProps) {
                   <Image
                     src={post.imageUrl}
                     alt={`Post image ${post.id}`}
-                    layout="responsive"
-                    width={0}
+                    width="0"
+                    height="0"
+                    sizes="100vw"
+                    style={{ width: '700px', height: 'auto' }}
                     quality={100}
-                    height={0}
                     placeholder="empty"
                     priority
                   />
