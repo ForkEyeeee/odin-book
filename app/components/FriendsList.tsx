@@ -12,7 +12,6 @@ import {
   IconButton,
   Flex,
   Center,
-  LinkBox,
 } from '@chakra-ui/react';
 import { AddIcon, CheckIcon, CloseIcon, DeleteIcon } from '@chakra-ui/icons';
 import { changeStatus } from '../lib/actions';
