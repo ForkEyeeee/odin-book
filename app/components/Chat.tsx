@@ -135,6 +135,7 @@ export default function Chat({
                 <IconButton
                   aria-label="send-message"
                   type="submit"
+                  id="chat-submit-btn"
                   onClick={() => {
                     toast({
                       position: 'top',
@@ -161,6 +162,7 @@ export default function Chat({
                 bg={'whitesmoke'}
                 color={'black'}
                 size={'md'}
+                id="chat-input"
               />
               <input type="hidden" name="receiverId" value={receiverId} />
             </InputGroup>

@@ -74,7 +74,7 @@ export default function NavBar() {
             <>
               <Box position="relative">
                 <CreatePostModal />
-                <IconButton aria-label="Unread messages" variant="ghost">
+                <IconButton aria-label="Unread messages" variant="ghost" id="sidebar-btn">
                   <SideBar />
                 </IconButton>
                 {unreadMessageCount > 0 && (

@@ -72,6 +72,7 @@ const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
         borderBottomLeftRadius="md"
         onClick={() => navigateToPage(currentPage - 1)}
         isDisabled={currentPage === 1}
+        id="prev-btn"
       >
         {'<'}
       </PaginationButton>
@@ -81,6 +82,7 @@ const Pagination = ({ totalPageCount }: { totalPageCount: number }) => {
         borderBottomRightRadius="md"
         onClick={() => navigateToPage(currentPage + 1)}
         isDisabled={currentPage === totalPageCount}
+        id="next-btn"
       >
         {'>'}
       </PaginationButton>

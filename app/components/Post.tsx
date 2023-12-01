@@ -58,7 +58,7 @@ export function Post({ post, index, userId }: PostProps) {
       opacity: 1,
     },
   };
-
+  console.log(post);
   return (
     <Suspense fallback={<PostSkeleton />}>
       <motion.div
@@ -111,20 +111,20 @@ export function Post({ post, index, userId }: PostProps) {
                       key={post.id}
                       justifyContent={'space-between'}
                     >
-                      <Box position={'relative'} borderRadius="md" overflow="hidden">
-                        <Image
-                          src={`${post.imageUrl}`}
-                          alt={`Post image ${post.id}`}
-                          quality={100}
-                          placeholder={post.blurURL !== null ? 'blur' : 'empty'}
-                          blurDataURL={post.blurURL !== null ? post.blurURL : ''}
-                          priority
-                          width="0"
-                          height="0"
-                          sizes="100vw"
-                          style={{ width: '700px', height: 'auto' }}
-                        />
-                      </Box>
+                      {/* <Box position={'relative'} borderRadius="md" overflow="hidden"> */}
+                      <Image
+                        src={`${post.imageUrl}`}
+                        alt={`Post image ${post.id}`}
+                        quality={100}
+                        placeholder={post.blurURL !== null ? 'blur' : 'empty'}
+                        blurDataURL={post.blurURL !== null ? post.blurURL : ''}
+                        priority
+                        width={700}
+                        height={500}
+                        sizes="100vw"
+                      />
+                      {/* </Box> */}
+                      This modificatio
                     </HStack>
                   )}
                 </Box>

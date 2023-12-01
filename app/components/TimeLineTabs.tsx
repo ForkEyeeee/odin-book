@@ -36,6 +36,7 @@ export function TimeLineTabs() {
             href={'/for-you?page=1'}
             fontSize={{ base: 'sm:', md: 'xl' }}
             sx={pathname === '/for-you' ? activeTabStyle : tabStyle}
+            id="for-you-tab"
           >
             For You
           </Link>
@@ -43,6 +44,7 @@ export function TimeLineTabs() {
             href={'/discover?page=1'}
             fontSize={{ base: 'sm:', md: 'xl' }}
             sx={pathname === '/discover' ? activeTabStyle : tabStyle}
+            id="discover-tab"
           >
             Discover
           </Link>

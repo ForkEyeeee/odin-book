@@ -71,6 +71,7 @@ const Message = ({
             boxShadow="md"
             borderRadius="lg"
             overflow={'hidden'}
+            className={justifyContent === 'flex-start' ? 'receiver-card' : 'sender-card'}
           >
             {' '}
             <CardBody
@@ -86,7 +87,7 @@ const Message = ({
                   <Box>
                     <Input
                       defaultValue={content}
-                      id="message"
+                      id="card-input"
                       name="message"
                       required
                       size="md"
@@ -108,7 +109,12 @@ const Message = ({
                       </Button>
                       <input type="hidden" name="receiverId" value={receiverId} />
                       <input type="hidden" name="messageId" value={messageId} />
-                      <Button type="submit" colorScheme="green" variant={'ghost'}>
+                      <Button
+                        type="submit"
+                        colorScheme="green"
+                        variant={'ghost'}
+                        id="card-save-btn"
+                      >
                         Save
                       </Button>
                     </Flex>
@@ -124,6 +130,7 @@ const Message = ({
           <Flex justifyContent={popOverPlacement === 'left' ? 'flex-end' : 'flex-start'}>
             <HStack spacing={5} p={1}>
               <IconButton
+                id="edit-btn"
                 aria-label="edit-button"
                 onClick={() => setIsEdit(true)}
                 icon={<EditIcon />}
@@ -131,6 +138,7 @@ const Message = ({
               />
               <IconButton
                 aria-label="delete button"
+                id="delete-btn"
                 icon={<DeleteIcon color={'red'} />}
                 variant="ghost"
                 onClick={() => {

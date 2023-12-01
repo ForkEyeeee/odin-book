@@ -10,7 +10,12 @@ const nextConfig = {
     ];
   },
   images: {
-    domains: ['res.cloudinary.com', 'cdn.discordapp.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
 };
 

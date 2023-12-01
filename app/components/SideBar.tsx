@@ -53,10 +53,6 @@ const SideBar = () => {
     fetchFriends();
   }, [isOpen]);
 
-  useEffect(() => {
-    onClose();
-  }, [pathname, searchParams]);
-
   return (
     <>
       <ChatIcon onClick={onOpen} aria-label="open menu" />
@@ -120,6 +116,8 @@ const SideBar = () => {
                               colorScheme="whatsapp"
                               variant={'solid'}
                               as={Button}
+                              id="message-btn"
+                              onClick={onClose}
                             >
                               Message
                             </Button>

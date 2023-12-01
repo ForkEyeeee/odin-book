@@ -45,8 +45,8 @@ const FilteredFriendsList = ({
       });
     } else {
       toast({
-        title: 'Added successfully.',
-        description: 'Friend has been sent',
+        title: 'Sent successfully.',
+        description: 'Friend Request has been sent sucessfully',
         status: 'success',
         duration: 9000,
         isClosable: true,

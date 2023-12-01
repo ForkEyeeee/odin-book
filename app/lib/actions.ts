@@ -404,54 +404,49 @@ async function getBase64(imageUrl: string) {
 
 export async function createPost(prevState: any, formData: FormData) {
   try {
-    console.log('here');
-
     const userId = await getUserId();
 
     const postSchema = z.object({
-      content: z.string(),
-      createdAt: z.date(),
+      post: z.string(),
       imageUrl: z.string().optional(),
+      blurURL: z.string().optional(),
+      createdAt: z.string(),
     });
 
+    const imageUrl = formData.get('image-url') as string;
+    let blurURL = '';
+
+    if (imageUrl) {
+      const base64Url = await getBase64(imageUrl);
+      blurURL = base64Url ?? '';
+    }
+
     const form = {
-      content: formData.get('post'),
-      authorId: userId,
-      createdAt: new Date(),
-      imageUrl: formData.get('image-url'),
+      post: formData.get('post'),
+      imageUrl,
+      blurURL,
+      createdAt: new Date().toISOString(),
     };
 
     const parsedForm = postSchema.parse(form);
 
-    const postData = {
-      content: parsedForm.content,
-      authorId: userId,
-      createdAt: parsedForm.createdAt,
-      imageUrl: form.imageUrl === '' ? null : parsedForm.imageUrl,
-    };
-
     const createdPost = await prisma.post.create({
-      data: postData,
+      data: {
+        content: parsedForm.post,
+        authorId: userId,
+        createdAt: parsedForm.createdAt,
+        imageUrl: parsedForm.imageUrl,
+        blurURL: parsedForm.blurURL,
+      },
     });
-    if (parsedForm.imageUrl !== undefined) {
-      const blur = await getBase64(parsedForm.imageUrl);
-      const savedBlur = prisma.post.update({
-        where: {
-          id: createdPost.id,
-        },
-        data: {
-          blurURL: blur,
-        },
-      });
-    }
 
     revalidatePath('/');
     return { ...createdPost, success: true };
   } catch (error) {
+    console.error(error);
     return { message: `Unable to create Post` };
   }
 }
-
 export async function likePost(postId: number) {
   try {
     const userId = await getUserId();

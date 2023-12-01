@@ -9,7 +9,7 @@ describe('Send friend request', () => {
   it('should navigate to add friends list.', () => {
     cy.get('#add-friends-btn').click({ force: true });
     cy.location().should(loc => {
-      expect(loc.pathname).to.equal('/friends/addfriend');
+      expect(loc.pathname).to.equal('/addfriend');
     });
     it('should add a friend.', () => {
       cy.get('#add-friend-btn').click({ force: true });
