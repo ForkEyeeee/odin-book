@@ -10,6 +10,7 @@ import axios from 'axios';
 import crypto from 'crypto';
 import { extractPublicId } from 'cloudinary-build-url';
 import { getPlaiceholder } from 'plaiceholder';
+import { format, formatDistanceToNowStrict } from 'date-fns';
 
 export const getUserId = async () => {
   try {
@@ -908,4 +909,16 @@ export async function setReadMessages(receiverId: number) {
   } catch (error) {
     return { message: 'Unable to set messages as read' };
   }
+}
+
+export async function getPostTime(time: Date) {
+  const postDate = new Date(time);
+  const now = new Date();
+  const oneDayInMs = 24 * 60 * 60 * 1000;
+  const timeDifference = now.getTime() - postDate.getTime();
+  const displayDate =
+    timeDifference > oneDayInMs
+      ? format(postDate, "MMM d, yyyy, h:mm:ss a 'UTC'")
+      : formatDistanceToNowStrict(postDate, { addSuffix: true });
+  return displayDate;
 }

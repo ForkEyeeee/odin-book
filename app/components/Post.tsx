@@ -27,6 +27,7 @@ import { Suspense } from 'react';
 import PostSkeleton from '../for-you/loading';
 import { motion } from 'framer-motion';
 import getPostTime from './util/getPostTime';
+// import { getPostTime } from '../lib/actions';
 
 const initialState = { message: null, errors: {} };
 
@@ -34,7 +35,6 @@ export function Post({ post, index, userId }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
   const [inputText, setInputText] = useState('');
   const [isHovering, setIsHovering] = useState(false);
-  const [time, setTime] = useState('');
   const toast = useToast();
 
   useEffect(() => {
@@ -44,29 +44,20 @@ export function Post({ post, index, userId }: PostProps) {
   const isLiked = post.likes.find(element => element.authorId === userId);
   const isAuthor = post.authorId === userId;
 
-  useEffect(() => {
-    setTime(getPostTime(post.createdAt));
-  }, []);
-
-  const enterVariants = {
-    offscreen: {
-      x: -150,
-      opacity: 0,
-    },
-    onscreen: {
-      x: 0,
-      opacity: 1,
-    },
+  const variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -20 },
   };
-  console.log(post);
+
   return (
     <Suspense fallback={<PostSkeleton />}>
       <motion.div
-        initial={'offscreen'}
-        animate={'onscreen'}
-        exit="offscreen"
-        variants={enterVariants}
-        transition={{ type: 'spring', stiffness: 100 }}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        variants={variants}
+        transition={{ duration: 0.5 }}
       >
         <Center>
           <Box
@@ -94,7 +85,7 @@ export function Post({ post, index, userId }: PostProps) {
                       <Text color="gray.500" maxW={{ base: 150, sm: '100%' }}>
                         {post.author.email}
                       </Text>
-                      <Text color="gray.500">{time}</Text>
+                      <Text color="gray.500">{post.postTime}</Text>
                     </VStack>
                   </Flex>
                   <Text
@@ -111,20 +102,19 @@ export function Post({ post, index, userId }: PostProps) {
                       key={post.id}
                       justifyContent={'space-between'}
                     >
-                      {/* <Box position={'relative'} borderRadius="md" overflow="hidden"> */}
-                      <Image
-                        src={`${post.imageUrl}`}
-                        alt={`Post image ${post.id}`}
-                        quality={100}
-                        placeholder={post.blurURL !== null ? 'blur' : 'empty'}
-                        blurDataURL={post.blurURL !== null ? post.blurURL : ''}
-                        priority
-                        width={700}
-                        height={500}
-                        sizes="100vw"
-                      />
-                      {/* </Box> */}
-                      This modificatio
+                      <Box position={'relative'} borderRadius="md" overflow="hidden">
+                        <Image
+                          src={`${post.imageUrl}`}
+                          alt={`Post image ${post.id}`}
+                          height={500}
+                          width={700}
+                          sizes="100vw"
+                          quality={100}
+                          placeholder={post.blurURL !== null ? 'blur' : 'empty'}
+                          blurDataURL={post.blurURL !== null ? post.blurURL : ''}
+                          priority
+                        />
+                      </Box>
                     </HStack>
                   )}
                 </Box>

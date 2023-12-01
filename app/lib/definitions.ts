@@ -41,6 +41,7 @@ export interface Post {
   imageUrl: string | null;
   authorId: number | null;
   createdAt: Date;
+  postTime?: string;
   author?: Author;
   success?: boolean;
 }
@@ -52,6 +53,7 @@ export interface PostWithAuthor {
   blurURL: string | null;
   authorId: number;
   createdAt: Date;
+  postTime?: string;
   author: Author;
   likes: {
     id: number;

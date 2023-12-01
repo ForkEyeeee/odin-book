@@ -1,11 +1,11 @@
 import TimeLineTabs from '../components/TimeLineTabs';
-import { getPosts } from '@/app/lib/actions';
+import { getPosts, getPostTime } from '@/app/lib/actions';
 import NoDataFound from '../components/NoDataFound';
 import PaginationContainer from '../components/PaginationContainer';
 import NoTimeLine from '../components/NoTimeLine';
 import PostList from '../components/PostList';
 import { Box } from '@chakra-ui/react';
-import { setReadMessages } from '@/app/lib/actions';
+import { Post } from '../lib/definitions';
 
 export default async function Page({
   searchParams,
@@ -19,6 +19,17 @@ export default async function Page({
     const page = Number(searchParams?.page) || 1;
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
     if (userId === undefined) throw new Error();
+
+    await Promise.all(
+      timelinePosts.map(async (post: Post) => {
+        try {
+          const test = await getPostTime(post.createdAt);
+          post.postTime = test;
+        } catch (error) {
+          return { message: 'Error calculating post time' };
+        }
+      })
+    );
 
     return (
       <Box>
