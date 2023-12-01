@@ -17,9 +17,7 @@ export default async function Page({
     const { messages, recipient, sender, profilePicture } = (await getMessages(receiverId)) as any;
     const { unReadMessages } = await getUnreadMessagesCount(receiverId);
     if (unReadMessages === undefined || unReadMessages === null) return <NoDataFound />;
-
     await setReadMessages(receiverId);
-
     return (
       <Suspense fallback={<Loading />}>
         <Chat

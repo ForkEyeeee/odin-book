@@ -64,6 +64,7 @@ const CreatePostModal = () => {
       const result = await handleCreatePost(postText, file);
       if (!result.success) {
         setError(result.message);
+        setIsLoading(false);
         return;
       }
       setPost(result);
@@ -101,14 +102,14 @@ const CreatePostModal = () => {
           <ModalCloseButton />
           <ModalBody>
             <form onSubmit={onSubmit}>
-              <FormControl mb={4}>
+              <FormControl mb={4} isRequired>
+                <FormLabel>Content</FormLabel>
                 <Textarea
                   value={postText}
                   onChange={handlePostTextChange}
                   id="post"
                   maxLength={200}
                   placeholder="What's on your mind?"
-                  required
                 />
               </FormControl>
               <FormControl mb={4}>

@@ -107,7 +107,7 @@ export async function getProfile(userId: number) {
   }
 }
 
-export async function getFriends() {
+export async function getFriendsSideBar() {
   const userId = await getUserId();
 
   const userFriends = await prisma.friend.findMany({
@@ -142,7 +142,48 @@ export async function getFriends() {
     const userFriend = userFriends.find(
       friend => friend.user1Id === friendId || friend.user2Id === friendId
     );
-    revalidatePath('/for-you');
+    revalidatePath('/');
+    return friendData ? { ...userFriend, ...friendData } : userFriend;
+  });
+  return combinedFriendsData;
+}
+
+export async function getFriends() {
+  const userId = await getUserId();
+
+  const userFriends = await prisma.friend.findMany({
+    where: {
+      OR: [{ user1Id: userId }, { user2Id: userId }],
+    },
+    orderBy: {
+      status: 'desc',
+    },
+  });
+  const friendIds = userFriends.flatMap(friend =>
+    friend.user1Id === userId ? [friend.user2Id] : [friend.user1Id]
+  );
+
+  const uniqueFriendIds = Array.from(new Set(friendIds));
+
+  const friends = await prisma.user.findMany({
+    where: {
+      id: {
+        in: uniqueFriendIds,
+      },
+    },
+    include: {
+      sentMessages: true,
+      receivedMessages: true,
+    },
+  });
+
+  const combinedFriendsData = uniqueFriendIds.map(friendId => {
+    const friendData = friends.find(friend => friend.id === friendId);
+    const userFriend = userFriends.find(
+      friend => friend.user1Id === friendId || friend.user2Id === friendId
+    );
+    revalidatePath('/');
+
     return friendData ? { ...userFriend, ...friendData } : userFriend;
   });
   return combinedFriendsData;
@@ -851,8 +892,11 @@ export async function getUnreadMessagesCount(receiverId: number | null) {
     return { message: 'Unable to fetch unread message count' };
   }
 }
+
 export async function setReadMessages(receiverId: number) {
   try {
+    await new Promise(resolve => setTimeout(resolve, 5000));
+
     const userId = await getUserId();
 
     await prisma.message.updateMany({
@@ -865,6 +909,7 @@ export async function setReadMessages(receiverId: number) {
         read: true,
       },
     });
+    revalidatePath('/');
   } catch (error) {
     return { message: 'Unable to set messages as read' };
   }

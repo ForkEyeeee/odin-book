@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     });
     if (post === null) throw new Error('Unable to find Post');
     return (
-      <Box mb={10}>
+      <Box mb={10} h={'100%'}>
         <Post post={post} userId={userId} index={1} />
       </Box>
     );

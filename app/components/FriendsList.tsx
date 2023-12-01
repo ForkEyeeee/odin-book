@@ -39,7 +39,7 @@ export default function FriendsList({ friends }: FriendsListProps) {
 
   return (
     <Suspense fallback={<FriendsListSkeleton />}>
-      <Center mt={0} mb={10} alignItems={'flex-start'}>
+      <Center mt={0} mb={10} alignItems={'flex-start'} h="100vh">
         <Flex flexDir={{ base: 'column' }} alignItems={'flex-end'}>
           <Flex justifyContent="flex-end" mt={4} mb={3}>
             <Link href={'/addfriend'}>

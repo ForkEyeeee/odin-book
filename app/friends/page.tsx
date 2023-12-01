@@ -6,7 +6,7 @@ import { Friend } from '../lib/definitions';
 export default async function Page() {
   try {
     const friendUsers = (await getFriends()) as Friend[];
-    if (friendUsers === undefined) return;
+    if (friendUsers === undefined) return <NoDataFound />;
 
     return <FriendsList friends={friendUsers} />;
   } catch (error) {

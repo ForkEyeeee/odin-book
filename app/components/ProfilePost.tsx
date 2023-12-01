@@ -1,8 +1,8 @@
 import { Box, VStack, Text, LinkBox, LinkOverlay, Heading } from '@chakra-ui/react';
 import Image from 'next/image';
 import { Post, PostProps } from '../lib/definitions';
-import { format } from 'date-fns';
 import Link from 'next/link';
+import getPostTime from './util/getPostTime';
 
 interface ProfilePostsProps {
   posts: Post[] | undefined;
@@ -50,7 +50,7 @@ export default function ProfilePosts({ posts }: ProfilePostsProps) {
                   {post.content}
                 </Text>
                 <Text color="gray.400" fontSize="sm">
-                  {format(new Date(post.createdAt), 'PPpp')}
+                  {getPostTime(post.createdAt)}
                 </Text>
               </VStack>
               <LinkOverlay

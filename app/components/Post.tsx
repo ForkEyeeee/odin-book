@@ -26,7 +26,7 @@ import { useState, useEffect } from 'react';
 import { Suspense } from 'react';
 import PostSkeleton from '../for-you/loading';
 import { motion } from 'framer-motion';
-import { usePathname, useSearchParams } from 'next/navigation';
+import getPostTime from './util/getPostTime';
 
 const initialState = { message: null, errors: {} };
 
@@ -45,15 +45,7 @@ export function Post({ post, index, userId }: PostProps) {
   const isAuthor = post.authorId === userId;
 
   useEffect(() => {
-    const postDate = new Date(post.createdAt);
-    const now = new Date();
-    const oneDayInMs = 24 * 60 * 60 * 1000;
-    const timeDifference = now.getTime() - postDate.getTime();
-    const displayDate =
-      timeDifference > oneDayInMs
-        ? format(postDate, "MMM d, yyyy, h:mm:ss a 'UTC'")
-        : formatDistanceToNowStrict(postDate, { addSuffix: true });
-    setTime(displayDate);
+    setTime(getPostTime(post.createdAt));
   }, []);
 
   const enterVariants = {

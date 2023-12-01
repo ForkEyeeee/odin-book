@@ -23,6 +23,7 @@ import { RiFlashlightFill } from 'react-icons/ri';
 import CreatePostModal from './CreatePostModal';
 import SideBar from './SideBar';
 import { getUnreadMessagesCount } from '../lib/actions';
+import Link from 'next/link';
 
 export default function NavBar() {
   const { data: session } = useSession();
@@ -60,13 +61,9 @@ export default function NavBar() {
       zIndex={1}
     >
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
-        <Icon
-          as={RiFlashlightFill}
-          cursor={'pointer'}
-          h={8}
-          w={8}
-          onClick={() => router.push('/')}
-        />
+        <Link href={'/'}>
+          <Icon as={RiFlashlightFill} cursor={'pointer'} h={8} w={8} />
+        </Link>
         <Center flex="1" display={{ base: 'none' }}>
           <Heading as="h3" size={{ base: 'xs', sm: 'lg' }}>
             Social Media App
@@ -111,41 +108,38 @@ export default function NavBar() {
                   role="profile-button"
                 />
                 <MenuList>
-                  <MenuItem
-                    id="profile-link"
-                    onClick={() => router.push(`/profile?userid=${session.user.id}&page=1`)}
-                    _hover={{
-                      bg: 'gray',
-                      transition: '.5s',
-                    }}
-                  >
-                    Profile
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => router.push(`/friends`)}
-                    _hover={{
-                      bg: 'gray',
-                      transition: '.5s',
-                    }}
-                  >
-                    Friends List
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => router.push(`/addfriend`)}
-                    _hover={{
-                      bg: 'gray',
-                      transition: '.5s',
-                    }}
-                  >
-                    Add Friends
-                  </MenuItem>
-                  <MenuItem
-                    onClick={handleSignOut}
-                    _hover={{
-                      bg: '#ff0038 ',
-                      transition: '.5s',
-                    }}
-                  >
+                  <Link href={`/profile?userid=${session.user.id}&page=1`} passHref>
+                    <MenuItem
+                      id="profile-link"
+                      _hover={{
+                        bg: '#71767C',
+                        transition: '0.3s',
+                      }}
+                    >
+                      Profile
+                    </MenuItem>
+                  </Link>
+                  <Link href="/friends" passHref>
+                    <MenuItem
+                      _hover={{
+                        bg: '#71767C',
+                        transition: '0.3s',
+                      }}
+                    >
+                      Friends List
+                    </MenuItem>
+                  </Link>
+                  <Link href="/addfriend" passHref>
+                    <MenuItem
+                      _hover={{
+                        bg: '#71767C',
+                        transition: '0.3s',
+                      }}
+                    >
+                      Add Friends
+                    </MenuItem>
+                  </Link>
+                  <MenuItem onClick={handleSignOut} _hover={{ bg: '#ff0038 ', transition: '.5s' }}>
                     Sign Out
                   </MenuItem>
                 </MenuList>

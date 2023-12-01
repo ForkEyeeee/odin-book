@@ -10,6 +10,7 @@ import {
   HStack,
   IconButton,
   Avatar,
+  useToast,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import Message from './Message';
@@ -45,20 +46,36 @@ export default function Chat({
   profilePicture,
   unReadMessages,
 }: ChatProps) {
-  const initialState = { message: null, errors: {} };
+  const initialState = {
+    id: null,
+    content: '',
+    senderId: null,
+    receiverId: null,
+    createdAt: '',
+    read: undefined,
+  };
   const [state, formAction] = useFormState(createMessage, initialState);
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
+  const unReadMessagesRef = useRef<MessageType>();
+
+  const toast = useToast();
 
   useEffect(() => {
-    if (state !== null) {
-      setInputText('');
-    }
+    if (state.id !== null) setInputText('');
   }, [state]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // useEffect(() => {
+  //   const setData = async () => {
+  //     await new Promise(resolve => setTimeout(resolve, 5000));
+  //     await setReadMessages(receiverId);
+  //   };
+  //   setData();
+  // }, []);
 
   const scrollToBottom = () => {
     const message = messagesEndRef.current;
@@ -90,23 +107,20 @@ export default function Chat({
             const isColor =
               unReadMessages &&
               unReadMessages.find(unReadMessage => unReadMessage.id === message.id) !== undefined
-                ? 'red.300'
+                ? '#ff6b6b'
                 : backGround;
             return (
               <>
                 <Message
                   key={message.id}
                   justifyContent={message.receiverId !== receiverId ? 'flex-start' : 'flex-end'}
-                  backGround={backGround}
                   color={message.receiverId === receiverId ? 'white' : 'black'}
                   popOverPlacement={message.receiverId === receiverId ? 'left' : 'right'}
                   content={message.content}
                   messageId={message.id}
                   receiverId={message.receiverId}
-                  senderId={message.senderId}
-                  messageStatus={message.read}
-                  unReadMessages={unReadMessages}
                   isColor={isColor}
+                  isRead={message.read}
                 />
                 <Box ref={messagesEndRef} />
               </>
@@ -118,7 +132,20 @@ export default function Chat({
           <FormControl>
             <InputGroup>
               <InputRightElement>
-                <IconButton aria-label="send-message" type="submit">
+                <IconButton
+                  aria-label="send-message"
+                  type="submit"
+                  onClick={() => {
+                    toast({
+                      position: 'top',
+                      title: 'Message sent.',
+                      description: 'Message has been sent successfully',
+                      status: 'success',
+                      duration: 2000,
+                      isClosable: true,
+                    });
+                  }}
+                >
                   <BsSendFill color="black" />
                 </IconButton>
               </InputRightElement>

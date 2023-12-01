@@ -5,6 +5,7 @@ import PaginationContainer from '../components/PaginationContainer';
 import NoTimeLine from '../components/NoTimeLine';
 import PostList from '../components/PostList';
 import { Box } from '@chakra-ui/react';
+import { setReadMessages } from '@/app/lib/actions';
 
 export default async function Page({
   searchParams,
@@ -18,6 +19,7 @@ export default async function Page({
     const page = Number(searchParams?.page) || 1;
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
     if (userId === undefined) throw new Error();
+
     return (
       <Box>
         <TimeLineTabs />

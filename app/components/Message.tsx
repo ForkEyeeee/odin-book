@@ -12,6 +12,7 @@ import {
   Button,
   IconButton,
   Box,
+  useToast,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, CloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
@@ -22,7 +23,6 @@ import { Message as MessageProps } from '../lib/definitions';
 
 interface Props {
   justifyContent: string;
-  backGround: string;
   color: string;
   content: string;
   popOverPlacement:
@@ -36,43 +36,30 @@ interface Props {
     | 'bottom-end';
   messageId: number;
   receiverId: number;
-  senderId: number;
-  messageStatus: boolean;
-  unReadMessages: MessageProps[];
   isColor: string;
+  isRead: boolean;
 }
 
 const Message = ({
   justifyContent,
-  backGround,
   color,
   content,
   popOverPlacement,
   messageId,
   receiverId,
-  senderId,
-  messageStatus,
-  unReadMessages,
   isColor,
+  isRead,
 }: Props) => {
   const initialState = { message: null, errors: {} };
   const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
   const searchParams = useSearchParams();
+  const toast = useToast();
   const isAuthor = Number(searchParams.get('userId')) !== receiverId;
 
   useEffect(() => {
     if (state !== null) setIsEdit(false);
   }, [state]);
-
-  const variants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 },
-  };
-  if (isColor === 'red.300') {
-    console.log(isColor);
-  }
 
   return (
     <Popover placement={popOverPlacement}>
@@ -147,7 +134,17 @@ const Message = ({
                 aria-label="delete button"
                 icon={<DeleteIcon color={'red'} />}
                 variant="ghost"
-                onClick={() => deleteMessage(messageId, receiverId)}
+                onClick={() => {
+                  toast({
+                    position: 'top',
+                    title: 'Message deleted.',
+                    description: 'Message has been deleted successfully',
+                    status: 'success',
+                    duration: 2000,
+                    isClosable: true,
+                  });
+                  deleteMessage(messageId, receiverId);
+                }}
               />
             </HStack>
           </Flex>

@@ -18,10 +18,11 @@ import {
 import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
-import { getFriends } from '../lib/actions';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { getFriendsSideBar } from '../lib/actions';
 import { useSession } from 'next-auth/react';
 import { Friend } from '../lib/definitions';
+import { usePathname } from 'next/navigation';
 
 const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -29,8 +30,8 @@ const SideBar = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user.id;
-  const location = usePathname();
-
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const countUnreadMessages = (friend: Friend) => {
     const sentMessages = friend.sentMessages || [];
     const receivedMessages = friend.receivedMessages || [];
@@ -40,7 +41,7 @@ const SideBar = () => {
   useEffect(() => {
     const fetchFriends = async () => {
       try {
-        let fetchedFriends = (await getFriends()) as Friend[];
+        let fetchedFriends = (await getFriendsSideBar()) as Friend[];
         fetchedFriends = fetchedFriends.sort(
           (a, b) => countUnreadMessages(b) - countUnreadMessages(a)
         );
@@ -50,7 +51,11 @@ const SideBar = () => {
       }
     };
     fetchFriends();
-  }, [onOpen]);
+  }, [isOpen]);
+
+  useEffect(() => {
+    onClose();
+  }, [pathname, searchParams]);
 
   return (
     <>
@@ -109,17 +114,16 @@ const SideBar = () => {
                           </Badge>
                         </Box>
                         <Flex justifyContent={'flex-end'}>
-                          <Button
-                            color={'white'}
-                            colorScheme="whatsapp"
-                            variant={'solid'}
-                            onClick={() => {
-                              router.push(`/messages?userId=${userId}&receiverId=${friend.id}`);
-                              onClose();
-                            }}
-                          >
-                            Message
-                          </Button>
+                          <Link href={`/messages?userId=${userId}&receiverId=${friend.id}`}>
+                            <Button
+                              color={'white'}
+                              colorScheme="whatsapp"
+                              variant={'solid'}
+                              as={Button}
+                            >
+                              Message
+                            </Button>
+                          </Link>
                         </Flex>
                       </Flex>
                     </Box>
