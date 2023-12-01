@@ -1,5 +1,5 @@
 'use client';
-import { Box, Flex, Link } from '@chakra-ui/react';
+import { Flex, Link } from '@chakra-ui/react';
 import { usePathname } from 'next/navigation';
 import { Suspense } from 'react';
 
@@ -33,7 +33,7 @@ export function TimeLineTabs() {
           mb={{ base: 0 }}
         >
           <Link
-            href={'/for-you?page=1'}
+            href={'/for-you'}
             fontSize={{ base: 'sm:', md: 'xl' }}
             sx={pathname === '/for-you' ? activeTabStyle : tabStyle}
             id="for-you-tab"
@@ -41,7 +41,7 @@ export function TimeLineTabs() {
             For You
           </Link>
           <Link
-            href={'/discover?page=1'}
+            href={'/discover'}
             fontSize={{ base: 'sm:', md: 'xl' }}
             sx={pathname === '/discover' ? activeTabStyle : tabStyle}
             id="discover-tab"

@@ -41,6 +41,7 @@ export interface Post {
   imageUrl: string | null;
   authorId: number | null;
   createdAt: Date;
+  blurURL: string | null;
   postTime?: string;
   author?: Author;
   success?: boolean;

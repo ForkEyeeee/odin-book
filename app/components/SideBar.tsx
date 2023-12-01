@@ -86,7 +86,7 @@ const SideBar = () => {
                     mb={5}
                     p={3}
                   >
-                    <Link href={`/profile?userid=${friend.id}&page=1`}>
+                    <Link href={`/profile?userid=${friend.id}`}>
                       <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
                     </Link>
                     <Box flex="1">
@@ -110,7 +110,16 @@ const SideBar = () => {
                           </Badge>
                         </Box>
                         <Flex justifyContent={'flex-end'}>
-                          <Link href={`/messages?userId=${userId}&receiverId=${friend.id}`}>
+                          <Link
+                            href={{
+                              pathname: '/messages',
+                              query: {
+                                userId: userId,
+                                receiverId: friend.id,
+                              },
+                            }}
+                            passHref
+                          >
                             <Button
                               color={'white'}
                               colorScheme="whatsapp"

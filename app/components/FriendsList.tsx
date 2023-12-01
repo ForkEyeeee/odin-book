@@ -71,7 +71,7 @@ export default function FriendsList({ friends }: FriendsListProps) {
                       maxW={{ base: 300, sm: 'initial' }}
                     >
                       <HStack justifyContent="space-between" alignItems="center">
-                        <Link href={`/profile?userid=${friend.id}&page=1`}>
+                        <Link href={`/profile?userid=${friend.id}`}>
                           <Avatar
                             name={friend.name}
                             size={{ base: 'md', md: 'lg' }}

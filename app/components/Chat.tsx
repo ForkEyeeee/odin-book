@@ -92,7 +92,14 @@ export default function Chat({
     >
       <Box p={{ xl: 5 }} bg="inherit">
         <HStack justifyContent={'flex-start'} p={2}>
-          <Link href={`/profile?userid=${receiverId}&page=1`}>
+          <Link
+            href={{
+              pathname: '/profile',
+              query: {
+                userid: receiverId,
+              },
+            }}
+          >
             <Avatar size={{ base: 'sm', md: 'md' }} name="John Doe" src={profilePicture} />
           </Link>
           <Heading size={{ base: 'sm' }} color={'white'} noOfLines={1}>

@@ -73,7 +73,7 @@ export function Post({ post, index, userId }: PostProps) {
               <Flex justifyContent={'space-between'}>
                 <Box ml={2}>
                   <Flex width="100%" gap={10} alignItems={'flex-start'}>
-                    <Link href={`/profile?userid=${post.authorId}&page=1`}>
+                    <Link href={`/profile?userid=${post.authorId}`}>
                       <Avatar
                         size={{ base: 'sm', sm: 'md' }}
                         name="John Doe"

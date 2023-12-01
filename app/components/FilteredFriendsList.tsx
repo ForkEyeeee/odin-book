@@ -84,7 +84,7 @@ const FilteredFriendsList = ({
                       borderColor="gray.200"
                     >
                       <HStack spacing={{ base: 2, sm: 4 }}>
-                        <Link href={`/profile?userid=${user.id}&page=1`}>
+                        <Link href={`/profile?userid=${user.id}`}>
                           <Avatar
                             size={{ base: 'md' }}
                             src={user.profilePicture as string}

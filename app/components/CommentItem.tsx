@@ -20,7 +20,7 @@ export default function CommentItem({ comment, post, userId }: CommentItemProps)
 
   return (
     <Flex align="start" mt={comment.id > 0 ? 6 : 0} width="100%">
-      <Link href={`/profile/${post.authorId}`}>
+      <Link href={`/profile?userid=${post.authorId}`}>
         <Avatar
           size="sm"
           cursor="pointer"

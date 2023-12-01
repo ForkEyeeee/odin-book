@@ -108,7 +108,7 @@ export default function NavBar() {
                   role="profile-button"
                 />
                 <MenuList>
-                  <Link href={`/profile?userid=${session.user.id}&page=1`} passHref>
+                  <Link href={`/profile?userid=${session.user.id}`} passHref>
                     <MenuItem
                       id="profile-link"
                       _hover={{
