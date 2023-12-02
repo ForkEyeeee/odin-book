@@ -29,7 +29,7 @@ async function main() {
     });
 
     const friend = faker.random.arrayElement(
-      (await prisma.user.findMany()).filter(u => u.id !== user.id)
+      (await prisma.user.findMany()).filter((u: any) => u.id !== user.id)
     );
     await prisma.friend.create({
       data: {
@@ -41,7 +41,7 @@ async function main() {
 
     for (let j = 0; j < 2; j++) {
       const receiver = faker.random.arrayElement(
-        (await prisma.user.findMany()).filter(u => u.id !== user.id)
+        (await prisma.user.findMany()).filter((u: any) => u.id !== user.id)
       );
       await prisma.message.create({
         data: {
