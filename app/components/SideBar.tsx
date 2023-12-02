@@ -27,7 +27,6 @@ import { Friend } from '../lib/definitions';
 const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [friends, setFriends] = useState<Friend[]>([]);
-  const router = useRouter();
   const pathname = usePathname();
   const { data: session } = useSession();
   const userId = session?.user.id;
