@@ -3,6 +3,7 @@ import Profile from '../components/Profile';
 import PaginationContainer from '../components/PaginationContainer';
 import NoDataFound from '../components/NoDataFound';
 import { Profile as UserProfile } from '../lib/definitions';
+import { Box } from '@chakra-ui/react';
 
 export default async function Page({
   searchParams,
@@ -34,10 +35,10 @@ export default async function Page({
     const isAuthor = profileUserId === userId;
 
     return (
-      <>
+      <Box minH={'100vh'}>
         <Profile profile={profileData as UserProfile} posts={userPosts} isAuthor={isAuthor} />
         <PaginationContainer page={page} timelinePostsCount={userPostsData.postsCount} />
-      </>
+      </Box>
     );
   } catch (error) {
     return <NoDataFound />;
