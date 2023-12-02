@@ -19,7 +19,7 @@ import {
 import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { getFriendsSideBar } from '../lib/actions';
 import { useSession } from 'next-auth/react';
 import { Friend } from '../lib/definitions';
@@ -63,7 +63,7 @@ const SideBar = () => {
       </IconButton>
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="md">
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent bg={'gray.800'}>
           <Flex justifyContent={'space-between'}>
             <DrawerHeader borderBottomWidth="1px">Friends</DrawerHeader>
             <IconButton

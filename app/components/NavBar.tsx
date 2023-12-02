@@ -11,8 +11,6 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
-  useDisclosure,
-  useColorModeValue,
   Center,
   Icon,
   HStack,
@@ -50,14 +48,7 @@ export default function NavBar() {
   };
 
   return (
-    <Box
-      px={4}
-      bg={useColorModeValue('gray.800', 'black')}
-      h={{ base: 65 }}
-      position="sticky"
-      top={0}
-      zIndex={1}
-    >
+    <Box px={4} bg="gray.800" h={{ base: 65 }} position="sticky" top={0} zIndex={1}>
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
         <Link href={'/discover'}>
           <Icon as={RiFlashlightFill} cursor={'pointer'} h={8} w={8} />
@@ -103,7 +94,7 @@ export default function NavBar() {
                   cursor={'pointer'}
                   role="profile-button"
                 />
-                <MenuList>
+                <MenuList bg={'black'}>
                   <Link href={`/profile?userid=${session.user.id}`} passHref>
                     <MenuItem
                       id="profile-link"
