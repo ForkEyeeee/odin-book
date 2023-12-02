@@ -16,6 +16,7 @@ const breakPoints = {
     lg: '62em', // 992px
     xl: '80em', // 1280px
   },
+  initialColorMode: 'dark',
 };
 
 export const theme = extendTheme({ breakPoints });
