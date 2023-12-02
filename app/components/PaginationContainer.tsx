@@ -119,7 +119,7 @@ const PaginationButton = ({ children, isDisabled, isActive, ...props }: Paginati
       cursor={isDisabled ? 'not-allowed' : 'pointer'}
       border="1px solid"
       mr="-1px"
-      borderColor={useColorModeValue('gray.300', 'gray.700')}
+      borderColor={useColorModeValue('white', 'white')}
       {...(isActive && activeStyle)}
       {...props}
     >

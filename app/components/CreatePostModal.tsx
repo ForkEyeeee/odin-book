@@ -100,7 +100,7 @@ const CreatePostModal = () => {
         <ModalContent>
           <ModalHeader>Create a Post</ModalHeader>
           <ModalCloseButton />
-          <ModalBody>
+          <ModalBody bg={'gray.600'}>
             <form onSubmit={onSubmit}>
               <FormControl mb={4} isRequired>
                 <FormLabel>Content</FormLabel>

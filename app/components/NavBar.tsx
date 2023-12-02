@@ -51,7 +51,7 @@ export default function NavBar() {
     <Box px={4} bg="gray.800" h={{ base: 65 }} position="sticky" top={0} zIndex={1}>
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
         <Link href={'/discover'}>
-          <Icon as={RiFlashlightFill} cursor={'pointer'} h={8} w={8} />
+          <Icon as={RiFlashlightFill} cursor={'pointer'} h={8} w={8} color={'white'} />
         </Link>
         <Center flex="1" display={{ base: 'none' }}>
           <Heading as="h3" size={{ base: 'xs', sm: 'lg' }}>
