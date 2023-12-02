@@ -26,7 +26,7 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: 'Guest',
       credentials: {},
-      async authorize(credentials, req) {
+      async authorize() {
         const user = {
           id: '112158723423422332704',
         };
@@ -34,9 +34,6 @@ export const authOptions: AuthOptions = {
       },
     }),
   ],
-  // pages: {
-  //   signIn: '/signin',
-  // },
   callbacks: {
     async signIn({ user, account, profile }) {
       try {

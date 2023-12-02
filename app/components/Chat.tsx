@@ -38,14 +38,7 @@ interface ChatProps {
   unReadMessages: MessageType[];
 }
 
-export default function Chat({
-  messages,
-  recipient,
-  sender,
-  receiverId,
-  profilePicture,
-  unReadMessages,
-}: ChatProps) {
+export default function Chat({ messages, recipient, receiverId, profilePicture }: ChatProps) {
   const initialState = {
     id: null,
     content: '',
@@ -57,7 +50,6 @@ export default function Chat({
   const [state, formAction] = useFormState(createMessage, initialState);
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
-  const unReadMessagesRef = useRef<MessageType>();
 
   const toast = useToast();
 
@@ -68,14 +60,6 @@ export default function Chat({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
-
-  // useEffect(() => {
-  //   const setData = async () => {
-  //     await new Promise(resolve => setTimeout(resolve, 5000));
-  //     await setReadMessages(receiverId);
-  //   };
-  //   setData();
-  // }, []);
 
   const scrollToBottom = () => {
     const message = messagesEndRef.current;
@@ -111,22 +95,17 @@ export default function Chat({
         {messages !== undefined &&
           messages.map(message => {
             const backGround = message.receiverId === receiverId ? 'blue' : 'white';
-            const isColor =
-              unReadMessages &&
-              unReadMessages.find(unReadMessage => unReadMessage.id === message.id) !== undefined
-                ? '#ff6b6b'
-                : backGround;
             return (
               <>
                 <Message
                   key={message.id}
                   justifyContent={message.receiverId !== receiverId ? 'flex-start' : 'flex-end'}
                   color={message.receiverId === receiverId ? 'white' : 'black'}
+                  backGround={backGround}
                   popOverPlacement={message.receiverId === receiverId ? 'left' : 'right'}
                   content={message.content}
                   messageId={message.id}
                   receiverId={message.receiverId}
-                  isColor={isColor}
                   isRead={message.read}
                 />
                 <Box ref={messagesEndRef} />

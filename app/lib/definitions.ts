@@ -16,7 +16,7 @@ export interface User {
 
 export interface PostProps {
   post: PostWithAuthor;
-  index: number;
+  index?: number;
   userId: number;
 }
 
@@ -56,6 +56,7 @@ export interface PostWithAuthor {
   createdAt: Date;
   postTime?: string;
   author: Author;
+  message?: string;
   likes: {
     id: number;
     authorId: number;
@@ -75,7 +76,7 @@ export interface PostWithAuthor {
 
 export interface PostProps {
   post: PostWithAuthor;
-  index: number;
+  index?: number;
 }
 
 export interface UserSession {

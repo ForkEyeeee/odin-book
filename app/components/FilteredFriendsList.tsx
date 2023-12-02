@@ -13,7 +13,6 @@ import {
   TagLeftIcon,
   Center,
 } from '@chakra-ui/react';
-import { useRouter } from 'next/navigation';
 import { addFriend } from '@/app/lib/actions';
 import Link from 'next/link';
 import { useToast } from '@chakra-ui/react';

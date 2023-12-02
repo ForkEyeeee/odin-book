@@ -2,9 +2,11 @@
 import React, { useState, useEffect } from 'react';
 import { IconButton } from '@chakra-ui/react';
 import { FaArrowUp } from 'react-icons/fa';
+import { usePathname } from 'next/navigation';
 
 const ScrollToTopButton = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
 
   const toggleVisibility = () => {
     if (window.pageYOffset > 10) {
@@ -38,7 +40,7 @@ const ScrollToTopButton = () => {
       style={{
         position: 'fixed',
         bottom: '20px',
-        right: '20px',
+        right: `${pathname.includes('/messages') ? '10px' : '20px'}`,
         zIndex: 10,
         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',
         borderRadius: '50%',

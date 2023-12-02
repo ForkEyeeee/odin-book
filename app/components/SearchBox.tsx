@@ -25,11 +25,13 @@ interface SearchBoxProps {
 }
 
 const SearchBox = ({ filteredUsers, userId }: SearchBoxProps) => {
+  console.log(filteredUsers);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
   const query = searchParams.get('query');
+
   const handleSearch = useDebouncedCallback(term => {
     const params = new URLSearchParams(searchParams);
     if (term) {
@@ -40,7 +42,8 @@ const SearchBox = ({ filteredUsers, userId }: SearchBoxProps) => {
     replace(`${pathname}?${params.toString()}`);
 
     setIsLoading(false);
-  }, 300);
+  }, 100);
+
   return (
     <>
       <Flex justifyContent={'flex-end'} mt={2}>
@@ -81,7 +84,7 @@ const SearchBox = ({ filteredUsers, userId }: SearchBoxProps) => {
           <FormHelperText>Names are case-insensitive</FormHelperText>
         </FormControl>
       </Flex>
-      {filteredUsers !== undefined && query !== null ? (
+      {filteredUsers.length <= 0 ? (
         <Flex h={'100vh'} justifyContent={'center'}>
           <Heading fontSize={'xl'}>No users found! 😢</Heading>
         </Flex>

@@ -2,7 +2,6 @@ import { getPostTime, getProfile, getUserId, getUserPosts } from '../lib/actions
 import Profile from '../components/Profile';
 import PaginationContainer from '../components/PaginationContainer';
 import NoDataFound from '../components/NoDataFound';
-import NoProfile from '../components/NoProfile';
 import { Post, Profile as UserProfile } from '../lib/definitions';
 
 export default async function Page({
@@ -16,13 +15,16 @@ export default async function Page({
   const currentUserId = await getUserId();
   const userId = Number(searchParams?.userid);
   const page = Number(searchParams?.page) || 1;
+
   try {
-    if (userId === undefined) return;
-    const profile = await getProfile(userId);
-    if (profile === null) return <NoProfile />;
-    const { userPosts, postsCount } = await getUserPosts(page, userId);
-    if (postsCount === undefined) return;
-    const isAuthor = currentUserId === (profile as UserProfile).userId;
+    const promise1 = getProfile(userId);
+    const promise2 = getUserPosts(page, userId);
+
+    const allPromise = Promise.all([promise1, promise2]);
+
+    const [profile, { userPosts, postsCount }] = await allPromise;
+
+    if (userPosts === undefined || postsCount === undefined) throw new Error();
 
     await Promise.all(
       userPosts.map(async (post: Post) => {
@@ -35,6 +37,8 @@ export default async function Page({
       })
     );
 
+    const isAuthor = currentUserId === (profile as UserProfile).userId;
+
     return (
       <>
         <Profile profile={profile as UserProfile} posts={userPosts} isAuthor={isAuthor} />
@@ -42,6 +46,7 @@ export default async function Page({
       </>
     );
   } catch (error) {
+    console.error(error);
     return <NoDataFound />;
   }
 }

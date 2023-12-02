@@ -14,11 +14,11 @@ export default async function Page({
 }) {
   try {
     const query = searchParams?.query || '';
-    const filteredUsers = (await searchUsers(query)) as User[];
-    const userId = await getUserId();
-    // await new Promise(resolve => setTimeout(resolve, 20000));
+    const [userData, userId] = await Promise.all([searchUsers(query), getUserId()]);
 
-    return <SearchBox filteredUsers={filteredUsers} userId={userId} />;
+    if (userData === undefined || userId === undefined) return <NoDataFound />;
+
+    return <SearchBox filteredUsers={userData as User[]} userId={userId} />;
   } catch (error) {
     return <NoDataFound />;
   }

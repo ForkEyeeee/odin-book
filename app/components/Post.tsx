@@ -20,14 +20,11 @@ import { deletePost, likePost } from '../lib/actions';
 import Comment from './Comment';
 import { useFormState } from 'react-dom';
 import { createComment } from '../lib/actions';
-import { format, formatDistanceToNowStrict } from 'date-fns';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Suspense } from 'react';
 import PostSkeleton from '../for-you/loading';
 import { motion } from 'framer-motion';
-import getPostTime from './util/getPostTime';
-// import { getPostTime } from '../lib/actions';
 
 const initialState = { message: null, errors: {} };
 
@@ -50,6 +47,17 @@ export function Post({ post, index, userId }: PostProps) {
     exit: { opacity: 0, y: -20 },
   };
 
+  const enterVariants = {
+    offscreen: {
+      x: -150,
+      opacity: 0,
+    },
+    onscreen: {
+      x: 0,
+      opacity: 1,
+    },
+  };
+
   return (
     <Suspense fallback={<PostSkeleton />}>
       <motion.div
@@ -66,7 +74,7 @@ export function Post({ post, index, userId }: PostProps) {
             padding={{ base: '20px' }}
             w={{ base: 300, sm: 430, md: 700, lg: 900, xl: 1200 }}
             boxShadow="md"
-            mt={index > 0 ? 10 : 0}
+            mt={index !== undefined && index > 0 ? 10 : 0}
             className="test"
           >
             <HStack alignItems={'flex-start'} justifyContent={'space-between'}>
@@ -78,6 +86,8 @@ export function Post({ post, index, userId }: PostProps) {
                         size={{ base: 'sm', sm: 'md' }}
                         name="John Doe"
                         src={`${post.author.profilePicture}`}
+                        colorScheme="green"
+                        loading="eager"
                       />
                     </Link>
                     <VStack alignItems={'flex-start'}>

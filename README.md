@@ -8,6 +8,8 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [Cypress](https://www.cypress.io/)
 - [Framer Motion](https://www.framer.com/motion/)
 - [zod](https://github.com/colinhacks/zod)
+- [Cloudinary](https://cloudinary.com/)
+- [Plaiceholder](https://plaiceholder.co/)
 
 ## Getting Started
 

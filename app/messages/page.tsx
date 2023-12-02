@@ -14,10 +14,19 @@ export default async function Page({
 }) {
   try {
     const receiverId = Number(searchParams?.receiverId) || 0;
-    const { messages, recipient, sender, profilePicture } = (await getMessages(receiverId)) as any;
-    const { unReadMessages } = await getUnreadMessagesCount(receiverId);
+
+    const [messagesData, unReadMessagesData] = await Promise.all([
+      getMessages(receiverId),
+      getUnreadMessagesCount(receiverId),
+    ]);
+
+    const { messages, recipient, sender, profilePicture } = messagesData as any;
+    const { unReadMessages } = unReadMessagesData;
+
     if (unReadMessages === undefined || unReadMessages === null) return <NoDataFound />;
+
     await setReadMessages(receiverId);
+
     return (
       <Suspense fallback={<Loading />}>
         <Chat

@@ -27,6 +27,7 @@ export default function CommentItem({ comment, post, userId }: CommentItemProps)
           bg="white"
           mt="1"
           src={comment.author.profilePicture === null ? '' : comment.author.profilePicture}
+          name={`${comment.author.name}`}
         />
       </Link>
       <Box ml="3" pt="1" flexGrow={1}>

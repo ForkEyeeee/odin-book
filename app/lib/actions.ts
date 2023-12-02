@@ -11,6 +11,7 @@ import crypto from 'crypto';
 import { extractPublicId } from 'cloudinary-build-url';
 import { getPlaiceholder } from 'plaiceholder';
 import { format, formatDistanceToNowStrict } from 'date-fns';
+import { PostWithAuthor } from './definitions';
 
 export const getUserId = async () => {
   try {
@@ -234,6 +235,7 @@ export async function searchUsers(query: string) {
         name: 'asc',
       },
     });
+
     return users;
   } catch (error) {
     return { message: `Unable to search for friends` };
@@ -823,6 +825,35 @@ export async function getPosts(page = 1) {
     };
   } catch (error) {
     return { message: 'Unable to fetch posts' };
+  }
+}
+
+export async function getPost(postId: number): Promise<PostWithAuthor | null> {
+  try {
+    const post = await prisma.post.findUnique({
+      where: {
+        id: postId,
+      },
+      include: {
+        author: true,
+        likes: true,
+        comments: {
+          include: {
+            author: true,
+            commentLikes: true,
+          },
+        },
+      },
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    return post;
+  } catch (error) {
+    console.error('Error fetching post: ', error);
+    return null;
   }
 }
 

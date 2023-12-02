@@ -18,7 +18,8 @@ export default async function Page({
     const page = Number(searchParams?.page) || 1;
 
     const { otherTimeLinePosts, userId, otherTimelinePostsCount } = await getPosts(page);
-    if (userId === undefined) return;
+    if (userId === undefined) return <NoDataFound />;
+
     return (
       <Box mt={0}>
         <TimeLineTabs />

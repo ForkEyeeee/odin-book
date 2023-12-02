@@ -1,4 +1,3 @@
-'use client';
 import { Skeleton, VStack, ListItem, UnorderedList, Box, HStack, Center } from '@chakra-ui/react';
 
 const SearchBoxAndFriendsListSkeleton = () => {

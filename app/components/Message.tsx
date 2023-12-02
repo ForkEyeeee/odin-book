@@ -35,8 +35,8 @@ interface Props {
     | 'bottom-end';
   messageId: number;
   receiverId: number;
-  isColor: string;
   isRead: boolean;
+  backGround: string;
 }
 
 const Message = ({
@@ -46,8 +46,8 @@ const Message = ({
   popOverPlacement,
   messageId,
   receiverId,
-  isColor,
   isRead,
+  backGround,
 }: Props) => {
   const initialState = { message: null, errors: {} };
   const [isEdit, setIsEdit] = useState(false);
@@ -66,16 +66,19 @@ const Message = ({
         <PopoverTrigger>
           <Card
             maxW={'75%'}
-            backgroundColor={isColor}
+            backgroundColor={backGround}
             role="message-card"
             boxShadow="md"
             borderRadius="lg"
             overflow={'hidden'}
             className={justifyContent === 'flex-start' ? 'receiver-card' : 'sender-card'}
+            borderColor={!isRead ? 'orange' : 'initial'}
+            borderWidth={!isRead ? 'thick' : 'initial'}
+            borderStyle={!isRead ? 'solid' : 'initial'}
           >
             {' '}
             <CardBody
-              backgroundColor={isEdit ? 'gray.500' : isColor}
+              backgroundColor={isEdit ? 'gray.500' : backGround}
               borderRadius={isEdit ? 'lg' : 'initial'}
             >
               <form action={formAction}>

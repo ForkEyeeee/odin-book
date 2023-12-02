@@ -1,32 +1,31 @@
-'use client';
-import { Box, VStack, Heading, Skeleton, SkeletonText } from '@chakra-ui/react';
+import { Box, VStack, Skeleton, SkeletonText, Container } from '@chakra-ui/react';
 
-export default function ProfilePostsSkeleton() {
+export default function ProfileSkeleton() {
   return (
-    <Box>
-      <Heading fontSize={{ base: 'lg' }} mb={4}>
-        <Skeleton height="20px" width="150px" />
-      </Heading>
-      <VStack spacing={4} align="stretch">
-        {[...Array(5)].map((_, index) => (
-          <Box
-            key={index}
-            borderWidth="1px"
-            borderRadius="lg"
-            padding="4"
-            width="100%"
-            boxShadow="lg"
-            mt="4"
-            bg="gray.700"
-          >
-            <Skeleton height="200px" borderRadius="md" />
-            <VStack align="stretch" p="4">
-              <SkeletonText mt="4" noOfLines={2} spacing="4" />
-              <Skeleton height="15px" width="100px" />
-            </VStack>
-          </Box>
-        ))}
-      </VStack>
-    </Box>
+    <Container maxW="container.md" mt={10} h={'100%'}>
+      <Box display={'flex'}>
+        <VStack alignItems={'flex-start'} w={'100%'} spacing={5}>
+          <Skeleton height="20px" width="200px" />
+          <SkeletonText mt="4" noOfLines={3} spacing="4" />
+        </VStack>
+      </Box>
+
+      <Box borderWidth="1px" borderRadius="lg" overflow="hidden" p={5} mb={10} mt={5} width="100%">
+        <VStack spacing={4} align="stretch">
+          <SkeletonText mt="4" noOfLines={4} spacing="4" />
+        </VStack>
+      </Box>
+
+      <Box mb={5}>
+        <Skeleton height="20px" width="200px" />
+        <VStack spacing={10} align="stretch">
+          {Array(5)
+            .fill('')
+            .map((_, index) => (
+              <Skeleton key={index} height="120px" mt="4" />
+            ))}
+        </VStack>
+      </Box>
+    </Container>
   );
 }

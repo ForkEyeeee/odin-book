@@ -20,7 +20,7 @@ export default async function Page({
     const { timelinePosts, userId, timelinePostsCount } = await getPosts(page);
     if (userId === undefined) throw new Error();
 
-    await Promise.all(
+    await Promise.allSettled(
       timelinePosts.map(async (post: Post) => {
         try {
           const test = await getPostTime(post.createdAt);
@@ -37,7 +37,6 @@ export default async function Page({
         {timelinePostsCount > 0 ? (
           <>
             <PaginationContainer page={page} timelinePostsCount={timelinePostsCount} />
-
             <PostList forYouPosts={timelinePosts} userId={userId} />
           </>
         ) : (
