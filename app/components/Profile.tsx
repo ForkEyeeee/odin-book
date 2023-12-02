@@ -47,12 +47,13 @@ export default function Profile({ profile, posts, isAuthor }: FormProps) {
   }, [state]);
 
   const newProfile = profile === undefined || profile === null;
+
   const { inputFormattedDate, formattedDate } = parseAndFormatDate(
-    profile!.dateOfBirth!.toISOString()
+    profile?.dateOfBirth === null ? '' : profile!.dateOfBirth.toISOString()
   );
 
   return (
-    <Container maxW="container.md" mt={10}>
+    <Container maxW="container.md" mt={10} h={'100vh'}>
       <Box display={'flex'}>
         <VStack alignItems={'flex-start'} w={'100%'} spacing={5}>
           <Heading mb={{ base: 0, md: 4 }} fontSize={{ base: 'lg' }}>

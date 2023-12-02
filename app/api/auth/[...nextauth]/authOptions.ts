@@ -45,13 +45,26 @@ export const authOptions: AuthOptions = {
         if (existingUser) {
           return true;
         } else {
-          await prisma.user.create({
+          const createdUser = await prisma.user.create({
             data: {
               name: user.name as string,
               email: user.email as string,
               hashedPassword: '',
               profilePicture: user.image,
               googleId: user.id,
+            },
+          });
+          const createdProfile = await prisma.profile.create({
+            data: {
+              userId: createdUser.id,
+            },
+          });
+          await prisma.user.update({
+            where: {
+              id: createdUser.id,
+            },
+            data: {
+              profileId: createdProfile.id,
             },
           });
           return true;

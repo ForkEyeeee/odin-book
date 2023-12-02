@@ -61,7 +61,7 @@ export default function NavBar() {
       zIndex={1}
     >
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
-        <Link href={'/'}>
+        <Link href={'/discover'}>
           <Icon as={RiFlashlightFill} cursor={'pointer'} h={8} w={8} />
         </Link>
         <Center flex="1" display={{ base: 'none' }}>
@@ -74,9 +74,7 @@ export default function NavBar() {
             <>
               <Box position="relative">
                 <CreatePostModal />
-                <IconButton aria-label="Unread messages" variant="ghost" id="sidebar-btn">
-                  <SideBar />
-                </IconButton>
+                <SideBar />
                 {unreadMessageCount > 0 && (
                   <Box
                     position="absolute"

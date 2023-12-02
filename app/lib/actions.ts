@@ -85,7 +85,7 @@ export async function updateProfile(prevState: any, formData: FormData) {
       profile = updateProfile;
     }
     revalidatePath('/');
-
+    console.log(updateProfile);
     return { message: `Profile updated`, profile: profile };
   } catch (e) {
     console.error(e);

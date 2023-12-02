@@ -20,6 +20,7 @@ import { User } from '../lib/definitions';
 import { FaPaperPlane } from 'react-icons/fa';
 import { Suspense } from 'react';
 import FilteredFriendsListSkeleton from '../addfriend/loading';
+import { useRouter } from 'next/navigation';
 
 const FilteredFriendsList = ({
   users,
@@ -31,7 +32,7 @@ const FilteredFriendsList = ({
   isLoading: boolean;
 }) => {
   const toast = useToast();
-
+  const router = useRouter();
   const handleClick = async (userId: number) => {
     const isExistingFriend = await addFriend(userId);
     if (isExistingFriend) {
@@ -50,9 +51,9 @@ const FilteredFriendsList = ({
         duration: 9000,
         isClosable: true,
       });
+      router.push('/friends');
     }
   };
-
   return (
     <Suspense fallback={<FilteredFriendsListSkeleton />}>
       <Box minH={'100vh'} display={'flex'} justifyContent={'center'}>
@@ -65,13 +66,23 @@ const FilteredFriendsList = ({
             <List spacing={3}>
               {users !== undefined ? (
                 users.map(user => {
-                  if (user.friendsAsUser2 === undefined) return;
-                  const isSent = user.friendsAsUser2.find(
-                    friend => friend.user1Id === userId && friend.status === 'PENDING'
-                  );
-                  const isFriend = user.friendsAsUser2.find(
-                    friend => friend.user1Id === userId && friend.status === 'ACCEPTED'
-                  );
+                  if (user.friendsAsUser1 === undefined || user.friendsAsUser2 === undefined)
+                    return;
+                  const isSent =
+                    user.friendsAsUser2.find(
+                      friend => friend.user1Id === userId && friend.status === 'PENDING'
+                    ) ||
+                    user.friendsAsUser1.find(
+                      friend => friend.user2Id === userId && friend.status === 'PENDING'
+                    );
+                  const isFriend =
+                    user.friendsAsUser2.find(
+                      friend => friend.user1Id === userId && friend.status === 'ACCEPTED'
+                    ) ||
+                    user.friendsAsUser1.find(
+                      friend => friend.user2Id === userId && friend.status === 'ACCEPTED'
+                    );
+
                   return (
                     <ListItem
                       key={user.id}

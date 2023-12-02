@@ -10,6 +10,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 - [zod](https://github.com/colinhacks/zod)
 - [Cloudinary](https://cloudinary.com/)
 - [Plaiceholder](https://plaiceholder.co/)
+- [faker](https://github.com/faker-js/faker)
 
 ## Getting Started
 

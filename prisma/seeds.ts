@@ -1,100 +1,93 @@
-const { PrismaClient, FriendshipStatus } = require("@prisma/client");
+const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const faker = require('faker');
 
 async function main() {
-  const userIds = [];
-  const postIds = [];
-  const commentIds = [];
-
-  for (let i = 1; i <= 20; i++) {
+  for (let i = 0; i < 10; i++) {
     const user = await prisma.user.create({
       data: {
-        googleId: `googleId${i}`,
-        name: `User Name ${i}`,
-        email: `user${i}@example.com`,
-        hashedPassword: `hashedPassword${i}`,
+        googleId: faker.datatype.uuid(),
+        name: faker.name.findName(),
+        email: faker.internet.email(),
+        hashedPassword: faker.internet.password(),
+        profilePicture: faker.internet.avatar(),
+        profile: {
+          create: {
+            bio: faker.lorem.sentence(),
+            dateOfBirth: faker.date.past(),
+            gender: faker.random.arrayElement(['Male', 'Female', 'Other']),
+          },
+        },
+        posts: {
+          create: [
+            {
+              content: faker.lorem.paragraph(),
+            },
+          ],
+        },
       },
     });
-    userIds.push(user.id);
 
-    for (let j = 1; j <= 3; j++) {
-      const post = await prisma.post.create({
+    const friend = faker.random.arrayElement(
+      (await prisma.user.findMany()).filter((u: any) => u.id !== user.id)
+    );
+    await prisma.friend.create({
+      data: {
+        user1Id: user.id,
+        user2Id: friend.id,
+        status: 'ACCEPTED',
+      },
+    });
+
+    for (let j = 0; j < 2; j++) {
+      const receiver = faker.random.arrayElement(
+        (await prisma.user.findMany()).filter((u: any) => u.id !== user.id)
+      );
+      await prisma.message.create({
         data: {
-          content: `This is a detailed post by User ${i}, post number ${j}.`,
-          authorId: user.id,
+          content: faker.lorem.sentence(),
+          senderId: user.id,
+          receiverId: receiver.id,
         },
       });
-      postIds.push(post.id);
     }
-  }
 
-  for (const postId of postIds) {
-    const shuffledUserIds = [...userIds].sort(() => 0.5 - Math.random());
-    const selectedUserIds = shuffledUserIds.slice(0, 3);
-
-    for (const userId of selectedUserIds) {
-      const comment = await prisma.comment.create({
-        data: {
-          content: `This is a comment by User ${userId} on Post ${postId}.`,
-          authorId: userId,
-          postId: postId,
-        },
-      });
-      commentIds.push(comment.id);
-    }
-  }
-
-  for (const postId of postIds) {
-    const numLikes = Math.floor(Math.random() * userIds.length);
-    const shuffledUserIds = [...userIds].sort(() => 0.5 - Math.random());
-    const selectedUserIds = shuffledUserIds.slice(0, numLikes);
-
-    for (const userId of selectedUserIds) {
+    for (let j = 0; j < 5; j++) {
+      const post = faker.random.arrayElement(await prisma.post.findMany());
       await prisma.postLike.create({
         data: {
-          authorId: userId,
-          postId: postId,
+          authorId: user.id,
+          postId: post.id,
         },
       });
     }
-  }
 
-  for (const commentId of commentIds) {
-    const numLikes = Math.floor(Math.random() * userIds.length);
-    const shuffledUserIds = [...userIds].sort(() => 0.5 - Math.random());
-    const selectedUserIds = shuffledUserIds.slice(0, numLikes);
-
-    for (const userId of selectedUserIds) {
-      await prisma.commentLike.create({
+    const post = faker.random.arrayElement(await prisma.post.findMany());
+    for (let j = 0; j < 3; j++) {
+      const comment = await prisma.comment.create({
         data: {
-          authorId: userId,
-          commentId: commentId,
+          content: faker.lorem.sentence(),
+          authorId: user.id,
+          postId: post.id,
         },
       });
-    }
-  }
 
-  for (const userId of userIds) {
-    const shuffledUserIds = [...userIds]
-      .filter((id) => id !== userId)
-      .sort(() => 0.5 - Math.random());
-    const selectedUserIds = shuffledUserIds.slice(0, 3);
-
-    for (const friendId of selectedUserIds) {
-      await prisma.friend.create({
-        data: {
-          user1Id: userId,
-          user2Id: friendId,
-          status: FriendshipStatus.ACCEPTED,
-        },
-      });
+      for (let k = 0; k < 2; k++) {
+        await prisma.commentLike.create({
+          data: {
+            authorId: user.id,
+            commentId: comment.id,
+          },
+        });
+      }
     }
   }
 }
 
 main()
-  .catch((e) => {
+  .catch(e => {
     console.error(e);
+    process.exit(1);
   })
   .finally(async () => {
     await prisma.$disconnect();

@@ -14,6 +14,7 @@ import {
   VStack,
   Text,
   Badge,
+  Heading,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
@@ -55,7 +56,9 @@ const SideBar = () => {
 
   return (
     <>
-      <ChatIcon onClick={onOpen} aria-label="open menu" />
+      <IconButton onClick={onOpen} aria-label="open menu">
+        <ChatIcon id="sidebar-btn" />
+      </IconButton>
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="md">
         <DrawerOverlay />
         <DrawerContent>
@@ -70,74 +73,89 @@ const SideBar = () => {
             />
           </Flex>
           <DrawerBody>
-            <VStack spacing={4} mt={5} align="stretch">
-              {friends.map(friend => {
-                const unreadCount = countUnreadMessages(friend);
-                return (
-                  <Flex
-                    key={friend.id}
-                    align="center"
-                    justify="space-between"
-                    alignItems={'flex-start'}
-                    borderWidth="1px"
-                    borderRadius="lg"
-                    boxShadow="sm"
-                    borderColor="gray.200"
-                    mb={5}
-                    p={3}
-                  >
-                    <Link href={`/profile?userid=${friend.id}`}>
-                      <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
-                    </Link>
-                    <Box flex="1">
-                      <Flex alignItems="stretch" flexDir={{ base: 'column' }} gap={5}>
-                        <Box>
-                          <Text
-                            fontSize={{ base: 'initial', lg: 'lg' }}
-                            maxW={{ base: 180, sm: 350 }}
-                            fontWeight="bold"
-                          >
-                            {friend.name}
-                          </Text>
-                          <Text
-                            fontSize={{ base: 'sm', lg: 'md' }}
-                            maxW={{ base: 180, sm: 300, lg: 350 }}
-                          >
-                            {friend.email}
-                          </Text>
-                          <Badge colorScheme={unreadCount > 0 ? 'red' : 'green'}>
-                            {unreadCount > 0 ? `${unreadCount} Unread` : 'No New Messages'}
-                          </Badge>
-                        </Box>
-                        <Flex justifyContent={'flex-end'}>
-                          <Link
-                            href={{
-                              pathname: '/messages',
-                              query: {
-                                userId: userId,
-                                receiverId: friend.id,
-                              },
-                            }}
-                            passHref
-                          >
-                            <Button
-                              color={'white'}
-                              colorScheme="whatsapp"
-                              variant={'solid'}
-                              as={Button}
-                              id="message-btn"
-                              onClick={onClose}
+            {friends !== undefined && friends.length > 0 ? (
+              <VStack spacing={4} mt={5} align="stretch">
+                {friends.map(friend => {
+                  const unreadCount = countUnreadMessages(friend);
+                  return (
+                    <Flex
+                      key={friend.id}
+                      align="center"
+                      justify="space-between"
+                      alignItems={'flex-start'}
+                      borderWidth="1px"
+                      borderRadius="lg"
+                      boxShadow="sm"
+                      borderColor="gray.200"
+                      mb={5}
+                      p={3}
+                    >
+                      <Link href={`/profile?userid=${friend.id}`}>
+                        <Avatar size="md" src={friend.profilePicture} name={friend.name} mr={4} />
+                      </Link>
+                      <Box flex="1">
+                        <Flex alignItems="stretch" flexDir={{ base: 'column' }} gap={5}>
+                          <Box>
+                            <Text
+                              fontSize={{ base: 'initial', lg: 'lg' }}
+                              maxW={{ base: 180, sm: 350 }}
+                              fontWeight="bold"
                             >
-                              Message
-                            </Button>
-                          </Link>
+                              {friend.name}
+                            </Text>
+                            <Text
+                              fontSize={{ base: 'sm', lg: 'md' }}
+                              maxW={{ base: 180, sm: 300, lg: 350 }}
+                            >
+                              {friend.email}
+                            </Text>
+                            <Badge colorScheme={unreadCount > 0 ? 'red' : 'green'}>
+                              {unreadCount > 0 ? `${unreadCount} Unread` : 'No New Messages'}
+                            </Badge>
+                          </Box>
+                          <Flex justifyContent={'flex-end'}>
+                            <Link
+                              href={{
+                                pathname: '/messages',
+                                query: {
+                                  userId: userId,
+                                  receiverId: friend.id,
+                                },
+                              }}
+                              passHref
+                            >
+                              <Button
+                                color={'white'}
+                                colorScheme="whatsapp"
+                                variant={'solid'}
+                                as={Button}
+                                id="message-btn"
+                                onClick={onClose}
+                              >
+                                Message
+                              </Button>
+                            </Link>
+                          </Flex>
                         </Flex>
-                      </Flex>
-                    </Box>
-                  </Flex>
-                );
-              })}
-            </VStack>
+                      </Box>
+                    </Flex>
+                  );
+                })}
+              </VStack>
+            ) : (
+              <VStack spacing={5}>
+                <Heading mt={10}>No friends found</Heading>
+                <Link color="blue" href={'/addfriend'} passHref>
+                  <Text
+                    _hover={{
+                      textDecor: 'underline',
+                    }}
+                  >
+                    Click here to send some friend requests! 😀
+                  </Text>
+                </Link>
+              </VStack>
+            )}
           </DrawerBody>
         </DrawerContent>
       </Drawer>
