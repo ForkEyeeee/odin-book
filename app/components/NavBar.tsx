@@ -94,7 +94,7 @@ export default function NavBar() {
                   cursor={'pointer'}
                   role="profile-button"
                 />
-                <MenuList bg={'black'}>
+                <MenuList>
                   <Link href={`/profile?userid=${session.user.id}`} passHref>
                     <MenuItem
                       id="profile-link"

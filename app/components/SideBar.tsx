@@ -63,7 +63,7 @@ const SideBar = () => {
       </IconButton>
       <Drawer isOpen={isOpen} placement="left" onClose={onClose} size="md">
         <DrawerOverlay />
-        <DrawerContent bg={'gray.800'}>
+        <DrawerContent bg={'gray.800'} color={'white'}>
           <Flex justifyContent={'space-between'}>
             <DrawerHeader borderBottomWidth="1px">Friends</DrawerHeader>
             <IconButton
