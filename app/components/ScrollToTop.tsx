@@ -35,10 +35,10 @@ const ScrollToTopButton = () => {
       onClick={handleScrollToTop}
       size={'lg'}
       aria-label="Scroll to top"
-      display={{ base: 'none', lg: 'initial' }}
+      display={{ base: 'none', lg: 'flex' }}
       style={{
         position: 'fixed',
-        bottom: '40px',
+        bottom: '20px',
         right: '20px',
         zIndex: 10,
         boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.1)',

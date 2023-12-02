@@ -32,11 +32,7 @@ export default function SmallWithLogoLeft() {
   const pathname = usePathname();
   const isMessageRoute = pathname.includes('/messages');
   return (
-    <Box
-      display={isMessageRoute ? 'none' : ''}
-      bg={useColorModeValue('gray.50', 'gray.900')}
-      color={useColorModeValue('gray.700', 'gray.200')}
-    >
+    <Box display={isMessageRoute ? 'none' : ''} bg={'gray.900'} color={'white'}>
       <Container
         as={Stack}
         maxW={'6xl'}
