@@ -2,9 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  background-color: black;
+@layer base {
+  body {
+    @apply bg-black;
+  }
+}
 
+body {
   width: 100%;
   overflow-x: hidden;
   overflow-y: auto;
