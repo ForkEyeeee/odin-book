@@ -19,7 +19,7 @@ import {
 import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { getFriendsSideBar } from '../lib/actions';
 import { useSession } from 'next-auth/react';
 import { Friend } from '../lib/definitions';
@@ -28,6 +28,7 @@ const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [friends, setFriends] = useState<Friend[]>([]);
   const router = useRouter();
+  const pathname = usePathname();
   const { data: session } = useSession();
   const userId = session?.user.id;
 
@@ -51,6 +52,10 @@ const SideBar = () => {
     };
     fetchFriends();
   }, [isOpen]);
+
+  useEffect(() => {
+    onClose();
+  }, [pathname, onClose]);
 
   return (
     <>
@@ -128,7 +133,6 @@ const SideBar = () => {
                                 variant={'solid'}
                                 as={Button}
                                 id="message-btn"
-                                onClick={onClose}
                               >
                                 Message
                               </Button>
