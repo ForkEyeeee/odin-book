@@ -38,7 +38,13 @@ interface ChatProps {
   unReadMessages: MessageType[];
 }
 
-export default function Chat({ messages, recipient, receiverId, profilePicture }: ChatProps) {
+export default function Chat({
+  messages,
+  recipient,
+  receiverId,
+  profilePicture,
+  unReadMessages,
+}: ChatProps) {
   const initialState = {
     id: null,
     content: '',
@@ -72,7 +78,7 @@ export default function Chat({ messages, recipient, receiverId, profilePicture }
       display="flex"
       flexDirection="column"
       h={{ base: '92.5vh', xl: '93.5vh' }}
-      overflowY={'scroll'}
+      overflowY={{ base: 'auto', lg: 'scroll' }}
     >
       <Box p={{ xl: 5 }} bg="inherit">
         <HStack justifyContent={'flex-start'} p={2}>
@@ -95,6 +101,11 @@ export default function Chat({ messages, recipient, receiverId, profilePicture }
         {messages !== undefined &&
           messages.map(message => {
             const backGround = message.receiverId === receiverId ? 'blue' : 'white';
+            const isUnread =
+              unReadMessages &&
+              unReadMessages.find(unReadMessage => unReadMessage.id === message.id) !== undefined
+                ? true
+                : false;
             return (
               <>
                 <Message
@@ -106,7 +117,7 @@ export default function Chat({ messages, recipient, receiverId, profilePicture }
                   content={message.content}
                   messageId={message.id}
                   receiverId={message.receiverId}
-                  isRead={message.read}
+                  isRead={isUnread}
                 />
                 <Box ref={messagesEndRef} />
               </>

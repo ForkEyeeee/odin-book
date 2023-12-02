@@ -7,7 +7,6 @@ import {
   Flex,
   Button,
   Avatar,
-  IconButton,
   Menu,
   MenuButton,
   MenuList,
@@ -29,7 +28,6 @@ export default function NavBar() {
   const { data: session } = useSession();
   const router = useRouter();
   const [unreadMessageCount, setUnreadMessageCount] = useState(0);
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 

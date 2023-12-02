@@ -72,11 +72,10 @@ const Message = ({
             borderRadius="lg"
             overflow={'hidden'}
             className={justifyContent === 'flex-start' ? 'receiver-card' : 'sender-card'}
-            borderColor={!isRead ? 'orange' : 'initial'}
-            borderWidth={!isRead ? 'thick' : 'initial'}
-            borderStyle={!isRead ? 'solid' : 'initial'}
+            borderColor={isRead ? 'orange' : 'initial'}
+            borderWidth={isRead ? 'thick' : 'initial'}
+            borderStyle={isRead ? 'solid' : 'initial'}
           >
-            {' '}
             <CardBody
               backgroundColor={isEdit ? 'gray.500' : backGround}
               borderRadius={isEdit ? 'lg' : 'initial'}

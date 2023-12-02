@@ -6,9 +6,6 @@ import {
   FormLabel,
   Button,
   Flex,
-  Text,
-  AbsoluteCenter,
-  Center,
   Heading,
 } from '@chakra-ui/react';
 import FilteredFriendsList from './FilteredFriendsList';
@@ -30,7 +27,6 @@ const SearchBox = ({ filteredUsers, userId }: SearchBoxProps) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
-  const query = searchParams.get('query');
 
   const handleSearch = useDebouncedCallback(term => {
     const params = new URLSearchParams(searchParams);

@@ -740,14 +740,14 @@ export async function getPosts(page = 1) {
         AND: [{ status: 'ACCEPTED' }],
       },
     });
-    const pageNumber = isNaN(page) || page < 1 ? 1 : page; // Default to page 1 if invalid
+    const pageNumber = isNaN(page) || page < 1 ? 1 : page;
     const take = 5;
     const skip = (pageNumber - 1) * take;
 
     const userfriendIds = userFriends.map(friend =>
       friend.user1Id === userId ? friend.user2Id : friend.user1Id
     );
-    // Fetch timeline posts with pagination
+
     const timelinePosts = await prisma.post.findMany({
       where: {
         authorId: {
@@ -770,7 +770,7 @@ export async function getPosts(page = 1) {
         },
       },
     });
-    // Fetch other timeline posts with pagination
+
     const otherTimeLinePosts = await prisma.post.findMany({
       where: {
         authorId: {
@@ -796,7 +796,6 @@ export async function getPosts(page = 1) {
       },
     });
 
-    // Get total count of timeline posts
     const timelinePostsCount = await prisma.post.count({
       where: {
         authorId: {
@@ -805,7 +804,6 @@ export async function getPosts(page = 1) {
       },
     });
 
-    // Get total count of other timeline posts
     const otherTimelinePostsCount = await prisma.post.count({
       where: {
         authorId: {
@@ -859,7 +857,7 @@ export async function getPost(postId: number): Promise<PostWithAuthor | null> {
 
 export async function getUserPosts(page: number, userId: number) {
   try {
-    const pageNumber = isNaN(page) || page < 1 ? 1 : page; // Default to page 1 if invalid
+    const pageNumber = isNaN(page) || page < 1 ? 1 : page;
     const take = 5;
 
     const skip = (pageNumber - 1) * take;

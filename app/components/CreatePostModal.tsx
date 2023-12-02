@@ -35,7 +35,7 @@ const CreatePostModal = () => {
 
   useEffect(() => {
     if (post && post.success) {
-      router.push('/');
+      router.push('/for-you');
     }
     onClose();
   }, [post, onClose, router]);

@@ -6,7 +6,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       // implement node event listeners here
     },
-    baseUrl: 'http://localhost:3000',
+    baseUrl: 'http://localhost:3000/for-you',
     defaultCommandTimeout: 5000,
     testIsolation: false,
     watchForFileChanges: false,

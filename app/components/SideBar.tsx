@@ -19,11 +19,10 @@ import {
 import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { getFriendsSideBar } from '../lib/actions';
 import { useSession } from 'next-auth/react';
 import { Friend } from '../lib/definitions';
-import { usePathname } from 'next/navigation';
 
 const SideBar = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -31,8 +30,7 @@ const SideBar = () => {
   const router = useRouter();
   const { data: session } = useSession();
   const userId = session?.user.id;
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+
   const countUnreadMessages = (friend: Friend) => {
     const sentMessages = friend.sentMessages || [];
     const receivedMessages = friend.receivedMessages || [];

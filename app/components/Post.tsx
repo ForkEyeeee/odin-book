@@ -47,17 +47,6 @@ export function Post({ post, index, userId }: PostProps) {
     exit: { opacity: 0, y: -20 },
   };
 
-  const enterVariants = {
-    offscreen: {
-      x: -150,
-      opacity: 0,
-    },
-    onscreen: {
-      x: 0,
-      opacity: 1,
-    },
-  };
-
   return (
     <Suspense fallback={<PostSkeleton />}>
       <motion.div
@@ -69,8 +58,10 @@ export function Post({ post, index, userId }: PostProps) {
       >
         <Center>
           <Box
+            bg={'gray.900'}
             borderWidth="1px"
             borderRadius="md"
+            borderColor={'whitesmoke'}
             padding={{ base: '20px' }}
             w={{ base: 300, sm: 430, md: 700, lg: 900, xl: 1200 }}
             boxShadow="md"

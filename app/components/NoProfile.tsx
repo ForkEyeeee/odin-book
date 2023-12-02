@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, Text, Button, Center } from '@chakra-ui/react';
+import { Flex, Heading, Text, Button, Center } from '@chakra-ui/react';
 import Link from 'next/link';
 
 const NoProfile = () => {
