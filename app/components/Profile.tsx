@@ -53,7 +53,7 @@ export default function Profile({ profile, posts, isAuthor }: FormProps) {
   );
 
   return (
-    <Container maxW="container.md" mt={10} h={'100vh'}>
+    <Container maxW="container.md" mt={10} h={'100%'}>
       <Box display={'flex'}>
         <VStack alignItems={'flex-start'} w={'100%'} spacing={5}>
           <Heading mb={{ base: 0, md: 4 }} fontSize={{ base: 'lg' }}>

@@ -21,9 +21,8 @@ export default async function Page({
       getUserId(),
     ]);
 
-    if (!userPostsData?.userPosts || !userPostsData?.postsCount) {
-      throw new Error('No data found');
-    }
+    if (userPostsData?.userPosts === undefined || userPostsData?.postsCount === undefined)
+      throw Error('No Data Found');
 
     const userPosts = await Promise.all(
       userPostsData.userPosts.map(async post => ({
