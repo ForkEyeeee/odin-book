@@ -8,7 +8,7 @@ interface Props {
   children: ReactNode;
 }
 
-const breakPoints = {
+const config = {
   sizes: {
     base: '20em', // 320px
     sm: '30em', // 480px
@@ -16,10 +16,11 @@ const breakPoints = {
     lg: '62em', // 992px
     xl: '80em', // 1280px
   },
+  useSystemColorMode: false,
   initialColorMode: 'dark',
 };
 
-export const theme = extendTheme({ breakPoints });
+export const theme = extendTheme({ config });
 
 const Providers = (props: Props) => {
   return (

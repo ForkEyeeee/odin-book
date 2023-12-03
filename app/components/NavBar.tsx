@@ -11,6 +11,7 @@ import {
   MenuButton,
   MenuList,
   MenuItem,
+  useColorModeValue,
   Center,
   Icon,
   HStack,
@@ -48,10 +49,17 @@ export default function NavBar() {
   };
 
   return (
-    <Box px={4} bg="gray.800" h={{ base: 65 }} position="sticky" top={0} zIndex={1}>
+    <Box
+      px={4}
+      bg={useColorModeValue('gray.800', 'black')}
+      h={{ base: 65 }}
+      position="sticky"
+      top={0}
+      zIndex={1}
+    >
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
         <Link href={'/discover'}>
-          <Icon as={RiFlashlightFill} cursor={'pointer'} h={8} w={8} color={'white'} />
+          <Icon as={RiFlashlightFill} cursor={'pointer'} h={8} w={8} />
         </Link>
         <Center flex="1" display={{ base: 'none' }}>
           <Heading as="h3" size={{ base: 'xs', sm: 'lg' }}>
