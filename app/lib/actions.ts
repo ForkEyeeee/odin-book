@@ -651,7 +651,6 @@ export async function createMessage(prevState: any, formData: FormData) {
       createdAt: new Date(),
       read: false,
     };
-
     const parsedForm = messageSchema.parse(form);
 
     const messageData = {
@@ -661,7 +660,6 @@ export async function createMessage(prevState: any, formData: FormData) {
       createdAt: new Date(),
       read: false,
     };
-
     const createdMessage = await prisma.message.create({
       data: messageData,
     });
@@ -926,18 +924,9 @@ export async function setReadMessages(receiverId: number) {
 
     await prisma.message.updateMany({
       where: {
-        OR: [
-          {
-            receiverId: userId,
-            senderId: receiverId,
-            read: false,
-          },
-          {
-            receiverId: receiverId,
-            senderId: userId,
-            read: false,
-          },
-        ],
+        receiverId: userId,
+        senderId: receiverId,
+        read: false,
       },
       data: {
         read: true,

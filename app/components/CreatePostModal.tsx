@@ -126,23 +126,25 @@ const CreatePostModal = () => {
                 </p>
               </FormControl>
               <ModalFooter pr={0}>
-                <HStack spacing={isLoading ? 10 : 0}>
+                <HStack spacing={!isLoading ? 3 : 10}>
+                  <Button variant="outline" onClick={resetForm}>
+                    Cancel
+                  </Button>
                   {isLoading ? (
                     <Spinner />
                   ) : (
                     <Button
                       type="submit"
                       id="submit-post-btn"
-                      colorScheme="green"
-                      mr={3}
-                      variant={'ghost'}
+                      _hover={{
+                        bg: 'whatsapp.500 !important',
+                      }}
+                      ml={3}
+                      backgroundColor={'whatsapp.700 !important'}
                     >
                       Submit
                     </Button>
                   )}
-                  <Button variant="outline" onClick={resetForm}>
-                    Cancel
-                  </Button>
                 </HStack>
               </ModalFooter>
             </form>

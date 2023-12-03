@@ -11,6 +11,7 @@ import {
   IconButton,
   Avatar,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import Message from './Message';
@@ -38,6 +39,15 @@ interface ChatProps {
   unReadMessages: MessageType[];
 }
 
+const initialState = {
+  id: null,
+  content: '',
+  senderId: null,
+  receiverId: null,
+  createdAt: '',
+  read: undefined,
+};
+
 export default function Chat({
   messages,
   recipient,
@@ -45,23 +55,19 @@ export default function Chat({
   profilePicture,
   unReadMessages,
 }: ChatProps) {
-  const initialState = {
-    id: null,
-    content: '',
-    senderId: null,
-    receiverId: null,
-    createdAt: '',
-    read: undefined,
-  };
   const [state, formAction] = useFormState(createMessage, initialState);
   const [inputText, setInputText] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const toast = useToast();
 
   useEffect(() => {
-    if (state.id !== null) setInputText('');
-  }, [state]);
+    if (state.id !== null) {
+      setIsLoading(false);
+      setInputText('');
+    }
+  }, [state, toast]);
 
   useEffect(() => {
     scrollToBottom();
@@ -107,9 +113,8 @@ export default function Chat({
                 ? true
                 : false;
             return (
-              <>
+              <Box key={message.id} w={'100%'}>
                 <Message
-                  key={message.id}
                   justifyContent={message.receiverId !== receiverId ? 'flex-start' : 'flex-end'}
                   color={message.receiverId === receiverId ? 'white' : 'black'}
                   backGround={backGround}
@@ -120,32 +125,36 @@ export default function Chat({
                   isRead={isUnread}
                 />
                 <Box ref={messagesEndRef} />
-              </>
+              </Box>
             );
           })}
       </VStack>
       <Box position="sticky" bottom="0" p={2} pb={0}>
-        <form action={formAction}>
+        <form onSubmit={() => setIsLoading(true)} action={formAction}>
           <FormControl>
             <InputGroup>
               <InputRightElement>
-                <IconButton
-                  aria-label="send-message"
-                  type="submit"
-                  id="chat-submit-btn"
-                  onClick={() => {
-                    toast({
-                      position: 'top',
-                      title: 'Message sent.',
-                      description: 'Message has been sent successfully',
-                      status: 'success',
-                      duration: 2000,
-                      isClosable: true,
-                    });
-                  }}
-                >
-                  <BsSendFill color="black" />
-                </IconButton>
+                {isLoading ? (
+                  <Spinner color="black" />
+                ) : (
+                  <IconButton
+                    aria-label="send-message"
+                    type="submit"
+                    id="chat-submit-btn"
+                    onClick={() => {
+                      toast({
+                        position: 'top',
+                        title: 'Message sent.',
+                        description: 'Message has been sent successfully',
+                        status: 'success',
+                        duration: 2000,
+                        isClosable: true,
+                      });
+                    }}
+                  >
+                    <BsSendFill color="black" />
+                  </IconButton>
+                )}
               </InputRightElement>
               <Input
                 role="chat-input"

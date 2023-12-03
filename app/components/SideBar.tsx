@@ -18,7 +18,7 @@ import {
 } from '@chakra-ui/react';
 import Link from 'next/link';
 import { ChatIcon, CloseIcon } from '@chakra-ui/icons';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { usePathname } from 'next/navigation';
 import { getFriendsSideBar } from '../lib/actions';
 import { useSession } from 'next-auth/react';
@@ -31,11 +31,13 @@ const SideBar = () => {
   const { data: session } = useSession();
   const userId = session?.user.id;
 
-  const countUnreadMessages = (friend: Friend) => {
-    const sentMessages = friend.sentMessages || [];
-    const receivedMessages = friend.receivedMessages || [];
-    return sentMessages.concat(receivedMessages).filter(msg => !msg.read).length;
-  };
+  const countUnreadMessages = useCallback(
+    (friend: Friend) => {
+      const receivedMessages = friend.sentMessages || [];
+      return receivedMessages.filter(msg => !msg.read && msg.receiverId === userId).length;
+    },
+    [userId]
+  );
 
   useEffect(() => {
     const fetchFriends = async () => {
@@ -44,13 +46,14 @@ const SideBar = () => {
         fetchedFriends = fetchedFriends.sort(
           (a, b) => countUnreadMessages(b) - countUnreadMessages(a)
         );
+        console.log(fetchedFriends);
         setFriends(fetchedFriends);
       } catch (error) {
         console.error('Unable to fetch friends', error);
       }
     };
     fetchFriends();
-  }, [isOpen]);
+  }, [isOpen, countUnreadMessages]);
 
   useEffect(() => {
     onClose();

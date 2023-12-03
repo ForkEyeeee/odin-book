@@ -13,6 +13,7 @@ import {
   IconButton,
   Box,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import { EditIcon, DeleteIcon, CloseIcon } from '@chakra-ui/icons';
 import { useState, useEffect } from 'react';
@@ -52,12 +53,16 @@ const Message = ({
   const initialState = { message: null, errors: {} };
   const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
+  const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const toast = useToast();
   const isAuthor = Number(searchParams.get('userId')) !== receiverId;
 
   useEffect(() => {
-    if (state !== null) setIsEdit(false);
+    if (state !== null) {
+      setIsLoading(false);
+      setIsEdit(false);
+    }
   }, [state]);
 
   return (
@@ -80,7 +85,7 @@ const Message = ({
               backgroundColor={isEdit ? 'gray.500' : backGround}
               borderRadius={isEdit ? 'lg' : 'initial'}
             >
-              <form action={formAction}>
+              <form onSubmit={() => setIsLoading(true)} action={formAction}>
                 {!isEdit ? (
                   <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
                     {content}
@@ -97,7 +102,7 @@ const Message = ({
                       bg={'white'}
                       color={'black'}
                     />
-                    <Flex justifyContent="flex-end">
+                    <Flex justifyContent="flex-end" alignItems={'center'}>
                       <Button
                         type="button"
                         aria-label="cancel button"
@@ -111,14 +116,28 @@ const Message = ({
                       </Button>
                       <input type="hidden" name="receiverId" value={receiverId} />
                       <input type="hidden" name="messageId" value={messageId} />
-                      <Button
-                        type="submit"
-                        colorScheme="green"
-                        variant={'ghost'}
-                        id="card-save-btn"
-                      >
-                        Save
-                      </Button>
+                      {isLoading ? (
+                        <Spinner />
+                      ) : (
+                        <Button
+                          type="submit"
+                          colorScheme="green"
+                          variant={'ghost'}
+                          id="card-save-btn"
+                          onClick={() => {
+                            toast({
+                              position: 'top',
+                              title: 'Message updated.',
+                              description: 'Message has been updated successfully',
+                              status: 'success',
+                              duration: 2000,
+                              isClosable: true,
+                            });
+                          }}
+                        >
+                          Save
+                        </Button>
+                      )}
                     </Flex>
                   </Box>
                 )}
