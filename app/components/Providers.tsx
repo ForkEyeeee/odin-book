@@ -1,8 +1,8 @@
 'use client';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { SessionProvider } from 'next-auth/react';
 import { CacheProvider } from '@chakra-ui/next-js';
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme, useColorMode } from '@chakra-ui/react';
 
 interface Props {
   children: ReactNode;
@@ -22,11 +22,25 @@ const config = {
 
 export const theme = extendTheme({ config });
 
-const Providers = (props: Props) => {
+const ColorModeSetter = ({ children }: any) => {
+  const { colorMode, setColorMode } = useColorMode();
+
+  useEffect(() => {
+    if (colorMode !== 'dark') {
+      setColorMode('dark');
+    }
+  }, [colorMode, setColorMode]);
+
+  return <>{children}</>;
+};
+
+const Providers = ({ children }: Props) => {
   return (
     <SessionProvider>
       <CacheProvider>
-        <ChakraProvider theme={theme}>{props.children}</ChakraProvider>
+        <ChakraProvider theme={theme}>
+          <ColorModeSetter>{children}</ColorModeSetter>
+        </ChakraProvider>
       </CacheProvider>
     </SessionProvider>
   );
