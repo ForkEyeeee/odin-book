@@ -926,9 +926,18 @@ export async function setReadMessages(receiverId: number) {
 
     await prisma.message.updateMany({
       where: {
-        receiverId: userId,
-        senderId: receiverId,
-        read: false,
+        OR: [
+          {
+            receiverId: userId,
+            senderId: receiverId,
+            read: false,
+          },
+          {
+            receiverId: receiverId,
+            senderId: userId,
+            read: false,
+          },
+        ],
       },
       data: {
         read: true,
