@@ -1,8 +1,8 @@
 import { Suspense } from 'react';
 import { getMessages, getUnreadMessagesCount, setReadMessages } from '@/app/lib/actions';
 import Chat from '../components/Chat';
-import Loading from '../for-you/loading';
 import NoDataFound from '../components/NoDataFound';
+import ChatSkeleton from './loading';
 
 export default async function Page({
   searchParams,
@@ -28,7 +28,7 @@ export default async function Page({
     await setReadMessages(receiverId);
 
     return (
-      <Suspense fallback={<Loading />}>
+      <Suspense fallback={<ChatSkeleton />}>
         <Chat
           messages={messages}
           recipient={recipient}
