@@ -58,12 +58,14 @@ export default function Chat({
   const [state, formAction] = useFormState(createMessage, initialState);
   const [inputText, setInputText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean | null>(null);
   const messagesEndRef = useRef<null | HTMLDivElement>(null);
 
   const toast = useToast();
 
   useEffect(() => {
     if (state.id !== null) {
+      setIsSubmitted(false);
       setIsLoading(false);
       setInputText('');
     }
@@ -78,6 +80,20 @@ export default function Chat({
     if (message === null) return;
     message.scrollIntoView({ behavior: 'smooth' });
   };
+
+  useEffect(() => {
+    if (isSubmitted === false) {
+      toast({
+        position: 'top',
+        title: 'Message sent.',
+        description: 'Message has been sent successfully',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+    setIsSubmitted(null);
+  }, [isSubmitted, toast]);
 
   return (
     <Box
@@ -130,28 +146,20 @@ export default function Chat({
           })}
       </VStack>
       <Box position="sticky" bottom="0" p={2} pb={0}>
-        <form onSubmit={() => setIsLoading(true)} action={formAction}>
+        <form
+          onSubmit={() => {
+            setIsSubmitted(true);
+            setIsLoading(true);
+          }}
+          action={formAction}
+        >
           <FormControl>
             <InputGroup>
               <InputRightElement>
                 {isLoading ? (
                   <Spinner color="black" />
                 ) : (
-                  <IconButton
-                    aria-label="send-message"
-                    type="submit"
-                    id="chat-submit-btn"
-                    onClick={() => {
-                      toast({
-                        position: 'top',
-                        title: 'Message sent.',
-                        description: 'Message has been sent successfully',
-                        status: 'success',
-                        duration: 2000,
-                        isClosable: true,
-                      });
-                    }}
-                  >
+                  <IconButton aria-label="send-message" type="submit" id="chat-submit-btn">
                     <BsSendFill color="black" />
                   </IconButton>
                 )}

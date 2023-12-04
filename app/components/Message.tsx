@@ -20,6 +20,7 @@ import { useState, useEffect } from 'react';
 import { deleteMessage, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
 import { useSearchParams } from 'next/navigation';
+import { Message } from '../lib/definitions';
 
 interface Props {
   justifyContent: string;
@@ -54,16 +55,51 @@ const Message = ({
   const [isEdit, setIsEdit] = useState(false);
   const [state, formAction] = useFormState(updateMessage, initialState);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState<boolean | null>(null);
+  const [deletedMessage, setDeletedMessage] = useState<Message>();
   const searchParams = useSearchParams();
   const toast = useToast();
   const isAuthor = Number(searchParams.get('userId')) !== receiverId;
 
   useEffect(() => {
     if (state !== null) {
+      setIsSubmitted(false);
       setIsLoading(false);
       setIsEdit(false);
     }
   }, [state]);
+
+  useEffect(() => {
+    if (isSubmitted === false) {
+      toast({
+        position: 'top',
+        title: 'Message updated.',
+        description: 'Message has been updated successfully',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+    setIsSubmitted(null);
+  }, [isSubmitted, toast]);
+
+  useEffect(() => {
+    if (deletedMessage !== null && deletedMessage !== undefined) {
+      toast({
+        position: 'top',
+        title: 'Message deleted.',
+        description: 'Message has been deleted successfully',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+  }, [deletedMessage, toast]);
+
+  const handleDelete = async (messageId: number, receiverId: number) => {
+    const message = (await deleteMessage(messageId, receiverId)) as Message;
+    setDeletedMessage(message);
+  };
 
   return (
     <Popover placement={popOverPlacement}>
@@ -85,7 +121,13 @@ const Message = ({
               backgroundColor={isEdit ? 'gray.500' : backGround}
               borderRadius={isEdit ? 'lg' : 'initial'}
             >
-              <form onSubmit={() => setIsLoading(true)} action={formAction}>
+              <form
+                onSubmit={() => {
+                  setIsSubmitted(true);
+                  setIsLoading(true);
+                }}
+                action={formAction}
+              >
                 {!isEdit ? (
                   <Text fontSize={{ base: '16px', sm: '20px' }} color={color}>
                     {content}
@@ -121,19 +163,11 @@ const Message = ({
                       ) : (
                         <Button
                           type="submit"
-                          colorScheme="green"
-                          variant={'ghost'}
-                          id="card-save-btn"
-                          onClick={() => {
-                            toast({
-                              position: 'top',
-                              title: 'Message updated.',
-                              description: 'Message has been updated successfully',
-                              status: 'success',
-                              duration: 2000,
-                              isClosable: true,
-                            });
+                          _hover={{
+                            bg: 'whatsapp.400 !important',
                           }}
+                          backgroundColor={'whatsapp.500 !important'}
+                          id="card-save-btn"
                         >
                           Save
                         </Button>
@@ -162,17 +196,7 @@ const Message = ({
                 id="delete-btn"
                 icon={<DeleteIcon color={'red'} />}
                 variant="ghost"
-                onClick={() => {
-                  toast({
-                    position: 'top',
-                    title: 'Message deleted.',
-                    description: 'Message has been deleted successfully',
-                    status: 'success',
-                    duration: 2000,
-                    isClosable: true,
-                  });
-                  deleteMessage(messageId, receiverId);
-                }}
+                onClick={() => handleDelete(messageId, receiverId)}
               />
             </HStack>
           </Flex>
