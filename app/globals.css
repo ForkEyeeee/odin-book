@@ -37,3 +37,8 @@ body {
     display: initial;
   }
 }
+
+.logo {
+  filter: brightness(0) saturate(100%) invert(98%) sepia(6%) saturate(243%) hue-rotate(199deg)
+    brightness(116%) contrast(100%);
+}
