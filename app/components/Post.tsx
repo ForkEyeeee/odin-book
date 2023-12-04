@@ -30,13 +30,31 @@ const initialState = { message: null, errors: {} };
 
 export function Post({ post, index, userId }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
+  const [isSubmitted, setIsSubmitted] = useState<boolean | null>(null);
   const [inputText, setInputText] = useState('');
   const [isHovering, setIsHovering] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
-    if (state !== null) setInputText('');
+    if (state !== null) {
+      setInputText('');
+      setIsSubmitted(false);
+    }
   }, [state]);
+
+  useEffect(() => {
+    if (isSubmitted === false) {
+      toast({
+        position: 'top',
+        title: 'Message sent.',
+        description: 'Message has been sent successfully',
+        status: 'success',
+        duration: 2000,
+        isClosable: true,
+      });
+    }
+    setIsSubmitted(null);
+  }, [isSubmitted, toast]);
 
   const isLiked = post.likes.find(element => element.authorId === userId);
   const isAuthor = post.authorId === userId;
@@ -107,9 +125,8 @@ export function Post({ post, index, userId }: PostProps) {
                         <Image
                           src={`${post.imageUrl}`}
                           alt={`Post image ${post.id}`}
-                          height={500}
-                          width={700}
-                          sizes="100vw"
+                          height={300}
+                          width={550}
                           quality={100}
                           placeholder={post.blurURL !== null ? 'blur' : 'empty'}
                           blurDataURL={post.blurURL !== null ? post.blurURL : ''}
@@ -173,7 +190,7 @@ export function Post({ post, index, userId }: PostProps) {
                 </Text>
               </HStack>
             </Flex>
-            <form action={formAction}>
+            <form onSubmit={() => setIsSubmitted(true)} action={formAction}>
               <VStack alignItems={'flex-end'} spacing={5}>
                 <FormControl mt={5}>
                   <input type="hidden" name="postId" value={post.id} />
@@ -183,6 +200,7 @@ export function Post({ post, index, userId }: PostProps) {
                     placeholder="Post your reply"
                     onChange={e => setInputText(e.currentTarget.value)}
                     value={inputText}
+                    required
                   />
                 </FormControl>
                 <Button
@@ -191,15 +209,6 @@ export function Post({ post, index, userId }: PostProps) {
                   variant={'solid'}
                   _hover={{
                     bg: 'green',
-                  }}
-                  onClick={() => {
-                    toast({
-                      title: 'Created successfully.',
-                      description: 'Comment has been created successfully',
-                      status: 'success',
-                      duration: 9000,
-                      isClosable: true,
-                    });
                   }}
                 >
                   Submit

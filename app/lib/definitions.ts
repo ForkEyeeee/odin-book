@@ -6,7 +6,6 @@ export interface User {
   id: number;
   name: string;
   email: string;
-  hashedPassword: string;
   googleId: string;
   profileId: number | null;
   profilePicture: string | null;
@@ -31,7 +30,6 @@ export interface Author {
   googleId: string;
   name: string;
   email: string;
-  hashedPassword: string;
   profileId: number | null;
   profilePicture: string | null;
 }

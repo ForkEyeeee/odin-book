@@ -11,7 +11,6 @@ declare module 'next-auth' {
       email?: string | null;
       image?: string | null;
       id: number;
-      hashedPassword?: string;
       profilePicture?: string;
     };
   }
@@ -50,7 +49,6 @@ export const authOptions: AuthOptions = {
             data: {
               name: user.name as string,
               email: user.email as string,
-              hashedPassword: '',
               profilePicture: user.image,
               googleId: user.id,
             },

@@ -46,7 +46,6 @@ const SideBar = () => {
         fetchedFriends = fetchedFriends.sort(
           (a, b) => countUnreadMessages(b) - countUnreadMessages(a)
         );
-        console.log(fetchedFriends);
         setFriends(fetchedFriends);
       } catch (error) {
         console.error('Unable to fetch friends', error);
