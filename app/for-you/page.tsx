@@ -1,12 +1,14 @@
 import NoDataFound from '../components/NoDataFound';
 import { Box } from '@chakra-ui/react';
-import LoadMore from '../components/load-more';
+import LoadMoreForYou from '../components/LoadMoreForYou';
+import TimeLineTabs from '../components/TimeLineTabs';
 
 export default async function Page() {
   try {
     return (
-      <Box h={'100vh'}>
-        <LoadMore />
+      <Box>
+        <TimeLineTabs />
+        <LoadMoreForYou />
       </Box>
     );
   } catch (error) {

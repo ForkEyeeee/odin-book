@@ -1,27 +1,28 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback, memo } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Spinner, Box, Center, AbsoluteCenter, Flex } from '@chakra-ui/react';
+import { Spinner, Center } from '@chakra-ui/react';
 import { getPosts, getPostTime } from '../lib/actions';
 import { PostWithAuthor } from '../lib/definitions';
 import PostList from './PostList';
 import { useSession } from 'next-auth/react';
 
-export default function LoadMore() {
+export default function LoadMoreDiscover() {
   const [posts, setPosts] = useState<PostWithAuthor[]>([]);
   const [page, setPage] = useState(0);
-  const [totalPages, setTotalPages] = useState(0);
+  const [totalPostCount, setTotalPostCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const { ref, inView } = useInView();
   const { data: session } = useSession();
-  const [isLoading, setIsLoading] = useState(false);
-  const userId = session?.user.id !== null ? session?.user.id : null;
 
-  const loadMorePosts = async () => {
+  const loadMorePosts = useCallback(async () => {
     const nextPage = page + 1;
-    const { timelinePosts, timelinePostsCount } = (await getPosts(nextPage)) ?? [];
-    if (timelinePosts === undefined) return;
+    const { otherTimeLinePosts, otherTimelinePostsCount } = (await getPosts(nextPage)) ?? [];
+
+    if (otherTimeLinePosts === undefined) return;
+
     await Promise.allSettled(
-      timelinePosts.map(async (post: PostWithAuthor) => {
+      otherTimeLinePosts.map(async (post: PostWithAuthor) => {
         try {
           const test = await getPostTime(post.createdAt);
           post.postTime = test;
@@ -30,27 +31,29 @@ export default function LoadMore() {
         }
       })
     );
-    setPosts((prevPosts: PostWithAuthor[]) => [...prevPosts, ...timelinePosts]);
+    setPosts((prevPosts: PostWithAuthor[]) => [...prevPosts, ...otherTimeLinePosts]);
     setPage(nextPage);
-    setTotalPages(timelinePostsCount);
+    setTotalPostCount(otherTimelinePostsCount);
     setIsLoading(false);
-  };
+  }, [page]);
 
   useEffect(() => {
+    if (posts.length >= totalPostCount && posts.length > 0) return;
     if (inView) {
       setIsLoading(true);
       loadMorePosts();
     }
-  }, [inView]);
+  }, [inView, loadMorePosts, posts.length, totalPostCount]);
 
-  if (isLoading)
+  const userId = session?.user.id !== null ? session?.user.id : null;
+
+  if (isLoading && posts.length === 0)
     return (
       <Center h={'100vh'}>
-        <Spinner />
+        <Spinner size="xl" />
       </Center>
     );
 
-  console.log(posts);
   return (
     <>
       {session && (
@@ -60,7 +63,7 @@ export default function LoadMore() {
             className="flex justify-center items-center p-4 col-span-1 sm:col-span-2 md:col-span-3"
             ref={ref}
           >
-            {posts.length !== totalPages ? <Spinner /> : null}
+            {isLoading ? <Spinner /> : null}
           </div>
         </div>
       )}
