@@ -1,28 +1,27 @@
 'use client';
-
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Spinner } from '@chakra-ui/react';
+import { Spinner, Box, Center, AbsoluteCenter, Flex } from '@chakra-ui/react';
 import { getPosts, getPostTime } from '../lib/actions';
-// import { Beers } from '@/components/beers';
-import { Post, PostWithAuthor } from '../lib/definitions';
+import { PostWithAuthor } from '../lib/definitions';
 import PostList from './PostList';
 import { useSession } from 'next-auth/react';
 
 export default function LoadMore() {
   const [posts, setPosts] = useState<PostWithAuthor[]>([]);
   const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const { ref, inView } = useInView();
   const { data: session } = useSession();
+  const [isLoading, setIsLoading] = useState(false);
   const userId = session?.user.id !== null ? session?.user.id : null;
 
   const loadMorePosts = async () => {
-    // Once the page 8 is reached repeat the process all over again.
-    console.log('running');
     const nextPage = page + 1;
-    const newPosts = (await getPosts(nextPage)).timelinePosts ?? [];
+    const { timelinePosts, timelinePostsCount } = (await getPosts(nextPage)) ?? [];
+    if (timelinePosts === undefined) return;
     await Promise.allSettled(
-      newPosts.map(async (post: PostWithAuthor) => {
+      timelinePosts.map(async (post: PostWithAuthor) => {
         try {
           const test = await getPostTime(post.createdAt);
           post.postTime = test;
@@ -31,16 +30,25 @@ export default function LoadMore() {
         }
       })
     );
-    console.log(newPosts);
-    setPosts((prevPosts: PostWithAuthor[]) => [...prevPosts, ...newPosts]);
+    setPosts((prevPosts: PostWithAuthor[]) => [...prevPosts, ...timelinePosts]);
     setPage(nextPage);
+    setTotalPages(timelinePostsCount);
+    setIsLoading(false);
   };
 
   useEffect(() => {
     if (inView) {
+      setIsLoading(true);
       loadMorePosts();
     }
   }, [inView]);
+
+  if (isLoading)
+    return (
+      <Center h={'100vh'}>
+        <Spinner />
+      </Center>
+    );
 
   console.log(posts);
   return (
@@ -52,11 +60,10 @@ export default function LoadMore() {
             className="flex justify-center items-center p-4 col-span-1 sm:col-span-2 md:col-span-3"
             ref={ref}
           >
-            {posts.length !== 0 ? <Spinner /> : null}
+            {posts.length !== totalPages ? <Spinner /> : null}
           </div>
         </div>
       )}
-      <div>TEST</div>
     </>
   );
 }
