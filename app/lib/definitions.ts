@@ -17,6 +17,7 @@ export interface PostProps {
   post: PostWithAuthor;
   index?: number;
   userId: number;
+  innerRef?: (node?: Element | null | undefined) => void;
 }
 
 export interface TimeLineTabsProps {
@@ -43,6 +44,13 @@ export interface Post {
   postTime?: string;
   author?: Author;
   success?: boolean;
+  // likes?: {
+  //   authorId: number;
+  //   createdAt: Date;
+  //   id: number;
+  //   postId: number;
+  // };
+  // comments: Comment[];
 }
 
 export interface PostWithAuthor {

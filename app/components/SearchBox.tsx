@@ -22,7 +22,6 @@ interface SearchBoxProps {
 }
 
 const SearchBox = ({ filteredUsers, userId }: SearchBoxProps) => {
-  console.log(filteredUsers);
   const [isLoading, setIsLoading] = useState(false);
   const searchParams = useSearchParams();
   const pathname = usePathname();

@@ -28,7 +28,7 @@ import { motion } from 'framer-motion';
 
 const initialState = { message: null, errors: {} };
 
-export function Post({ post, index, userId }: PostProps) {
+export function Post({ post, index, userId, innerRef }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
   const [isSubmitted, setIsSubmitted] = useState<boolean | null>(null);
   const [inputText, setInputText] = useState('');
@@ -74,7 +74,7 @@ export function Post({ post, index, userId }: PostProps) {
         variants={variants}
         transition={{ duration: 0.5 }}
       >
-        <Center>
+        <Center ref={innerRef}>
           <Box
             bg={'gray.900'}
             borderWidth="1px"
