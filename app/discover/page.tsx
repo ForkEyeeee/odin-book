@@ -6,7 +6,7 @@ import TimeLineTabs from '../components/TimeLineTabs';
 export default async function Page() {
   try {
     return (
-      <Box>
+      <Box minHeight="100vh">
         <TimeLineTabs />
         <LoadMoreDiscover />
       </Box>

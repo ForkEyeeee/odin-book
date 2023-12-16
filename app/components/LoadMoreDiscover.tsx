@@ -1,7 +1,7 @@
 'use client';
-import { useEffect, useState, useCallback, memo } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Spinner, Center } from '@chakra-ui/react';
+import { Spinner, Center, Flex, Box } from '@chakra-ui/react';
 import { getPosts, getPostTime } from '../lib/actions';
 import { PostWithAuthor } from '../lib/definitions';
 import PostList from './PostList';
@@ -38,12 +38,11 @@ export default function LoadMoreDiscover() {
   }, [page]);
 
   useEffect(() => {
-    if (posts.length >= totalPostCount && posts.length > 0) return;
     if (inView) {
       setIsLoading(true);
       loadMorePosts();
     }
-  }, [inView, loadMorePosts, posts.length, totalPostCount]);
+  }, [inView]);
 
   const userId = session?.user.id !== null ? session?.user.id : null;
 
@@ -57,15 +56,20 @@ export default function LoadMoreDiscover() {
   return (
     <>
       {session && (
-        <div>
-          <PostList forYouPosts={posts} userId={userId!!} />
-          <div
-            className="flex justify-center items-center p-4 col-span-1 sm:col-span-2 md:col-span-3"
-            ref={ref}
-          >
-            {isLoading ? <Spinner /> : null}
-          </div>
-        </div>
+        <>
+          <PostList discoverPosts={posts} userId={userId!!} />
+          <Flex justifyContent="center" ref={ref} mt={10} mb={10}>
+            {posts.length !== totalPostCount ? (
+              <Spinner
+                size={'xl'}
+                thickness="4px"
+                speed="0.65s"
+                emptyColor="gray.200"
+                color="blue.500"
+              />
+            ) : null}
+          </Flex>
+        </>
       )}
     </>
   );
