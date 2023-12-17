@@ -76,7 +76,7 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
       >
         <Center ref={innerRef}>
           <Box
-            bg={'gray.900'}
+            bg={'black'}
             borderWidth="1px"
             borderRadius="md"
             borderColor={'whitesmoke'}

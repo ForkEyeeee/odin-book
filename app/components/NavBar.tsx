@@ -56,6 +56,7 @@ export default function NavBar() {
       position="sticky"
       top={0}
       zIndex={1}
+      bgColor={'black'}
     >
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
         <Link href={'/discover'}>

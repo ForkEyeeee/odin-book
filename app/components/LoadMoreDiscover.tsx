@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Spinner, Center, Flex, Box } from '@chakra-ui/react';
+import { Spinner, Center, Flex } from '@chakra-ui/react';
 import { getPosts, getPostTime } from '../lib/actions';
 import { PostWithAuthor } from '../lib/definitions';
 import PostList from './PostList';
@@ -31,7 +31,12 @@ export default function LoadMoreDiscover() {
         }
       })
     );
-    setPosts((prevPosts: PostWithAuthor[]) => [...prevPosts, ...otherTimeLinePosts]);
+    setPosts(prevPosts => {
+      const newPosts = otherTimeLinePosts.filter(
+        newPost => !prevPosts.some(prevPost => prevPost.id === newPost.id)
+      );
+      return [...prevPosts, ...newPosts];
+    });
     setPage(nextPage);
     setTotalPostCount(otherTimelinePostsCount);
     setIsLoading(false);
@@ -42,7 +47,7 @@ export default function LoadMoreDiscover() {
       setIsLoading(true);
       loadMorePosts();
     }
-  }, [inView]);
+  }, [inView, loadMorePosts]);
 
   const userId = session?.user.id !== null ? session?.user.id : null;
 

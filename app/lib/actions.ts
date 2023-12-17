@@ -741,7 +741,6 @@ export async function getPosts(page = 1) {
     const pageNumber = isNaN(page) || page < 1 ? 1 : page;
     const take = 5;
     const skip = (pageNumber - 1) * take;
-    console.log(pageNumber);
     const userfriendIds = userFriends.map(friend =>
       friend.user1Id === userId ? friend.user2Id : friend.user1Id
     );

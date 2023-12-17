@@ -31,7 +31,12 @@ export default function LoadMoreForYou() {
         }
       })
     );
-    setPosts((prevPosts: PostWithAuthor[]) => [...prevPosts, ...timelinePosts]);
+    setPosts(prevPosts => {
+      const newPosts = timelinePosts.filter(
+        newPost => !prevPosts.some(prevPost => prevPost.id === newPost.id)
+      );
+      return [...prevPosts, ...newPosts];
+    });
     setPage(nextPage);
     setTotalPostCount(timelinePostsCount);
     setIsLoading(false);
@@ -42,7 +47,7 @@ export default function LoadMoreForYou() {
       setIsLoading(true);
       loadMorePosts();
     }
-  }, [inView]);
+  }, [inView, loadMorePosts]);
 
   const userId = session?.user.id !== null ? session?.user.id : null;
 

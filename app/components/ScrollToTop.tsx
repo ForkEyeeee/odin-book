@@ -1,24 +1,25 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { IconButton } from '@chakra-ui/react';
 import { FaArrowUp } from 'react-icons/fa';
 
 const ScrollToTopButton = () => {
-  const [isVisible, setIsVisible] = useState(false);
-
-  const toggleVisibility = () => {
-    if (window.pageYOffset > 10) {
-      setIsVisible(true);
-    } else {
-      setIsVisible(false);
+  const scrollFunction = () => {
+    const scrollButton = document.getElementById('scrollButton');
+    if (scrollButton) {
+      if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+        scrollButton.style.opacity = '1';
+      } else {
+        scrollButton.style.opacity = '0';
+      }
     }
   };
-
   useEffect(() => {
-    window.addEventListener('scroll', toggleVisibility);
+    window.addEventListener('scroll', scrollFunction);
+    scrollFunction();
 
     return () => {
-      window.removeEventListener('scroll', toggleVisibility);
+      window.removeEventListener('scroll', scrollFunction);
     };
   }, []);
 
@@ -31,11 +32,11 @@ const ScrollToTopButton = () => {
 
   return (
     <IconButton
+      id="scrollButton"
       icon={<FaArrowUp />}
       onClick={handleScrollToTop}
       size={'lg'}
       aria-label="Scroll to top"
-      display={{ base: 'none', lg: 'flex' }}
       style={{
         position: 'fixed',
         bottom: '45px',
@@ -45,7 +46,7 @@ const ScrollToTopButton = () => {
         borderRadius: '50%',
         border: 'none',
         cursor: 'pointer',
-        opacity: isVisible ? 1 : 0,
+        opacity: 0,
         transition: 'opacity 0.3s ease-in-out',
       }}
     />
