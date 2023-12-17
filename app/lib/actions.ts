@@ -728,7 +728,7 @@ export async function updateMessage(prevState: any, formData: FormData) {
   }
 }
 
-export async function getPosts(page = 1) {
+export async function getPosts(page: number) {
   try {
     const userId = await getUserId();
     if (userId === undefined) throw new Error();
@@ -744,7 +744,6 @@ export async function getPosts(page = 1) {
     const userfriendIds = userFriends.map(friend =>
       friend.user1Id === userId ? friend.user2Id : friend.user1Id
     );
-
     const timelinePosts = await prisma.post.findMany({
       where: {
         authorId: {
@@ -910,7 +909,6 @@ export async function getUnreadMessagesCount(receiverId: number | null) {
     });
     return { unreadMessageCount, unReadMessages };
   } catch (error) {
-    console.error(error);
     return { message: 'Unable to fetch unread message count' };
   }
 }

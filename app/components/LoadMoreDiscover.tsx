@@ -1,23 +1,35 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Spinner, Center, Flex } from '@chakra-ui/react';
+import { Spinner, Flex } from '@chakra-ui/react';
 import { getPosts, getPostTime } from '../lib/actions';
 import { PostWithAuthor } from '../lib/definitions';
 import PostList from './PostList';
 import { useSession } from 'next-auth/react';
 import Loading from '../discover/loading';
 
-export default function LoadMoreDiscover() {
+interface LoadMoreDiscoverProps {
+  initialPosts: PostWithAuthor[];
+  otherTimelinePostsCount: number;
+}
+
+export default function LoadMoreDiscover({
+  initialPosts,
+  otherTimelinePostsCount,
+}: LoadMoreDiscoverProps) {
   const [posts, setPosts] = useState<PostWithAuthor[]>([]);
-  const [page, setPage] = useState(0);
   const [totalPostCount, setTotalPostCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { ref, inView } = useInView();
   const { data: session } = useSession();
 
-  const loadMorePosts = useCallback(async () => {
-    const nextPage = page + 1;
+  useEffect(() => {
+    setPosts(initialPosts);
+    setTotalPostCount(otherTimelinePostsCount);
+  }, [initialPosts, otherTimelinePostsCount]);
+
+  const getNewPosts = useCallback(async () => {
+    const nextPage = posts.length / 5 + 1;
     const { otherTimeLinePosts, otherTimelinePostsCount } = (await getPosts(nextPage)) ?? [];
 
     if (otherTimeLinePosts === undefined) return;
@@ -38,17 +50,16 @@ export default function LoadMoreDiscover() {
       );
       return [...prevPosts, ...newPosts];
     });
-    setPage(nextPage);
     setTotalPostCount(otherTimelinePostsCount);
     setIsLoading(false);
-  }, [page]);
+  }, [posts.length]);
 
   useEffect(() => {
     if (inView) {
       setIsLoading(true);
-      loadMorePosts();
+      getNewPosts();
     }
-  }, [inView, loadMorePosts]);
+  }, [inView, getNewPosts]);
 
   const userId = session?.user.id !== null ? session?.user.id : null;
 

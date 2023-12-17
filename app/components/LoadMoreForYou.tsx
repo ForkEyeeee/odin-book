@@ -8,47 +8,55 @@ import PostList from './PostList';
 import { useSession } from 'next-auth/react';
 import Loading from '../for-you/loading';
 
-export default function LoadMoreForYou() {
+interface LoadMoreForYouProps {
+  initialPosts: PostWithAuthor[];
+  timelinePostsCount: number;
+}
+
+export default function LoadMoreForYou({ initialPosts, timelinePostsCount }: LoadMoreForYouProps) {
   const [posts, setPosts] = useState<PostWithAuthor[]>([]);
-  const [page, setPage] = useState(0);
   const [totalPostCount, setTotalPostCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const { ref, inView } = useInView();
   const { data: session } = useSession();
 
-  const loadMorePosts = useCallback(async () => {
-    const nextPage = page + 1;
-    const { timelinePosts, timelinePostsCount } = (await getPosts(nextPage)) ?? [];
-
-    if (timelinePosts === undefined) return;
-
-    await Promise.allSettled(
-      timelinePosts.map(async (post: PostWithAuthor) => {
-        try {
-          const test = await getPostTime(post.createdAt);
-          post.postTime = test;
-        } catch (error) {
-          return { message: 'Error calculating post time' };
-        }
-      })
-    );
-    setPosts(prevPosts => {
-      const newPosts = timelinePosts.filter(
-        newPost => !prevPosts.some(prevPost => prevPost.id === newPost.id)
-      );
-      return [...prevPosts, ...newPosts];
-    });
-    setPage(nextPage);
+  useEffect(() => {
+    setPosts(initialPosts);
     setTotalPostCount(timelinePostsCount);
-    setIsLoading(false);
-  }, [page]);
+  }, [initialPosts, timelinePostsCount]);
+
+  const getNewPosts = useCallback(async () => {
+    try {
+      const nextPage = posts.length / 5 + 1;
+      const { timelinePosts, timelinePostsCount } = (await getPosts(nextPage)) ?? [];
+
+      if (timelinePosts === undefined) return;
+      await Promise.allSettled(
+        timelinePosts.map(async (post: PostWithAuthor) => {
+          const time = await getPostTime(post.createdAt);
+          post.postTime = time;
+        })
+      );
+
+      setPosts(prevPosts => {
+        const newPosts = timelinePosts.filter(
+          newPost => !prevPosts.some(prevPost => prevPost.id === newPost.id)
+        );
+        return [...prevPosts, ...newPosts];
+      });
+      setTotalPostCount(timelinePostsCount);
+      setIsLoading(false);
+    } catch (error) {
+      return { message: 'Unable to fetch posts' };
+    }
+  }, [posts.length]);
 
   useEffect(() => {
     if (inView) {
       setIsLoading(true);
-      loadMorePosts();
+      getNewPosts();
     }
-  }, [inView, loadMorePosts]);
+  }, [inView, getNewPosts]);
 
   const userId = session?.user.id !== null ? session?.user.id : null;
 
