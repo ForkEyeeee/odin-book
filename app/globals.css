@@ -66,3 +66,12 @@ body {
   background-color: #000;
   transition: all ease-in-out 0.2s;
 }
+
+button,
+[type='button'],
+[type='reset'],
+[type='submit'] {
+  -webkit-appearance: button;
+  background-color: transparent;
+  background-image: none;
+}

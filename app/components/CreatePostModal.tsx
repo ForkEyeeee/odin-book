@@ -87,8 +87,9 @@ const CreatePostModal = () => {
       <Button
         onClick={onOpen}
         leftIcon={<AiOutlinePlus />}
-        color="black"
-        colorScheme="green"
+        variant={'solid'}
+        colorScheme="whatsapp"
+        color={'black'}
         fontWeight="bold"
         size={{ base: 'xs', sm: 'md' }}
         role="create-post-button"
