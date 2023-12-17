@@ -372,6 +372,12 @@ const uploadPost = async (imgUrl: string) => {
 
 export async function deletePost(postId: number, imgUrl: string) {
   try {
+    const deletedComment = await prisma.comment.deleteMany({
+      where: {
+        postId: postId,
+      },
+    });
+
     const deletedPost = await prisma.post.delete({
       where: {
         id: postId,
@@ -381,6 +387,7 @@ export async function deletePost(postId: number, imgUrl: string) {
     revalidatePath('/');
     return response;
   } catch (error) {
+    console.error(error);
     return { message: `Post unsuccessfully deleted` };
   }
 }
