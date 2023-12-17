@@ -208,10 +208,12 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
                 <Button
                   type="submit"
                   id="comment-submit-btn"
-                  variant={'solid'}
                   _hover={{
-                    bg: 'green',
+                    bg: 'whatsapp.500 !important',
                   }}
+                  ml={3}
+                  size={{ base: 'sm', xl: 'md' }}
+                  backgroundColor={'whatsapp.700 !important'}
                 >
                   Submit
                 </Button>
