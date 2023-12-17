@@ -6,6 +6,7 @@ import { getPosts, getPostTime } from '../lib/actions';
 import { PostWithAuthor } from '../lib/definitions';
 import PostList from './PostList';
 import { useSession } from 'next-auth/react';
+import Loading from '../discover/loading';
 
 export default function LoadMoreDiscover() {
   const [posts, setPosts] = useState<PostWithAuthor[]>([]);
@@ -51,18 +52,16 @@ export default function LoadMoreDiscover() {
 
   const userId = session?.user.id !== null ? session?.user.id : null;
 
-  // if (isLoading && posts.length === 0)
-  //   return (
-  //     <Center h={'100vh'}>
-  //       <Spinner size="xl" />
-  //     </Center>
-  //   );
-
   return (
     <>
       {session && (
         <>
-          <PostList discoverPosts={posts} userId={userId!!} />
+          {isLoading && posts.length === 0 ? (
+            <Loading />
+          ) : (
+            <PostList discoverPosts={posts} userId={userId!!} />
+          )}
+
           <Flex justifyContent="center" ref={ref} mt={10} mb={10}>
             {posts.length !== totalPostCount ? (
               <Spinner

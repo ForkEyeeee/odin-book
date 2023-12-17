@@ -34,11 +34,9 @@ const Post = () => {
 export default function Loading() {
   return (
     <>
-      <Post />
-      <Post />
-      <Post />
-      <Post />
-      <Post />
+      <Box mb={10}>
+        <Post />
+      </Box>
     </>
   );
 }

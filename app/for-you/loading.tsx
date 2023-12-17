@@ -1,14 +1,4 @@
-import {
-  Box,
-  Skeleton,
-  VStack,
-  HStack,
-  Avatar,
-  SkeletonText,
-  Center,
-  Container,
-  Flex,
-} from '@chakra-ui/react';
+import { Box, Skeleton, VStack, HStack, Avatar, SkeletonText, Center } from '@chakra-ui/react';
 
 const Post = () => {
   return (
@@ -44,14 +34,6 @@ const Post = () => {
 export default function Loading() {
   return (
     <>
-      <Container p={{ base: 5, sm: 8 }} pt={{ base: 3 }} borderRadius="lg" mt={10}>
-        <Flex flexDirection={{ base: 'column' }} alignItems={'center'}>
-          <Box>
-            <Skeleton height="20px" width="200px" />
-          </Box>
-          <Skeleton height="20px" width="300px" mt="4" />
-        </Flex>
-      </Container>
       <Post />
       <Post />
       <Post />

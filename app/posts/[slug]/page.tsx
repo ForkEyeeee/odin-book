@@ -12,6 +12,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     const [userId, post] = await Promise.all([getUserId(), getPost(postId)]);
 
     if (post === null || userId === undefined) return <NoDataFound />;
+    await new Promise(resolve => setTimeout(resolve, 500));
 
     return (
       <Box mt={10} minH={'100vh'} mb={10}>

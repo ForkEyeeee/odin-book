@@ -26,7 +26,7 @@ import { useState, useEffect } from 'react';
 import { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import PostSpinner from '../for-you/loading';
-import Loading from '../for-you/loading';
+import Loading from '../posts/loading';
 
 const initialState = { message: null, errors: {} };
 
@@ -68,14 +68,14 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
   };
 
   return (
-    <Suspense fallback={<Loading />}>
-      <motion.div
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        variants={variants}
-        transition={{ duration: 0.5 }}
-      >
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      exit="exit"
+      variants={variants}
+      transition={{ duration: 0.5 }}
+    >
+      <Suspense fallback={<Loading />}>
         <Center ref={innerRef}>
           <Box
             bg={'black'}
@@ -222,7 +222,7 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
             )}
           </Box>
         </Center>
-      </motion.div>
-    </Suspense>
+      </Suspense>
+    </motion.div>
   );
 }
