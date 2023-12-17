@@ -51,6 +51,13 @@ export default function LoadMoreDiscover() {
 
   const userId = session?.user.id !== null ? session?.user.id : null;
 
+  // if (isLoading && posts.length === 0)
+  //   return (
+  //     <Center h={'100vh'}>
+  //       <Spinner size="xl" />
+  //     </Center>
+  //   );
+
   return (
     <>
       {session && (

@@ -12,6 +12,7 @@ import {
   HStack,
   Center,
   useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import { FaHeart, FaTrash } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
@@ -23,8 +24,9 @@ import { createComment } from '../lib/actions';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Suspense } from 'react';
-import PostSkeleton from '../for-you/loading';
 import { motion } from 'framer-motion';
+import PostSpinner from '../for-you/loading';
+import Loading from '../for-you/loading';
 
 const initialState = { message: null, errors: {} };
 
@@ -66,7 +68,7 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
   };
 
   return (
-    <Suspense fallback={<PostSkeleton />}>
+    <Suspense fallback={<Loading />}>
       <motion.div
         initial="hidden"
         animate="visible"

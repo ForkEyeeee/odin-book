@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Spinner, Center, Flex } from '@chakra-ui/react';
+import { Spinner, Flex } from '@chakra-ui/react';
 import { getPosts, getPostTime } from '../lib/actions';
 import { PostWithAuthor } from '../lib/definitions';
 import PostList from './PostList';
@@ -50,6 +50,13 @@ export default function LoadMoreForYou() {
   }, [inView, loadMorePosts]);
 
   const userId = session?.user.id !== null ? session?.user.id : null;
+
+  // if (isLoading && posts.length === 0)
+  //   return (
+  //     <Center h={'100vh'}>
+  //       <Spinner size="xl" />
+  //     </Center>
+  //   );
 
   return (
     <>

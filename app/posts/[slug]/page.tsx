@@ -14,7 +14,7 @@ export default async function Page({ params }: { params: { slug: string } }) {
     if (post === null || userId === undefined) return <NoDataFound />;
 
     return (
-      <Box mt={10} h={'100vh'}>
+      <Box mt={10} minH={'100vh'} mb={10}>
         <Post post={post} userId={userId} />
       </Box>
     );

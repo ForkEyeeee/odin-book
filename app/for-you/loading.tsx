@@ -52,13 +52,11 @@ export default function Loading() {
           <Skeleton height="20px" width="300px" mt="4" />
         </Flex>
       </Container>
-      <Box mb={5}>
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-        <Post />
-      </Box>
+      <Post />
+      <Post />
+      <Post />
+      <Post />
+      <Post />
     </>
   );
 }
