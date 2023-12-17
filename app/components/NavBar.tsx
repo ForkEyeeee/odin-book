@@ -48,11 +48,16 @@ export default function NavBar() {
     });
   };
 
-  const backgroundColor = useColorModeValue('gray.100', 'black');
-  const menuItemHoverBg = useColorModeValue('#71767C', '#242424');
-
   return (
-    <Box px={4} bg={backgroundColor} h={{ base: 65 }} position="sticky" top={0} zIndex={1}>
+    <Box
+      px={4}
+      bg={useColorModeValue('gray.800', 'black')}
+      h={{ base: 65 }}
+      position="sticky"
+      top={0}
+      zIndex={1}
+      bgColor={'black'}
+    >
       <Flex h={16} alignItems="center" justifyContent={'space-between'}>
         <Link href={'/discover'}>
           <Icon as={RiFlashlightFill} cursor={'pointer'} h={8} w={8} />
@@ -100,12 +105,12 @@ export default function NavBar() {
                   cursor={'pointer'}
                   role="profile-button"
                 />
-                <MenuList bgColor={backgroundColor}>
+                <MenuList>
                   <Link href={`/profile?userid=${session.user.id}`} passHref>
                     <MenuItem
                       id="profile-link"
                       _hover={{
-                        bg: menuItemHoverBg,
+                        bg: '#71767C',
                         transition: '0.3s',
                       }}
                     >
@@ -115,7 +120,7 @@ export default function NavBar() {
                   <Link href="/friends" passHref>
                     <MenuItem
                       _hover={{
-                        bg: menuItemHoverBg,
+                        bg: '#71767C',
                         transition: '0.3s',
                       }}
                     >
@@ -125,7 +130,7 @@ export default function NavBar() {
                   <Link href="/addfriend" passHref>
                     <MenuItem
                       _hover={{
-                        bg: menuItemHoverBg,
+                        bg: '#71767C',
                         transition: '0.3s',
                       }}
                     >
