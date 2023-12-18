@@ -25,7 +25,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import PostSpinner from '../for-you/loading';
+import PostSpinner from './loading';
 import Loading from '../posts/loading';
 
 const initialState = { message: null, errors: {} };

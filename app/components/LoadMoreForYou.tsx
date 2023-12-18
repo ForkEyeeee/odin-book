@@ -6,7 +6,7 @@ import { getPosts, getPostTime } from '../lib/actions';
 import { PostWithAuthor } from '../lib/definitions';
 import PostList from './PostList';
 import { useSession } from 'next-auth/react';
-import Loading from '../for-you/loading';
+import Loading from './loading';
 
 interface LoadMoreForYouProps {
   initialPosts: PostWithAuthor[];
@@ -17,17 +17,20 @@ export default function LoadMoreForYou({ initialPosts, timelinePostsCount }: Loa
   const [posts, setPosts] = useState<PostWithAuthor[]>([]);
   const [totalPostCount, setTotalPostCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
   const { ref, inView } = useInView();
   const { data: session } = useSession();
 
   useEffect(() => {
     setPosts(initialPosts);
     setTotalPostCount(timelinePostsCount);
+    setTimeout(() => setInitialLoading(false), 1000);
   }, [initialPosts, timelinePostsCount]);
 
   const getNewPosts = useCallback(async () => {
     try {
       const nextPage = posts.length / 5 + 1;
+
       const { timelinePosts, timelinePostsCount } = (await getPosts(nextPage)) ?? [];
 
       if (timelinePosts === undefined) return;
@@ -58,29 +61,33 @@ export default function LoadMoreForYou({ initialPosts, timelinePostsCount }: Loa
     }
   }, [inView, getNewPosts]);
 
-  const userId = session?.user.id !== null ? session?.user.id : null;
-
   return (
     <>
       {session && (
         <>
-          {isLoading && posts.length === 0 ? (
+          {initialLoading ? (
             <Loading />
           ) : (
-            <PostList forYouPosts={posts} userId={userId!!} />
-          )}
+            <>
+              {isLoading && posts.length === 0 ? (
+                <Loading />
+              ) : (
+                <PostList forYouPosts={posts} userId={session?.user.id ?? null} />
+              )}
 
-          <Flex justifyContent="center" ref={ref} mt={10} mb={10}>
-            {posts.length !== totalPostCount ? (
-              <Spinner
-                size={'xl'}
-                thickness="4px"
-                speed="0.65s"
-                emptyColor="gray.200"
-                color="blue.500"
-              />
-            ) : null}
-          </Flex>
+              <Flex justifyContent="center" ref={ref} mt={10} mb={10}>
+                {posts.length !== totalPostCount ? (
+                  <Spinner
+                    size={'xl'}
+                    thickness="4px"
+                    speed="0.65s"
+                    emptyColor="gray.200"
+                    color="blue.500"
+                  />
+                ) : null}
+              </Flex>
+            </>
+          )}
         </>
       )}
     </>
