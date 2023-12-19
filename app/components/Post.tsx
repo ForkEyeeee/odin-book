@@ -12,20 +12,17 @@ import {
   HStack,
   Center,
   useToast,
-  Spinner,
 } from '@chakra-ui/react';
 import { FaHeart, FaTrash } from 'react-icons/fa';
 import { PostProps } from '../lib/definitions';
 import Link from 'next/link';
 import { deletePost, likePost } from '../lib/actions';
 import Comment from './Comment';
+import Image from 'next/image';
+import { useState, useEffect, Suspense } from 'react';
 import { useFormState } from 'react-dom';
 import { createComment } from '../lib/actions';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import PostSpinner from './loading';
 import Loading from '../posts/loading';
 
 const initialState = { message: null, errors: {} };
@@ -34,7 +31,8 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
   const [state, formAction] = useFormState(createComment, initialState);
   const [isSubmitted, setIsSubmitted] = useState<boolean | null>(null);
   const [inputText, setInputText] = useState('');
-  const [isHovering, setIsHovering] = useState(false);
+  const [isLiked, setIsLiked] = useState(post.likes.some(element => element.authorId === userId));
+  const [likeCount, setLikeCount] = useState(post.likes.length);
   const toast = useToast();
 
   useEffect(() => {
@@ -58,8 +56,13 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
     setIsSubmitted(null);
   }, [isSubmitted, toast]);
 
-  const isLiked = post.likes.find(element => element.authorId === userId);
   const isAuthor = post.authorId === userId;
+
+  const handleLikeClick = () => {
+    likePost(post.id);
+    setIsLiked(!isLiked);
+    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+  };
 
   const variants = {
     hidden: { opacity: 0, y: 20 },
@@ -175,10 +178,8 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
                 <IconButton
                   aria-label="Like"
                   id="post-like-btn"
-                  icon={<FaHeart color={isLiked || isHovering ? '#f91880' : 'currentColor'} />}
-                  onClick={() => likePost(post.id)}
-                  onMouseEnter={() => setIsHovering(true)}
-                  onMouseLeave={() => setIsHovering(false)}
+                  icon={<FaHeart color={isLiked ? '#f91880' : 'currentColor'} />}
+                  onClick={handleLikeClick}
                   size={{ base: 'sm', xl: 'md' }}
                   variant="ghost"
                   _hover={{
@@ -190,10 +191,10 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
                 <Text
                   fontSize={{ base: 'sm', xl: 'md' }}
                   id="post-likes"
-                  color={isHovering ? '#f91880' : 'currentColor'}
+                  color={isLiked ? '#f91880' : 'currentColor'}
                   transition="color 0.2s ease-in-out"
                 >
-                  {post.likes.length}
+                  {likeCount}
                 </Text>
               </HStack>
             </Flex>

@@ -479,8 +479,10 @@ export async function likePost(postId: number) {
       },
     });
 
+    let changedLike;
+
     if (userLike.length > 0) {
-      const deletedLike = await prisma.postLike.delete({
+      changedLike = await prisma.postLike.delete({
         where: {
           id: userLike[0].id,
         },
@@ -492,11 +494,12 @@ export async function likePost(postId: number) {
         createdAt: new Date(),
       };
 
-      const createdLike = await prisma.postLike.create({
+      changedLike = await prisma.postLike.create({
         data: likeData,
       });
     }
-    revalidatePath('/');
+    // revalidatePath('/');
+    return changedLike;
   } catch (error) {
     return { message: `Unable to like post` };
   }
