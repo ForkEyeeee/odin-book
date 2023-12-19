@@ -86,7 +86,6 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
             w={{ base: 300, sm: 430, md: 700, lg: 900, xl: 1200 }}
             boxShadow="md"
             mt={index !== undefined && index > 0 ? 10 : 0}
-            className="test"
           >
             <HStack alignItems={'flex-start'} justifyContent={'space-between'}>
               <Flex justifyContent={'space-between'}>
@@ -103,10 +102,16 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
                     </Link>
                     <VStack alignItems={'flex-start'}>
                       <Text fontWeight="bold">{post.author.name}</Text>
-                      <Text color="gray.500" maxW={{ base: 150, sm: '100%' }}>
+                      <Text
+                        color="gray.500"
+                        fontSize={{ base: 'sm', lg: 'initial' }}
+                        maxW={{ base: 150, sm: '100%' }}
+                      >
                         {post.author.email}
                       </Text>
-                      <Text color="gray.500">{post.postTime}</Text>
+                      <Text color="gray.500" fontSize={{ base: 'sm', lg: 'initial' }}>
+                        {post.postTime}
+                      </Text>
                     </VStack>
                   </Flex>
                   <Text
