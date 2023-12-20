@@ -11,6 +11,7 @@ export interface User {
   profilePicture: string | null;
   friendsAsUser1?: Friend[] | undefined;
   friendsAsUser2?: Friend[] | undefined;
+  message?: string;
 }
 
 export interface PostProps {
@@ -44,13 +45,6 @@ export interface Post {
   postTime?: string;
   author?: Author;
   success?: boolean;
-  // likes?: {
-  //   authorId: number;
-  //   createdAt: Date;
-  //   id: number;
-  //   postId: number;
-  // };
-  // comments: Comment[];
 }
 
 export interface PostWithAuthor {
@@ -145,10 +139,22 @@ export interface Comment {
   createdAt: Date;
   author: Author;
   commentLikes: CommentLike[];
+  message?: string;
 }
 
 export interface CommentProps {
   comments: Comment[];
   post: PostWithAuthor;
   userId: number;
+  handleDeleteComment: (
+    comment: Comment
+  ) => Promise<
+    | ((
+        commentId: number
+      ) => Promise<
+        | { id: number; content: string; authorId: number; postId: number; createdAt: Date }
+        | { message: string }
+      >)
+    | undefined
+  >;
 }

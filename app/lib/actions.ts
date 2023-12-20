@@ -11,7 +11,7 @@ import crypto from 'crypto';
 import { extractPublicId } from 'cloudinary-build-url';
 import { getPlaiceholder } from 'plaiceholder';
 import { format, formatDistanceToNowStrict } from 'date-fns';
-import { PostWithAuthor } from './definitions';
+import { PostWithAuthor, User } from './definitions';
 
 export const getUserId = async () => {
   try {
@@ -212,6 +212,26 @@ export async function getUsers() {
   }
 }
 
+export async function getUser(): Promise<User> {
+  try {
+    const userId = await getUserId();
+
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    return user;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
 export async function searchUsers(query: string) {
   try {
     const userId = await getUserId();
@@ -498,7 +518,6 @@ export async function likePost(postId: number) {
         data: likeData,
       });
     }
-    // revalidatePath('/');
     return changedLike;
   } catch (error) {
     return { message: `Unable to like post` };
@@ -535,41 +554,32 @@ export async function likeComment(commentId: number, postId: number) {
         data: likeData,
       });
     }
-
-    revalidatePath('/');
   } catch (error) {
     return { message: `Unable to like comment` };
   }
 }
 
-export async function createComment(prevState: any, formData: FormData) {
+export async function createComment(postId: number, content: string) {
   try {
     const userId = await getUserId();
 
-    const commentSchema = z.object({
-      content: z.string(),
-      postId: z.string().transform(str => Number(str)),
-    });
-
     const form = {
-      content: formData.get('comment'),
+      content: content,
       authorId: userId,
-      postId: formData.get('postId'),
+      postId: postId,
       createdAt: new Date(),
     };
-    const parsedForm = commentSchema.parse(form);
 
     const commentData = {
-      content: parsedForm.content,
+      content: form.content,
       authorId: userId,
-      postId: parsedForm.postId,
+      postId: form.postId,
       createdAt: new Date(),
     };
 
     const createdComment = await prisma.comment.create({
       data: commentData,
     });
-    revalidatePath('/');
     return createdComment;
   } catch (error) {
     return { message: `Messages unsuccessfully created` };
@@ -592,7 +602,6 @@ export async function deleteComment(commentId: number) {
       });
     });
 
-    revalidatePath('/');
     return result;
   } catch (error) {
     return { message: `Comment unsuccessfully deleted` };
@@ -828,6 +837,7 @@ export async function getPosts(page: number) {
       userId,
     };
   } catch (error) {
+    console.error(error);
     return { message: 'Unable to fetch posts' };
   }
 }

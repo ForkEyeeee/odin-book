@@ -14,40 +14,84 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { FaHeart, FaTrash } from 'react-icons/fa';
-import { PostProps } from '../lib/definitions';
+import { PostProps, User } from '../lib/definitions';
 import Link from 'next/link';
-import { deletePost, likePost } from '../lib/actions';
 import Comment from './Comment';
+import { deletePost, getUser, likePost } from '../lib/actions';
 import Image from 'next/image';
 import { useState, useEffect, Suspense } from 'react';
-import { useFormState } from 'react-dom';
 import { createComment } from '../lib/actions';
 import { motion } from 'framer-motion';
 import Loading from '../posts/loading';
-
-const initialState = { message: null, errors: {} };
+import { deleteComment } from '../lib/actions';
+import { Comment as CommentType } from '../lib/definitions';
 
 export function Post({ post, index, userId, innerRef }: PostProps) {
-  const [state, formAction] = useFormState(createComment, initialState);
   const [isSubmitted, setIsSubmitted] = useState<boolean | null>(null);
   const [inputText, setInputText] = useState('');
   const [isLiked, setIsLiked] = useState(post.likes.some(element => element.authorId === userId));
   const [likeCount, setLikeCount] = useState(post.likes.length);
+  const [postComments, setPostComments] = useState<CommentType[]>([]);
+  const [isHovering, setIsHovering] = useState(false);
+
   const toast = useToast();
 
   useEffect(() => {
-    if (state !== null) {
+    setPostComments(post.comments);
+  }, [post.comments]);
+
+  const addComment = async () => {
+    try {
+      const createdComment = (await createComment(post.id, inputText)) as CommentType;
+      const user: User = await getUser();
+
+      if (user === undefined) return;
+
+      const commentData = {
+        content: inputText,
+        authorId: userId,
+        postId: post.id,
+        createdAt: new Date(),
+        author: {
+          id: user.id,
+          googleId: user.googleId,
+          name: user.name,
+          email: user.email,
+          profileId: user.profileId,
+          profilePicture: user.profilePicture,
+        },
+        commentLikes: [],
+        id: createdComment.id,
+      };
+      setPostComments(prevComments => [...prevComments, commentData]);
       setInputText('');
       setIsSubmitted(false);
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to add comment',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
     }
-  }, [state]);
+  };
+
+  const handleDeleteComment = async (comment: CommentType) => {
+    const deletedComment = await deleteComment(comment.id);
+    if ('id' in deletedComment) {
+      setPostComments(postComments.filter(comment => comment.id !== deletedComment.id));
+    } else {
+      return deleteComment;
+    }
+  };
 
   useEffect(() => {
     if (isSubmitted === false) {
       toast({
         position: 'top',
-        title: 'Message sent.',
-        description: 'Message has been sent successfully',
+        title: 'Comment added.',
+        description: 'Comment has been added successfully',
         status: 'success',
         duration: 2000,
         isClosable: true,
@@ -178,8 +222,10 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
                 <IconButton
                   aria-label="Like"
                   id="post-like-btn"
-                  icon={<FaHeart color={isLiked ? '#f91880' : 'currentColor'} />}
+                  icon={<FaHeart color={isLiked || isHovering ? '#f91880' : 'currentColor'} />}
                   onClick={handleLikeClick}
+                  onMouseEnter={() => setIsHovering(true)}
+                  onMouseLeave={() => setIsHovering(false)}
                   size={{ base: 'sm', xl: 'md' }}
                   variant="ghost"
                   _hover={{
@@ -191,17 +237,22 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
                 <Text
                   fontSize={{ base: 'sm', xl: 'md' }}
                   id="post-likes"
-                  color={isLiked ? '#f91880' : 'currentColor'}
-                  transition="color 0.2s ease-in-out"
+                  color={isLiked || isHovering ? '#f91880' : 'currentColor'}
                 >
                   {likeCount}
                 </Text>
               </HStack>
             </Flex>
-            <form onSubmit={() => setIsSubmitted(true)} action={formAction}>
+            <form
+              onSubmit={e => {
+                e.preventDefault();
+                if (inputText.trim() !== '') {
+                  addComment();
+                }
+              }}
+            >
               <VStack alignItems={'flex-end'} spacing={5}>
                 <FormControl mt={5}>
-                  <input type="hidden" name="postId" value={post.id} />
                   <Textarea
                     name="comment"
                     id="comment-area"
@@ -225,8 +276,13 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
                 </Button>
               </VStack>
             </form>
-            {post.comments !== undefined && post.comments.length > 0 && (
-              <Comment comments={post.comments} post={post} userId={userId} />
+            {postComments !== undefined && postComments.length > 0 && (
+              <Comment
+                comments={postComments}
+                post={post}
+                userId={userId}
+                handleDeleteComment={handleDeleteComment}
+              />
             )}
           </Box>
         </Center>

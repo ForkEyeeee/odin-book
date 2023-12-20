@@ -1,4 +1,5 @@
-import { useState } from 'react';
+'use client';
+import { useState, useEffect } from 'react';
 import { Box, Text, Flex, Avatar, IconButton, HStack, Spacer } from '@chakra-ui/react';
 import { FaHeart, FaTrash } from 'react-icons/fa';
 import Link from 'next/link';
@@ -10,13 +11,49 @@ interface CommentItemProps {
   comment: Comment;
   post: Post;
   userId: number;
+  handleDeleteComment: (
+    comment: Comment
+  ) => Promise<
+    | ((
+        commentId: number
+      ) => Promise<
+        | { id: number; content: string; authorId: number; postId: number; createdAt: Date }
+        | { message: string }
+      >)
+    | undefined
+  >;
 }
 
-export default function CommentItem({ comment, post, userId }: CommentItemProps) {
+export default function CommentItem({
+  comment,
+  post,
+  userId,
+  handleDeleteComment,
+}: CommentItemProps) {
   const toast = useToast();
   const [isHovering, setIsHovering] = useState(false);
-  const userLikedComment = comment.commentLikes.some(like => like.authorId === userId);
+  const [isLiked, setIsLiked] = useState(
+    comment.commentLikes.some(element => element.authorId === userId)
+  );
+  const [likeCount, setLikeCount] = useState(comment.commentLikes.length);
+
   const isAuthor = comment.author.id === userId;
+
+  const handleLikeClick = async () => {
+    try {
+      await likeComment(comment.id, userId);
+      setIsLiked(current => !current);
+      setLikeCount(current => current + (isLiked ? -1 : 1));
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to like comment',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <Flex align="start" mt={comment.id > 0 ? 6 : 0} width="100%">
@@ -45,8 +82,8 @@ export default function CommentItem({ comment, post, userId }: CommentItemProps)
             <IconButton
               aria-label="Like"
               id="comment-like-btn"
-              icon={<FaHeart color={userLikedComment || isHovering ? '#f91880' : '#71767C'} />}
-              onClick={() => likeComment(comment.id, post.id)}
+              icon={<FaHeart color={isLiked || isHovering ? '#f91880' : '#71767C'} />}
+              onClick={() => handleLikeClick()}
               onMouseEnter={() => setIsHovering(true)}
               onMouseLeave={() => setIsHovering(false)}
               size="sm"
@@ -55,12 +92,8 @@ export default function CommentItem({ comment, post, userId }: CommentItemProps)
               variant="ghost"
               isRound
             />
-            <Text
-              id="comment-likes"
-              color={isHovering ? '#f91880' : '#71767C'}
-              transition="color 0.2s ease-in-out"
-            >
-              {comment.commentLikes.length}
+            <Text id="comment-likes" color={isHovering || isLiked ? '#f91880' : '#71767C'}>
+              {likeCount}
             </Text>
           </Flex>
           <Spacer />
@@ -77,7 +110,7 @@ export default function CommentItem({ comment, post, userId }: CommentItemProps)
                   duration: 9000,
                   isClosable: true,
                 });
-                deleteComment(comment.id);
+                handleDeleteComment(comment);
               }}
               _hover={{
                 color: 'black',
