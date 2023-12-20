@@ -11,7 +11,7 @@ import crypto from 'crypto';
 import { extractPublicId } from 'cloudinary-build-url';
 import { getPlaiceholder } from 'plaiceholder';
 import { format, formatDistanceToNowStrict } from 'date-fns';
-import { PostWithAuthor, User } from './definitions';
+import { User } from './definitions';
 
 export const getUserId = async () => {
   try {
@@ -85,7 +85,6 @@ export async function updateProfile(prevState: any, formData: FormData) {
       profile = updateProfile;
     }
     revalidatePath('/');
-    console.log(updateProfile);
     return { message: `Profile updated`, profile: profile };
   } catch (e) {
     console.error(e);
@@ -424,8 +423,6 @@ async function getBase64(imageUrl: string) {
 
     const { base64 } = await getPlaiceholder(Buffer.from(buffer));
 
-    console.log(`base64: ${base64}`);
-
     return base64;
   } catch (e) {
     if (e instanceof Error) console.log(e.stack);
@@ -549,12 +546,13 @@ export async function likeComment(commentId: number, postId: number) {
         createdAt: new Date(),
         postId: postId,
       };
-
+      console.log(likeData);
       const createdLike = await prisma.commentLike.create({
         data: likeData,
       });
     }
   } catch (error) {
+    console.error(error);
     return { message: `Unable to like comment` };
   }
 }
@@ -842,8 +840,9 @@ export async function getPosts(page: number) {
   }
 }
 
-export async function getPost(postId: number): Promise<PostWithAuthor | null> {
+export async function getPost(postId: number) {
   try {
+    if (isNaN(postId)) return;
     const post = await prisma.post.findUnique({
       where: {
         id: postId,

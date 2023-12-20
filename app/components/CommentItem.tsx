@@ -1,10 +1,8 @@
-'use client';
-import { useState, useEffect } from 'react';
-import { Box, Text, Flex, Avatar, IconButton, HStack, Spacer } from '@chakra-ui/react';
+import { useState } from 'react';
+import { Box, Text, Flex, Avatar, IconButton, HStack, Spacer, useToast } from '@chakra-ui/react';
 import { FaHeart, FaTrash } from 'react-icons/fa';
 import Link from 'next/link';
-import { likeComment, deleteComment } from '../lib/actions';
-import { useToast } from '@chakra-ui/react';
+import { likeComment } from '../lib/actions';
 import { Comment, Post } from '../lib/definitions';
 
 interface CommentItemProps {
@@ -40,11 +38,15 @@ export default function CommentItem({
   const isAuthor = comment.author.id === userId;
 
   const handleLikeClick = async () => {
+    setIsLiked(!isLiked);
+    setLikeCount(isLiked ? likeCount - 1 : likeCount + 1);
+
     try {
-      await likeComment(comment.id, userId);
-      setIsLiked(current => !current);
-      setLikeCount(current => current + (isLiked ? -1 : 1));
+      await likeComment(comment.id, post.id);
     } catch (error) {
+      setIsLiked(!isLiked);
+      setLikeCount(isLiked ? likeCount : likeCount - 1);
+
       toast({
         title: 'Error',
         description: 'Failed to like comment',
@@ -63,8 +65,8 @@ export default function CommentItem({
           cursor="pointer"
           bg="white"
           mt="1"
-          src={comment.author.profilePicture === null ? '' : comment.author.profilePicture}
-          name={`${comment.author.name}`}
+          src={comment.author.profilePicture ?? ''}
+          name={comment.author.name}
         />
       </Link>
       <Box ml="3" pt="1" flexGrow={1}>
@@ -83,7 +85,7 @@ export default function CommentItem({
               aria-label="Like"
               id="comment-like-btn"
               icon={<FaHeart color={isLiked || isHovering ? '#f91880' : '#71767C'} />}
-              onClick={() => handleLikeClick()}
+              onClick={handleLikeClick}
               onMouseEnter={() => setIsHovering(true)}
               onMouseLeave={() => setIsHovering(false)}
               size="sm"
@@ -92,7 +94,7 @@ export default function CommentItem({
               variant="ghost"
               isRound
             />
-            <Text id="comment-likes" color={isHovering || isLiked ? '#f91880' : '#71767C'}>
+            <Text id="comment-likes" color={isLiked || isHovering ? '#f91880' : '#71767C'}>
               {likeCount}
             </Text>
           </Flex>
@@ -112,10 +114,7 @@ export default function CommentItem({
                 });
                 handleDeleteComment(comment);
               }}
-              _hover={{
-                color: 'black',
-                bg: 'red',
-              }}
+              _hover={{ color: 'black', bg: 'red' }}
               size="sm"
               color="red"
             />
