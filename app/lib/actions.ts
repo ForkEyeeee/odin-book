@@ -143,7 +143,6 @@ export async function getFriendsSideBar() {
     const userFriend = userFriends.find(
       friend => friend.user1Id === friendId || friend.user2Id === friendId
     );
-    revalidatePath('/');
     return friendData ? { ...userFriend, ...friendData } : userFriend;
   });
   return combinedFriendsData;
