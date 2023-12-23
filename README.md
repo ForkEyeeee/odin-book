@@ -89,7 +89,7 @@ Before you begin, ensure you have the following installed:
    ```
 ## Preview of the Project
 
-![Odin Book Homepage](https://github.com/ForkEyeee/odin-book/blob/d50d70fc9296488b612b177cb93e6b5deda21fa4/public/ReadMeScreenshot.png)
+![Odin Book Homepage](https://github.com/ForkEyeee/odin-book/blob/6e1ec885723b32e27c190a30729137c79dd2c2a3/public/ReadMeScreenshot.png)
 
 *Image Description: Odin Book Homepage*
 
