@@ -87,11 +87,6 @@ Before you begin, ensure you have the following installed:
    # or
    yarn cypress open
    ```
-## Preview of the Project
-
-![Odin Book Homepage](https://github.com/ForkEyeee/odin-book/blob/1b27d7d202fb707491a3fcca91299cf67fa9474d/public/ReadMeScreenshot.png)
-
-*Image Description: Odin Book Homepage*
 
 ## Dependencies
 
