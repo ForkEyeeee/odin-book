@@ -19,7 +19,7 @@ Before you begin, ensure you have the following installed:
    Use Git to clone the project to your local machine:
 
    ```bash
-   git clone [https://github.com/ForkEyeee/odin-book]
+   git clone https://github.com/ForkEyeee/odin-book
    ```
 
 2. **Install dependencies**
