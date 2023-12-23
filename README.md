@@ -10,8 +10,7 @@ Social media platform built with Next.js & PostgreSQL, featuring user authentica
 
 Before you begin, ensure you have the following installed:
 - Node.js (LTS version)
-- npm, yarn, pnpm, or bun (package managers)
-- Web Browser
+- npm or yarn 
 
 ## Installation
 
@@ -39,7 +38,7 @@ Before you begin, ensure you have the following installed:
 
 3. **Environment Setup**
 
-   Create a `.env.local` file in the root of your project and fill it with the necessary environment variables:
+   Create a `.env` file in the root of your project and fill it with the necessary environment variables:
 
    ```plaintext
    DATABASE_URL=""
