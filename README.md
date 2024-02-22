@@ -94,7 +94,7 @@ Before you begin, ensure you have the following installed:
 - [Chakra UI](https://chakra-ui.com/)
 - [Cypress](https://docs.cypress.io/)
 - [Framer Motion](https://www.framer.com/)
-- [Zod](https://github.com/colinhacks/)
+- [Zod](https://github.com/colinhacks/zod/)
 - [Cloudinary](https://cloudinary.com/)
 - [Plaiceholder](https://plaiceholder.co/)
 - [Faker](https://fakerjs.dev/guide/)

@@ -1,6 +1,6 @@
 describe('Create and Delete Comment', () => {
   it('should type and submit a comment.', () => {
-    cy.get('#comment-area').type('This is my comment');
+    cy.get('#chat-input').type('This is my message');
     cy.get('#comment-submit-btn').click();
     cy.contains('div', 'Created successfully');
   });

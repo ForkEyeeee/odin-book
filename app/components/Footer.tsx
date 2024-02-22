@@ -48,7 +48,7 @@ export default function SmallWithLogoLeft() {
           ForkEyeee
         </Text>
         <LinkBox>
-          <Link href={'https://github.com/ForkEyeee'} target="_blank">
+          <Link href={'https://github.com/JBrown58/odin-book'} target="_blank">
             <HStack>
               <Image
                 className="logo"
