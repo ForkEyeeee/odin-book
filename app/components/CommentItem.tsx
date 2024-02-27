@@ -76,7 +76,7 @@ export default function CommentItem({
         <Text color="gray.400" fontSize="xs">
           {comment.createdAt.toDateString()}
         </Text>
-        <Text color="gray.200" fontSize="sm" mt="1">
+        <Text color="gray.200" fontSize="sm" mt="1" overflowWrap={"anywhere"}>
           {comment.content}
         </Text>
         <HStack justifyContent="space-between" width="100%" mt={5}>
