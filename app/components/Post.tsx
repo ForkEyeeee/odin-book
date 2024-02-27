@@ -258,6 +258,7 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
                     id="comment-area"
                     placeholder="Post your reply"
                     onChange={e => setInputText(e.currentTarget.value)}
+                    maxLength={150}
                     value={inputText}
                     required
                   />

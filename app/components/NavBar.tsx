@@ -30,6 +30,7 @@ export default function NavBar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
+
   useEffect(() => {
     const receiverId = pathname.includes('/messages')
       ? Number(searchParams.get('receiverId'))
