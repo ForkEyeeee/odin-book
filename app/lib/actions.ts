@@ -375,7 +375,7 @@ const uploadPost = async (imgUrl: string) => {
     const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
     const signature = generateSHA1(generateSignature(publicId, apiSecret!!));
-    const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
+    const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
     const formData = new FormData();
     formData.append('public_id', publicId);
@@ -384,9 +384,31 @@ const uploadPost = async (imgUrl: string) => {
 
     const response = await axios.post(url, formData);
   } catch (error) {
-    return { message: `Post unsuccessfully deleted` };
+    return { message: `Post unsuccessfully uploaded` };
   }
 };
+
+const destroyImage = async (imgUrl: string) => {
+ try {
+    const publicId = extractPublicId(imgUrl);
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
+    const timestamp = new Date().getTime();
+    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+    const apiSecret = process.env.CLOUDINARY_API_SECRET;
+    const signature = generateSHA1(generateSignature(publicId, apiSecret!!));
+    const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
+
+    const formData = new FormData()
+    formData.append('public_id', publicId)
+    formData.append('signature', signature)
+    formData.append('api_key', apiKey!!)
+    formData.append('timestamp', timestamp as any)
+
+    const deletePost = await axios.post(url, formData);
+  } catch (error) {
+    return { message: `Post unsuccessfully deleted` };
+  } 
+}
 
 export async function deletePost(postId: number, imgUrl: string) {
   try {
@@ -401,11 +423,12 @@ export async function deletePost(postId: number, imgUrl: string) {
         id: postId,
       },
     });
-    const response = await uploadPost(imgUrl);
+
+    const response = await destroyImage(imgUrl);
+
     revalidatePath('/');
     return response;
   } catch (error) {
-    console.error(error);
     return { message: `Post unsuccessfully deleted` };
   }
 }
@@ -465,7 +488,7 @@ export async function createPost(prevState: any, formData: FormData) {
         blurURL: parsedForm.blurURL,
       },
     });
-
+    
     revalidatePath('/');
     return { ...createdPost, success: true };
   } catch (error) {
@@ -545,7 +568,6 @@ export async function likeComment(commentId: number, postId: number) {
         createdAt: new Date(),
         postId: postId,
       };
-      console.log(likeData);
       const createdLike = await prisma.commentLike.create({
         data: likeData,
       });
