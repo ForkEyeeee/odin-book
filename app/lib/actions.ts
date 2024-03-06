@@ -12,6 +12,7 @@ import { extractPublicId } from 'cloudinary-build-url';
 import { getPlaiceholder } from 'plaiceholder';
 import { format, formatDistanceToNowStrict } from 'date-fns';
 import { User } from './definitions';
+import { v2 as cloudinary } from 'cloudinary';
 
 export const getUserId = async () => {
   try {
@@ -367,22 +368,54 @@ const generateSignature = (publicId: string, apiSecret: string) => {
   return `public_id=${publicId}&timestamp=${timestamp}${apiSecret}`;
 };
 
-const uploadPost = async (imgUrl: string) => {
-  try {
-    const publicId = extractPublicId(imgUrl);
+const signUploadForm = (apiSecret: string) => {
+  const timestamp = Math.round(new Date().getTime() / 1000);
+  const signature = cloudinary.utils.api_sign_request({
+    timestamp: timestamp,
+    upload_preset: `${process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}`,
+    folder: `${process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER}`,
+  }, apiSecret!!);
 
+  return { timestamp, signature };
+};
+
+export async function uploadImage(formData: FormData) {
+  try {    
+    const file = formData.get("file")
+    const postText = formData.get("post") as string
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
     const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
     const apiSecret = process.env.CLOUDINARY_API_SECRET;
-    const signature = generateSHA1(generateSignature(publicId, apiSecret!!));
     const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
-    const formData = new FormData();
-    formData.append('public_id', publicId);
-    formData.append('signature', signature);
-    formData.append('api_key', apiKey as string);
+    const allowedTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+      if (file) {
+        if (file instanceof File && allowedTypes.includes(file.type)) {
+          const imageFormData = new FormData();
+          const signData = signUploadForm(apiSecret!!);
 
-    const response = await axios.post(url, formData);
+          imageFormData.append('file', file);
+          imageFormData.append('upload_preset', `${process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}`);
+          imageFormData.append('api_key', apiKey!!)
+          imageFormData.append("timestamp", signData.timestamp as any);
+          imageFormData.append("signature", signData.signature);
+          imageFormData.append("folder", `${process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER}`)
+          imageFormData.append("post", postText)
+          
+          const response = await fetch(url, {
+            method: "POST",
+            body: imageFormData
+          })
+
+          if(!response.ok) throw new Error('Post upload failed');
+          
+          const result = await response.json()          
+          imageFormData.append('image-url', result.secure_url);
+          return await createPost("", imageFormData)
+        } else {
+          return { message: 'Please enter a Valid file format', success: false };
+        }
+      }
   } catch (error) {
     return { message: `Post unsuccessfully uploaded` };
   }
@@ -412,6 +445,22 @@ const destroyImage = async (imgUrl: string) => {
 
 export async function deletePost(postId: number, imgUrl: string) {
   try {
+    const userId = await getUserId()
+    
+    const deletedCommentLikes = await prisma.commentLike.deleteMany({
+      where: {
+        authorId: userId,
+        postId: postId
+      }
+    })
+
+    const deletedPostLikes = await prisma.postLike.deleteMany({
+      where: {
+        authorId: userId,
+        postId: postId
+      }
+    })
+
     const deletedComment = await prisma.comment.deleteMany({
       where: {
         postId: postId,
@@ -492,7 +541,6 @@ export async function createPost(prevState: any, formData: FormData) {
     revalidatePath('/');
     return { ...createdPost, success: true };
   } catch (error) {
-    console.error(error);
     return { message: `Unable to create Post` };
   }
 }

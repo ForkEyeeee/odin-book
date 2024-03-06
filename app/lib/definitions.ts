@@ -44,8 +44,15 @@ export interface Post {
   blurURL: string | null;
   postTime?: string;
   author?: Author;
+  message?: string | undefined;
+  success?: boolean;
+} 
+export interface ErrorResponse {
+  message: string;
   success?: boolean;
 }
+
+export type CreatePostResponse = Post | ErrorResponse | undefined;
 
 export interface PostWithAuthor {
   id: number;

@@ -21,7 +21,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { AiOutlinePlus } from 'react-icons/ai';
 import { Post } from '../lib/definitions';
-import { handleCreatePost } from './util/handleCreatePost';
+import { uploadImage } from '../lib/actions';
+import { CreatePostResponse } from '../lib/definitions';
 
 const CreatePostModal = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -61,14 +62,24 @@ const CreatePostModal = () => {
     event.preventDefault();
 
     try {
-      const result = await handleCreatePost(postText, file);
-      if (!result.success) {
+      const data = new FormData()
+      if (!file) throw new Error("Post creation failed");
+      
+      data.set('file', file);
+      data.set('post', postText)
+      
+      const result: CreatePostResponse = await uploadImage(data);
+      if(!result) throw new Error("Post creation failed")
+      
+      if (!result.success && result.message) {
         setError(result.message);
         setIsLoading(false);
         return;
       }
-      setPost(result);
+
+      setPost(result as Post);
       onClose();
+
       toast({
         title: 'Created successfully.',
         description: 'Post has been created successfully',
@@ -78,10 +89,10 @@ const CreatePostModal = () => {
       });
       resetForm();
     } catch (error) {
-      console.error(error);
       return { message: 'Post creation failed' };
     }
   };
+  
   return (
     <>
       <Button
