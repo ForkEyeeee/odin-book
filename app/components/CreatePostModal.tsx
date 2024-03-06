@@ -72,7 +72,6 @@ const CreatePostModal = () => {
       if(!result) throw new Error("Post creation failed")
       
       if (!result.success && result.message) {
-        console.log(result)
         setError(result.message);
         setIsLoading(false);
         return;

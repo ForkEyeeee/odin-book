@@ -390,7 +390,7 @@ export async function uploadImage(formData: FormData) {
 
     const allowedTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/gif', 'image/webp'];
       if (file) {
-        if (file instanceof File && allowedTypes.includes(file.type)) {
+        if (allowedTypes.includes((file as any).type)) {
           const imageFormData = new FormData();
           const signData = signUploadForm(apiSecret!!);
 
