@@ -417,6 +417,7 @@ export async function uploadImage(formData: FormData) {
         }
       }
   } catch (error) {
+    console.error(error)
     return { message: `Post unsuccessfully uploaded` };
   }
 };
