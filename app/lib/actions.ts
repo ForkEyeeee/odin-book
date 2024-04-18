@@ -370,60 +370,65 @@ const generateSignature = (publicId: string, apiSecret: string) => {
 
 const signUploadForm = (apiSecret: string) => {
   const timestamp = Math.round(new Date().getTime() / 1000);
-  const signature = cloudinary.utils.api_sign_request({
-    timestamp: timestamp,
-    upload_preset: `${process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}`,
-    folder: `${process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER}`,
-  }, apiSecret!!);
+  const signature = cloudinary.utils.api_sign_request(
+    {
+      timestamp: timestamp,
+      upload_preset: `${process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}`,
+      folder: `${process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER}`,
+    },
+    apiSecret!!
+  );
 
   return { timestamp, signature };
 };
 
 export async function uploadImage(formData: FormData) {
-  try {    
-    const file = formData.get("file")
-    const postText = formData.get("post") as string
-    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
-    const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
-    const apiSecret = process.env.CLOUDINARY_API_SECRET;
-    const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+  try {
+    const imageFormData = new FormData();
+    const post = formData.get('post');
+    if (post) imageFormData.append('post', post);
+    const file = formData.get('file');
+    if (file) {
+      const postText = formData.get('post') as string;
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
+      const apiKey = process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY;
+      const apiSecret = process.env.CLOUDINARY_API_SECRET;
+      const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
 
-    const allowedTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/gif', 'image/webp'];
-      if (file) {
-        if (allowedTypes.includes((file as any).type)) {
-          const imageFormData = new FormData();
-          const signData = signUploadForm(apiSecret!!);
+      const allowedTypes = ['image/svg+xml', 'image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+      if (allowedTypes.includes((file as any).type)) {
+        const signData = signUploadForm(apiSecret!!);
 
-          imageFormData.append('file', file);
-          imageFormData.append('upload_preset', `${process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}`);
-          imageFormData.append('api_key', apiKey!!)
-          imageFormData.append("timestamp", signData.timestamp as any);
-          imageFormData.append("signature", signData.signature);
-          imageFormData.append("folder", `${process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER}`)
-          imageFormData.append("post", postText)
-          
-          const response = await fetch(url, {
-            method: "POST",
-            body: imageFormData
-          })
+        imageFormData.append('file', file);
+        imageFormData.append('upload_preset', `${process.env.NEXT_PUBLIC_CLOUDINARY_PRESET}`);
+        imageFormData.append('api_key', apiKey!!);
+        imageFormData.append('timestamp', signData.timestamp as any);
+        imageFormData.append('signature', signData.signature);
+        imageFormData.append('folder', `${process.env.NEXT_PUBLIC_CLOUDINARY_FOLDER}`);
+        imageFormData.append('post', postText);
 
-          if(!response.ok) throw new Error('Post upload failed');
-          
-          const result = await response.json()          
-          imageFormData.append('image-url', result.secure_url);
-          return await createPost("", imageFormData)
-        } else {
-          return { message: 'Please enter a Valid file format', success: false };
-        }
+        const response = await fetch(url, {
+          method: 'POST',
+          body: imageFormData,
+        });
+
+        if (!response.ok) throw new Error('Post upload failed');
+
+        const result = await response.json();
+        imageFormData.append('image-url', result.secure_url);
+      } else {
+        return { message: 'Please enter a Valid file format', success: false };
       }
+    }
+    return await createPost('', imageFormData);
   } catch (error) {
-    console.error(error)
+    console.error(error);
     return { message: `Post unsuccessfully uploaded` };
   }
-};
+}
 
 const destroyImage = async (imgUrl: string) => {
- try {
+  try {
     const publicId = extractPublicId(imgUrl);
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME;
     const timestamp = new Date().getTime();
@@ -432,35 +437,35 @@ const destroyImage = async (imgUrl: string) => {
     const signature = generateSHA1(generateSignature(publicId, apiSecret!!));
     const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/destroy`;
 
-    const formData = new FormData()
-    formData.append('public_id', publicId)
-    formData.append('signature', signature)
-    formData.append('api_key', apiKey!!)
-    formData.append('timestamp', timestamp as any)
+    const formData = new FormData();
+    formData.append('public_id', publicId);
+    formData.append('signature', signature);
+    formData.append('api_key', apiKey!!);
+    formData.append('timestamp', timestamp as any);
 
     const deletePost = await axios.post(url, formData);
   } catch (error) {
     return { message: `Post unsuccessfully deleted` };
-  } 
-}
+  }
+};
 
 export async function deletePost(postId: number, imgUrl: string) {
   try {
-    const userId = await getUserId()
-    
+    const userId = await getUserId();
+
     const deletedCommentLikes = await prisma.commentLike.deleteMany({
       where: {
         authorId: userId,
-        postId: postId
-      }
-    })
+        postId: postId,
+      },
+    });
 
     const deletedPostLikes = await prisma.postLike.deleteMany({
       where: {
         authorId: userId,
-        postId: postId
-      }
-    })
+        postId: postId,
+      },
+    });
 
     const deletedComment = await prisma.comment.deleteMany({
       where: {
@@ -507,7 +512,7 @@ export async function createPost(prevState: any, formData: FormData) {
 
     const postSchema = z.object({
       post: z.string(),
-      imageUrl: z.string().optional(),
+      imageUrl: z.string().nullable(),
       blurURL: z.string().optional(),
       createdAt: z.string(),
     });
@@ -538,7 +543,7 @@ export async function createPost(prevState: any, formData: FormData) {
         blurURL: parsedForm.blurURL,
       },
     });
-    
+
     revalidatePath('/');
     return { ...createdPost, success: true };
   } catch (error) {

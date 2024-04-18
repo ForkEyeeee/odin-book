@@ -63,9 +63,8 @@ const CreatePostModal = () => {
 
     try {
       const data = new FormData()
-      if (!file) throw new Error("Post creation failed");
-      
-      data.set('file', file);
+      if (file) data.set('file', file);
+
       data.set('post', postText)
       
       const result: CreatePostResponse = await uploadImage(data);
@@ -89,6 +88,7 @@ const CreatePostModal = () => {
       });
       resetForm();
     } catch (error) {
+      console.error(error)
       return { message: 'Post creation failed' };
     }
   };
