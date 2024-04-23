@@ -20,7 +20,7 @@ import { useState, useEffect } from 'react';
 import { deleteMessage, updateMessage } from '../lib/actions';
 import { useFormState } from 'react-dom';
 import { useSearchParams } from 'next/navigation';
-import { Message } from '../lib/definitions';
+import type { Message } from '../lib/definitions';
 
 interface Props {
   justifyContent: string;

@@ -21,7 +21,7 @@ import {
   useColorModeValue,
 } from '@chakra-ui/react';
 import { useState, useEffect } from 'react';
-import { Post as PostType, Profile } from '../lib/definitions';
+import type { Post as PostType, Profile } from '../lib/definitions';
 import ProfilePost from './ProfilePost';
 import { useToast } from '@chakra-ui/react';
 import parseAndFormatDate from './util/parseAndFormatDate';

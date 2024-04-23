@@ -130,7 +130,7 @@ export function Post({ post, index, userId, innerRef }: PostProps) {
             borderRadius="md"
             borderColor={'whitesmoke'}
             padding={{ base: '20px' }}
-            w={{ base: 300, sm: 430, md: 700, lg: 900, xl: 1200 }}
+            w={{ base: 320, sm: 430, md: 700, lg: 900, xl: 1200 }}
             boxShadow="md"
             mt={index !== undefined && index > 0 ? 10 : 0}
           >

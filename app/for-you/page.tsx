@@ -4,12 +4,16 @@ import LoadMoreForYou from '../components/LoadMoreForYou';
 import TimeLineTabs from '../components/TimeLineTabs';
 import { getPosts, getPostTime } from '../lib/actions';
 import { PostWithAuthor } from '../lib/definitions';
+import NoTimeLine from '../components/NoTimeLine';
 
 export default async function Page() {
   try {
     const { timelinePosts, timelinePostsCount } = (await getPosts(1)) ?? [];
 
-    if (timelinePosts === undefined || timelinePosts.length === 0) return;
+    if (timelinePosts === undefined || timelinePosts.length === 0) {
+      return <Box minHeight="100vh"><TimeLineTabs /><NoTimeLine/></Box>
+    } 
+
 
     await Promise.allSettled(
       timelinePosts.map(async (post: PostWithAuthor) => {
