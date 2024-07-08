@@ -16,7 +16,7 @@ import { usePathname } from 'next/navigation';
 import { RiFlashlightFill } from 'react-icons/ri';
 import Image from 'next/image';
 
-const Logo = (props: any) => {
+const Logo = () => {
   return (
     <HStack>
       <Link href={'/discover'}>
@@ -48,7 +48,7 @@ export default function SmallWithLogoLeft() {
           JBrown58
         </Text>
         <LinkBox>
-          <Link href={'https://github.com/JBrown58/odin-book'} target="_blank">
+          <Link href={'https://github.com/ForkEyeeee/odin-book'} target="_blank">
             <HStack>
               <Image
                 className="logo"
