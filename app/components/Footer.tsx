@@ -45,7 +45,7 @@ export default function SmallWithLogoLeft() {
       >
         <Logo />
         <Text fontFamily={'monospace'} fontSize={{ base: 'sm', sm: 'xl' }}>
-          JBrown58
+          ForkEyeee
         </Text>
         <LinkBox>
           <Link href={'https://github.com/ForkEyeeee/odin-book'} target="_blank">
